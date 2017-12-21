@@ -18,7 +18,7 @@ import java.util.ResourceBundle;
  *
  * @author TheBromo
  */
-public class FXMLDocumentController implements Initializable {
+public class FXMLLoginController implements Initializable {
     
     @FXML
     private TextField name;

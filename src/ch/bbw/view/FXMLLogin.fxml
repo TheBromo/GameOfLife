@@ -27,7 +27,7 @@
                   <Insets right="25.0" />
                </GridPane.margin>
             </TextField>
-            <Button mnemonicParsing="false" onAction="#handleButtonLogin" text="Login" GridPane.columnIndex="3" />
+            <Button fx:id="login" mnemonicParsing="false" onAction="#handleButtonLogin" text="Login" GridPane.columnIndex="3" />
          </children>
       </GridPane>
    </children>

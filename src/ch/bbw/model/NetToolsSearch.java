@@ -3,7 +3,9 @@ package ch.bbw.model;
 import ch.bbw.controller.FXMLLobbyController;
 import ch.thecodinglab.nettools.Discovery;
 import ch.thecodinglab.nettools.SocketAddress;
+import ch.thecodinglab.nettools.WinNative;
 
+import java.io.File;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -12,6 +14,7 @@ public class NetToolsSearch extends Thread implements Discovery.Callback {
 
     private ArrayList<InetAddress> addresses = new ArrayList<>();
     private FXMLLobbyController controller;
+    private boolean running=true;
 
     public NetToolsSearch(FXMLLobbyController controller) {
         this.controller = controller;
@@ -23,13 +26,14 @@ public class NetToolsSearch extends Thread implements Discovery.Callback {
      * @return all found Addresses
      */
     public void run() {
+        WinNative.loadLibrary(new File("lib/native"));
 
         Discovery.initailize((short) 12345);
         Discovery.setCallback(this);
         Discovery.search((short) 12345, true);
 
         try{
-            while (true) {
+            while (running) {
                 System.out.println("Searching");
                 Discovery.update();
             }
@@ -40,6 +44,10 @@ public class NetToolsSearch extends Thread implements Discovery.Callback {
 
         }
 
+    }
+
+    public void setRunning(boolean running) {
+        this.running = running;
     }
 
     @Override

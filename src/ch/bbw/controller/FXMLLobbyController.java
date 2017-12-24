@@ -30,6 +30,7 @@ public class FXMLLobbyController implements Initializable {
     private VBox users;
     private ArrayList<User> usersList = new ArrayList<>();
     private User activeOpponent;
+    private NetToolsSearch search;
 
 
     public void addUser(InetAddress address) {
@@ -47,7 +48,6 @@ public class FXMLLobbyController implements Initializable {
                 activeOpponent = user;
             }
         }
-
     }
 
     private void sendinvite() {
@@ -63,11 +63,13 @@ public class FXMLLobbyController implements Initializable {
         this.username.setText(username);
     }
 
+    public void initNettools(NetToolsSearch search){
+        this.search=search;
+    }
+
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
-        NetToolsSearch search = new NetToolsSearch(this);
-        search.start();
     }
 
 }

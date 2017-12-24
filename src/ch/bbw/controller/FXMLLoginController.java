@@ -5,6 +5,7 @@ package ch.bbw.controller;
  * and open the template in the editor.
  */
 
+import ch.bbw.model.NetToolsSearch;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -49,8 +50,16 @@ public class FXMLLoginController implements Initializable {
 
             FXMLLobbyController controller = fxmlLoader.<FXMLLobbyController>getController();
             controller.initUserName(username);
+            NetToolsSearch search = new NetToolsSearch(controller);
+            controller.initNettools(search);
+            search.start();
+
 
             Scene scene = new Scene(root1);
+            stage.setOnCloseRequest((e)-> {
+                search.setRunning(false);
+            });
+
             stage.setTitle("Test");
             stage.setScene(scene);
             stage.show();

@@ -35,19 +35,24 @@ public class FXMLLoginController implements Initializable {
     @FXML
     private void handleButtonLogin(ActionEvent event) {
         if (!name.getText().equals("")){
-            openLobbyWindow();
+            openLobbyWindow(name.getText());
             Stage stage = (Stage) login.getScene().getWindow();
             stage.close();
         }
     }
 
-    private void openLobbyWindow(){
+    private void openLobbyWindow(String username){
         try{
+            Stage stage = new Stage();
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../view/FXMLLobby.fxml"));
             Parent root1 = (Parent) fxmlLoader.load();
-            Stage stage = new Stage();
+
+            FXMLLobbyController controller = fxmlLoader.<FXMLLobbyController>getController();
+            controller.initUserName(username);
+
+            Scene scene = new Scene(root1);
             stage.setTitle("Test");
-            stage.setScene(new Scene(root1));
+            stage.setScene(scene);
             stage.show();
 
         } catch (IOException e) {

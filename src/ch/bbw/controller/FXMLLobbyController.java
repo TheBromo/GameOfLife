@@ -5,32 +5,69 @@ package ch.bbw.controller;
  * and open the template in the editor.
  */
 
+import ch.bbw.model.NetToolsSearch;
+import ch.bbw.model.User;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
 
+import java.net.InetAddress;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 /**
- *
  * @author TheBromo
  */
 public class FXMLLobbyController implements Initializable {
 
     @FXML
-    private TextField name;
+    private Label username;
+    @FXML
+    private VBox users;
+    private ArrayList<User> usersList = new ArrayList<>();
+    private User activeOpponent;
+
+
+    public void addUser(InetAddress address) {
+        Button button = new Button(address.getHostAddress());
+        button.setOnAction(this::handleUser);
+        users.getChildren().add(button);
+        usersList.add(new User(address, button));
+    }
 
     @FXML
-    private void handleButtonLogin(ActionEvent event) {
+    private void handleUser(ActionEvent event) {
+        Button button = (Button) event.getSource();
+        for (User user : usersList) {
+            if (user.getButton().equals(button)) {
+                activeOpponent = user;
+            }
+        }
 
+    }
+
+    private void sendinvite() {
+
+    }
+
+    public void receiveInvite() {
+
+    }
+
+
+    public void initUserName(String username) {
+        this.username.setText(username);
     }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+
+        NetToolsSearch search = new NetToolsSearch(this);
+        search.start();
     }
 
 }

@@ -14,7 +14,7 @@ public class NetToolsSearch extends Thread implements Discovery.Callback {
 
     private ArrayList<InetAddress> addresses = new ArrayList<>();
     private FXMLLobbyController controller;
-    private boolean running=true;
+    private boolean running = true;
 
     public NetToolsSearch(FXMLLobbyController controller) {
         this.controller = controller;
@@ -32,17 +32,15 @@ public class NetToolsSearch extends Thread implements Discovery.Callback {
         Discovery.setCallback(this);
         Discovery.search((short) 12345, true);
 
-        try{
-            while (running) {
-                System.out.println("Searching");
-                Discovery.update();
-            }
-        }finally {
-            System.out.println("Discovery Close");
-
-            Discovery.close();
-
+        while (running) {
+            System.out.println("Searching");
+            Discovery.update();
         }
+
+        System.out.println("Discovery Close");
+
+        Discovery.close();
+
 
     }
 

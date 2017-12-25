@@ -1,4 +1,4 @@
-package ch.bbw.model;
+package ch.bbw.model.data;
 
 import javafx.scene.control.Button;
 

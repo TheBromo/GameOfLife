@@ -5,17 +5,19 @@ package ch.bbw.controller;
  * and open the template in the editor.
  */
 
-import ch.bbw.model.NetToolsSearch;
-import ch.bbw.model.User;
+import ch.bbw.model.network.NetToolsSearch;
+import ch.bbw.model.data.User;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 
 import java.net.InetAddress;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
@@ -28,6 +30,8 @@ public class FXMLLobbyController implements Initializable {
     private Label username;
     @FXML
     private VBox users;
+    @FXML
+    private TextField ipadress;
     private ArrayList<User> usersList = new ArrayList<>();
     private User activeOpponent;
     private NetToolsSearch search;
@@ -50,7 +54,19 @@ public class FXMLLobbyController implements Initializable {
         }
     }
 
-    private void sendinvite() {
+    @FXML
+    private void handleInviteButton(ActionEvent event){
+        InetAddress address = null;
+        try {
+            address= InetAddress.getByName(ipadress.getText());
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        sendInvite(address);
+
+    }
+
+    private void sendInvite(InetAddress address) {
 
     }
 

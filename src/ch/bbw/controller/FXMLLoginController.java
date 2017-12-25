@@ -5,7 +5,7 @@ package ch.bbw.controller;
  * and open the template in the editor.
  */
 
-import ch.bbw.model.NetToolsSearch;
+import ch.bbw.model.network.NetToolsSearch;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -14,9 +14,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 import java.io.IOException;
 import java.net.URL;

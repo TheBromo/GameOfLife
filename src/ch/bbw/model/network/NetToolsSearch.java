@@ -1,4 +1,4 @@
-package ch.bbw.model;
+package ch.bbw.model.network;
 
 import ch.bbw.controller.FXMLLobbyController;
 import ch.thecodinglab.nettools.Discovery;
@@ -33,7 +33,6 @@ public class NetToolsSearch extends Thread implements Discovery.Callback {
         Discovery.search((short) 12345, true);
 
         while (running) {
-            System.out.println("Searching");
             Discovery.update();
         }
 

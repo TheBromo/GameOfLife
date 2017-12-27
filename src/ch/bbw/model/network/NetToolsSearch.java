@@ -49,7 +49,7 @@ public class NetToolsSearch extends Thread implements Discovery.Callback {
 
     @Override
     public boolean discoveryRequestReceived(SocketAddress socketAddress) {
-        return false;
+        return true;
     }
 
     @Override

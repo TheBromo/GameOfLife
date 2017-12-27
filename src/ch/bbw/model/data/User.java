@@ -2,23 +2,23 @@ package ch.bbw.model.data;
 
 import javafx.scene.control.Button;
 
-import java.net.InetAddress;
+import java.net.SocketAddress;
 
 public class User {
-    private InetAddress address;
+    private SocketAddress address;
     private String name;
     private Button button;
 
-    public User(InetAddress address, Button button) {
+    public User(SocketAddress address, Button button) {
         this.address = address;
         this.button = button;
     }
 
-    public InetAddress getAddress() {
+    public SocketAddress getAddress() {
         return address;
     }
 
-    public void setAddress(InetAddress address) {
+    public void setAddress(SocketAddress address) {
         this.address = address;
     }
 

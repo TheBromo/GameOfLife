@@ -15,9 +15,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 
-import java.net.InetAddress;
-import java.net.URL;
-import java.net.UnknownHostException;
+import java.net.*;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
@@ -41,7 +39,7 @@ public class FXMLLobbyController implements Initializable {
         Button button = new Button(address.getHostAddress());
         button.setOnAction(this::handleUser);
         users.getChildren().add(button);
-        usersList.add(new User(address, button));
+        usersList.add(new User(new InetSocketAddress(address,66666), button));
     }
 
     @FXML

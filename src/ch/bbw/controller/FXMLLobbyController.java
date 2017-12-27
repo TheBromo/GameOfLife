@@ -5,8 +5,8 @@ package ch.bbw.controller;
  * and open the template in the editor.
  */
 
-import ch.bbw.model.network.NetToolsSearch;
 import ch.bbw.model.data.User;
+import ch.bbw.model.network.NetToolsSearch;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -15,16 +15,18 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 
-import java.net.*;
+import java.beans.PropertyChangeEvent;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Observable;
-import java.util.Observer;
 import java.util.ResourceBundle;
 
 /**
  * @author TheBromo
  */
-public class FXMLLobbyController implements Initializable, Observer {
+public class FXMLLobbyController implements Initializable {
 
     @FXML
     private Label username;
@@ -41,7 +43,7 @@ public class FXMLLobbyController implements Initializable, Observer {
         Button button = new Button(address.getHostAddress());
         button.setOnAction(this::handleUser);
         users.getChildren().add(button);
-        usersList.add(new User(new InetSocketAddress(address,66666), button));
+        usersList.add(new User(new InetSocketAddress(address, 6666), button));
     }
 
     @FXML
@@ -50,19 +52,31 @@ public class FXMLLobbyController implements Initializable, Observer {
         for (User user : usersList) {
             if (user.getButton().equals(button)) {
                 activeOpponent = user;
+                System.out.println("sdas");
             }
         }
     }
 
     @FXML
-    private void handleInviteButton(ActionEvent event){
+    private void handleInviteButton(ActionEvent event) {
         InetAddress address = null;
         try {
-            address= InetAddress.getByName(ipadress.getText());
+            address = InetAddress.getByName(ipadress.getText());
+
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
         sendInvite(address);
+
+    }
+
+    @FXML
+    private void handleSearch(ActionEvent event){
+        ArrayList<InetAddress>addresses= search.getAddresses();
+        for (InetAddress address:addresses){
+            users.getChildren().clear();
+            addUser(address);
+        }
 
     }
 
@@ -79,8 +93,8 @@ public class FXMLLobbyController implements Initializable, Observer {
         this.username.setText(username);
     }
 
-    public void initNettools(NetToolsSearch search){
-        this.search=search;
+    public void initNettools(NetToolsSearch search) {
+        this.search = search;
     }
 
 
@@ -89,9 +103,5 @@ public class FXMLLobbyController implements Initializable, Observer {
 
     }
 
-    @Override
-    public void update(Observable o, Object arg) {
-        InetAddress address = (InetAddress)arg;
-        addUser(address);
-    }
+
 }

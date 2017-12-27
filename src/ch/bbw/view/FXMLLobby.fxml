@@ -12,8 +12,9 @@
       <VBox fx:id="users" layoutX="307.0" prefHeight="150.0" prefWidth="293.0" />
       <Separator layoutX="299.0" layoutY="2.0" orientation="VERTICAL" prefHeight="160.0" prefWidth="8.0" />
       <Label layoutX="14.0" layoutY="14.0" prefHeight="17.0" prefWidth="81.0" text="Username:" />
-      <TextField fx:id="ipadress" layoutX="80.0" layoutY="130.0" />
-      <Label layoutX="14.0" layoutY="133.0" prefHeight="17.0" prefWidth="66.0" text="Ip-Adresse" />
-      <Button layoutX="235.0" layoutY="130.0" mnemonicParsing="false" onAction="#handleInviteButton" text="Invite" />
+      <TextField fx:id="ipadress" layoutX="80.0" layoutY="63.0" />
+      <Label layoutX="14.0" layoutY="67.0" prefHeight="17.0" prefWidth="66.0" text="Ip-Adresse" />
+      <Button layoutX="236.0" layoutY="63.0" mnemonicParsing="false" onAction="#handleInviteButton" text="Invite" />
+      <Button layoutX="14.0" layoutY="123.0" mnemonicParsing="false" onAction="#handleSearch" prefHeight="25.0" prefWidth="269.0" text="Search" />
    </children>
 </AnchorPane>

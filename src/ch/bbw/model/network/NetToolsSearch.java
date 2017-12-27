@@ -11,7 +11,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Observable;
 
-public class NetToolsSearch extends Observable implements Discovery.Callback,Runnable {
+public class NetToolsSearch extends Thread implements Discovery.Callback,Runnable {
 
     private ArrayList<InetAddress> addresses = new ArrayList<>();
     private FXMLLobbyController controller;
@@ -44,6 +44,10 @@ public class NetToolsSearch extends Observable implements Discovery.Callback,Run
 
     }
 
+    public ArrayList<InetAddress> getAddresses() {
+        return addresses;
+    }
+
     public void setRunning(boolean running) {
         this.running = running;
     }
@@ -58,8 +62,6 @@ public class NetToolsSearch extends Observable implements Discovery.Callback,Run
         try {
             InetAddress addr = InetAddress.getByAddress(socketAddress.getAddress());
             addresses.add(addr);
-            setChanged();
-            notifyObservers(addr);
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }

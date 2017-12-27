@@ -6,6 +6,7 @@ package ch.bbw.controller;
  */
 
 import ch.bbw.model.network.NetToolsSearch;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -18,6 +19,8 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.ResourceBundle;
 
 /**
@@ -50,8 +53,7 @@ public class FXMLLoginController implements Initializable {
             controller.initUserName(username);
             NetToolsSearch search = new NetToolsSearch(controller);
             controller.initNettools(search);
-            search.addObserver(controller);
-            search.run();
+            search.start();
 
 
             Scene scene = new Scene(root1);
@@ -60,6 +62,7 @@ public class FXMLLoginController implements Initializable {
             });
 
             stage.setTitle("Test");
+            stage.setResizable(false);
             stage.setScene(scene);
             stage.show();
 
@@ -71,6 +74,7 @@ public class FXMLLoginController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
-    }    
-    
+    }
+
+
 }

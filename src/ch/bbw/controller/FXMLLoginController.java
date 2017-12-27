@@ -50,7 +50,8 @@ public class FXMLLoginController implements Initializable {
             controller.initUserName(username);
             NetToolsSearch search = new NetToolsSearch(controller);
             controller.initNettools(search);
-            search.start();
+            search.addObserver(controller);
+            search.run();
 
 
             Scene scene = new Scene(root1);

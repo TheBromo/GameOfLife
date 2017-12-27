@@ -9,8 +9,9 @@ import java.io.File;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Observable;
 
-public class NetToolsSearch extends Thread implements Discovery.Callback {
+public class NetToolsSearch extends Observable implements Discovery.Callback,Runnable {
 
     private ArrayList<InetAddress> addresses = new ArrayList<>();
     private FXMLLobbyController controller;
@@ -57,7 +58,8 @@ public class NetToolsSearch extends Thread implements Discovery.Callback {
         try {
             InetAddress addr = InetAddress.getByAddress(socketAddress.getAddress());
             addresses.add(addr);
-            controller.addUser(addr);
+            setChanged();
+            notifyObservers(addr);
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }

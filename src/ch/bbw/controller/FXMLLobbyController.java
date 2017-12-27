@@ -17,12 +17,14 @@ import javafx.scene.layout.VBox;
 
 import java.net.*;
 import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.ResourceBundle;
 
 /**
  * @author TheBromo
  */
-public class FXMLLobbyController implements Initializable {
+public class FXMLLobbyController implements Initializable, Observer {
 
     @FXML
     private Label username;
@@ -87,4 +89,9 @@ public class FXMLLobbyController implements Initializable {
 
     }
 
+    @Override
+    public void update(Observable o, Object arg) {
+        InetAddress address = (InetAddress)arg;
+        addUser(address);
+    }
 }

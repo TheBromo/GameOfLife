@@ -21,6 +21,13 @@ public abstract class Packet {
         return new String(data);
     }
 
+    public static void writeBoolean(boolean bool,ByteBuffer buffer){
+        buffer.put((byte)(bool?1:0));
+    }
+    public static Boolean readBoolean(ByteBuffer buffer){
+       return buffer.get()!=0;
+    }
+
     public static Packet createPacket(String className) {
         try {
             Class<Packet> packetClass = Class.forName(className).asSubclass((Class) Packet.class);

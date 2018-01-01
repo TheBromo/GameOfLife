@@ -5,6 +5,7 @@ package ch.bbw.controller;
  * and open the template in the editor.
  */
 
+import ch.bbw.model.network.NetToolsHandler;
 import ch.bbw.model.network.NetToolsSearch;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -24,41 +25,38 @@ import java.util.Observer;
 import java.util.ResourceBundle;
 
 /**
- *
  * @author TheBromo
  */
 public class FXMLLoginController implements Initializable {
-    
+
     @FXML
     private TextField name;
     @FXML
     private Button login;
-    
+
     @FXML
     private void handleButtonLogin(ActionEvent event) {
-        if (!name.getText().equals("")){
+        if (!name.getText().equals("")) {
             openLobbyWindow(name.getText());
             Stage stage = (Stage) login.getScene().getWindow();
             stage.close();
         }
     }
 
-    private void openLobbyWindow(String username){
-        try{
+    private void openLobbyWindow(String username) {
+        try {
             Stage stage = new Stage();
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../view/FXMLLobby.fxml"));
             Parent root1 = (Parent) fxmlLoader.load();
 
             FXMLLobbyController controller = fxmlLoader.<FXMLLobbyController>getController();
             controller.initUserName(username);
-            NetToolsSearch search = new NetToolsSearch(controller);
-            controller.initNettools(search);
-            search.start();
-
+            NetToolsHandler handler = new NetToolsHandler(controller);
+            handler.start();
 
             Scene scene = new Scene(root1);
-            stage.setOnCloseRequest((e)-> {
-                search.setRunning(false);
+            stage.setOnCloseRequest((e) -> {
+                handler.shutdown();
             });
 
             stage.setTitle("Test");
@@ -70,7 +68,7 @@ public class FXMLLoginController implements Initializable {
             e.printStackTrace();
         }
     }
-    
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO

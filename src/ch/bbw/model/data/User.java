@@ -1,5 +1,6 @@
 package ch.bbw.model.data;
 
+import ch.bbw.model.network.server.Server;
 import javafx.scene.control.Button;
 
 import java.net.SocketAddress;

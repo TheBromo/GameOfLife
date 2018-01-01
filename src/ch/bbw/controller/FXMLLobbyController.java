@@ -7,6 +7,7 @@ package ch.bbw.controller;
 
 import ch.bbw.model.data.User;
 import ch.bbw.model.network.NetToolsSearch;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -21,12 +22,14 @@ import java.net.InetSocketAddress;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.ResourceBundle;
 
 /**
  * @author TheBromo
  */
-public class FXMLLobbyController implements Initializable {
+public class FXMLLobbyController implements Initializable, Observer {
 
     @FXML
     private Label username;
@@ -37,7 +40,6 @@ public class FXMLLobbyController implements Initializable {
     private ArrayList<User> usersList = new ArrayList<>();
     private User activeOpponent;
     private NetToolsSearch search;
-
 
     public void addUser(InetAddress address) {
         Button button = new Button(address.getHostAddress());
@@ -67,17 +69,15 @@ public class FXMLLobbyController implements Initializable {
             e.printStackTrace();
         }
         sendInvite(address);
-
     }
 
     @FXML
-    private void handleSearch(ActionEvent event){
-        ArrayList<InetAddress>addresses= search.getAddresses();
-        for (InetAddress address:addresses){
+    private void handleSearch(ActionEvent event) {
+        ArrayList<InetAddress> addresses = search.getAddresses();
+        for (InetAddress address : addresses) {
             users.getChildren().clear();
             addUser(address);
         }
-
     }
 
     private void sendInvite(InetAddress address) {
@@ -88,7 +88,6 @@ public class FXMLLobbyController implements Initializable {
 
     }
 
-
     public void initUserName(String username) {
         this.username.setText(username);
     }
@@ -97,11 +96,13 @@ public class FXMLLobbyController implements Initializable {
         this.search = search;
     }
 
-
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
     }
 
-
+    @Override
+    public void update(Observable o, Object arg) {
+        Platform.runLater(() -> addUser((InetAddress) arg));
+    }
 }

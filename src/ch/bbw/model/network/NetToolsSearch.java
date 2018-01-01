@@ -1,6 +1,5 @@
 package ch.bbw.model.network;
 
-import ch.bbw.controller.FXMLLobbyController;
 import ch.thecodinglab.nettools.Discovery;
 import ch.thecodinglab.nettools.SocketAddress;
 import ch.thecodinglab.nettools.WinNative;
@@ -11,15 +10,11 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Observable;
 
-public class NetToolsSearch extends Thread implements Discovery.Callback,Runnable {
+public class NetToolsSearch extends Observable implements Discovery.Callback {
 
     private ArrayList<InetAddress> addresses = new ArrayList<>();
-    private FXMLLobbyController controller;
     private boolean running = true;
 
-    public NetToolsSearch(FXMLLobbyController controller) {
-        this.controller = controller;
-    }
 
     /**
      * Gets all the addresses of other players searching over the same Port
@@ -62,6 +57,8 @@ public class NetToolsSearch extends Thread implements Discovery.Callback,Runnabl
         try {
             InetAddress addr = InetAddress.getByAddress(socketAddress.getAddress());
             addresses.add(addr);
+            setChanged();
+            notifyObservers(addr);
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }

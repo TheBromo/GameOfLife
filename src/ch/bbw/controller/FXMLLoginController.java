@@ -5,9 +5,7 @@ package ch.bbw.controller;
  * and open the template in the editor.
  */
 
-import ch.bbw.model.network.NetToolsHandler;
 import ch.bbw.model.network.NetToolsSearch;
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -20,8 +18,6 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Observable;
-import java.util.Observer;
 import java.util.ResourceBundle;
 
 /**
@@ -51,15 +47,19 @@ public class FXMLLoginController implements Initializable {
 
             FXMLLobbyController controller = fxmlLoader.<FXMLLobbyController>getController();
             controller.initUserName(username);
-            NetToolsHandler handler = new NetToolsHandler(controller);
-            handler.start();
+
+            NetToolsSearch search = new NetToolsSearch();
+            search.addObserver(controller);
+            controller.initNettools(search);
+
+            new Thread(search).start();
 
             Scene scene = new Scene(root1);
             stage.setOnCloseRequest((e) -> {
-                handler.shutdown();
+                search.setRunning(false);
             });
 
-            stage.setTitle("Test");
+            stage.setTitle("Lobby");
             stage.setResizable(false);
             stage.setScene(scene);
             stage.show();

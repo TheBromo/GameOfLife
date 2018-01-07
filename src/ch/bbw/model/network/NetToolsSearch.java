@@ -10,7 +10,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Observable;
 
-public class NetToolsSearch extends Observable implements Discovery.Callback {
+public class NetToolsSearch extends Observable implements Runnable,Discovery.Callback {
 
     private ArrayList<InetAddress> addresses = new ArrayList<>();
     private boolean running = true;
@@ -21,6 +21,7 @@ public class NetToolsSearch extends Observable implements Discovery.Callback {
      *
      * @return all found Addresses
      */
+    @Override
     public void run() {
         WinNative.loadLibrary(new File("lib/native"));
 

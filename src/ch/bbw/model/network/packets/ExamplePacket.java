@@ -1,5 +1,7 @@
 package ch.bbw.model.network.packets;
 
+import ch.bbw.model.network.server.Server;
+
 import java.nio.ByteBuffer;
 
 public class ExamplePacket extends Packet{
@@ -20,6 +22,7 @@ public class ExamplePacket extends Packet{
         byteBuffer.putInt(row);
         byteBuffer.putInt(column);
         Packet.writeBoolean(cell,byteBuffer);
+
 
     }
 

@@ -45,7 +45,7 @@ public class FXMLLobbyController implements Initializable, Observer {
         Button button = new Button(address.getHostAddress());
         button.setOnAction(this::handleUser);
         users.getChildren().add(button);
-        usersList.add(new User(new InetSocketAddress(address, 6666), button));
+        usersList.add(new User(address, button));
     }
 
     @FXML

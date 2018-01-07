@@ -1,15 +1,13 @@
 package ch.bbw.model.network.packets;
 
-import ch.bbw.model.network.server.Server;
-
 import java.nio.ByteBuffer;
 
 public class ExamplePacket extends Packet{
+
     private int row,column;
     private boolean cell;
 
     public ExamplePacket(){}
-
 
     public ExamplePacket(int row, int column, boolean cell) {
         this.row = row;
@@ -28,6 +26,7 @@ public class ExamplePacket extends Packet{
 
     @Override
     public void deserialize(ByteBuffer byteBuffer) {
-
+        row=byteBuffer.getInt();
+        column=byteBuffer.getInt();
     }
 }

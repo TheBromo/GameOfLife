@@ -21,11 +21,12 @@ public abstract class Packet {
         return new String(data);
     }
 
-    public static void writeBoolean(boolean bool,ByteBuffer buffer){
-        buffer.put((byte)(bool?1:0));
+    public static void writeBoolean(boolean bool, ByteBuffer buffer) {
+        buffer.put((byte) (bool ? 1 : 0));
     }
-    public static Boolean readBoolean(ByteBuffer buffer){
-       return buffer.get()!=0;
+
+    public static Boolean readBoolean(ByteBuffer buffer) {
+        return buffer.get() != 0;
     }
 
     public static Packet createPacket(String className) {
@@ -56,6 +57,18 @@ public abstract class Packet {
         Packet packet = createPacket(readString(byteBuffer));
         packet.deserialize(byteBuffer);
         return packet;
+    }
+
+    public ArrayList<SocketAddress> getTargets() {
+        return targets;
+    }
+
+    public void clearTargets() {
+        targets.clear();
+    }
+
+    public void addTarget(SocketAddress target) {
+        targets.add(target);
     }
 
     public abstract void serialize(ByteBuffer byteBuffer);

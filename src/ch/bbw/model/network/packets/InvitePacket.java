@@ -3,6 +3,7 @@ package ch.bbw.model.network.packets;
 import java.nio.ByteBuffer;
 
 public class InvitePacket extends Packet {
+
     String name;
     long inviteDuration;
     int id;
@@ -15,7 +16,6 @@ public class InvitePacket extends Packet {
 
     public InvitePacket() {
     }
-
 
     @Override
     public void serialize(ByteBuffer byteBuffer) {

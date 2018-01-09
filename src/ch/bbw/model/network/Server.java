@@ -22,7 +22,7 @@ public class Server implements Runnable {
     private ServerSocketChannel channel;
     private ArrayList<Packet> queue;
 
-    private HashMap<SocketAddress, SocketChannel> clients;
+    private HashMap<InetAddress, SocketChannel> clients;
 
     private InetAddress ip;
 
@@ -47,7 +47,7 @@ public class Server implements Runnable {
         this.ip = ip;
     }
 
-    public HashMap<SocketAddress, SocketChannel> getClients() {
+    public HashMap<InetAddress, SocketChannel> getClients() {
         return clients;
     }
 
@@ -83,7 +83,7 @@ public class Server implements Runnable {
                                 sChannel.configureBlocking(false);
                                 sChannel.register(selector, SelectionKey.OP_READ);
 
-                                clients.put(sChannel.getRemoteAddress(), sChannel);
+                                clients.put(((InetSocketAddress) sChannel.getRemoteAddress()).getAddress(), sChannel);
 
                             }catch (ClosedChannelException ex){
                                 System.out.println("User Disconnected");
@@ -102,7 +102,7 @@ public class Server implements Runnable {
                             Packet packet  = Packet.decompilePacket(readBuffer);
                             packet.clearTargets();
 
-                            for(SocketAddress a : clients.keySet()){
+                            for(InetAddress a : clients.keySet()){
                                 if(!a.equals(clients.get(sChannel))){
                                     packet.addTarget(a);
                                 }
@@ -124,11 +124,11 @@ public class Server implements Runnable {
 
                         writeBuffer.flip();
 
-                        Iterator<SocketAddress> targetIterator = packet.getTargets().iterator();
+                        Iterator<InetAddress> targetIterator = packet.getTargets().iterator();
 
                         while (targetIterator.hasNext()) {
 
-                            SocketAddress target = targetIterator.next();
+                            SocketAddress target = new InetSocketAddress(targetIterator.next(),port);
                             System.out.println(target);
 
                             clients.get(target).write(writeBuffer);

@@ -6,17 +6,24 @@ package ch.bbw.controller;
  */
 
 import ch.bbw.model.data.User;
+import ch.bbw.model.network.Inviter;
 import ch.bbw.model.network.NetToolsSearch;
+import ch.bbw.model.network.packets.Packet;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 
 import java.beans.PropertyChangeEvent;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.URL;
@@ -40,6 +47,8 @@ public class FXMLLobbyController implements Initializable, Observer {
     private ArrayList<User> usersList = new ArrayList<>();
     private User activeOpponent;
     private NetToolsSearch search;
+    private Inviter inviter;
+    private Timeline fiveSeconds;
 
     public void addUser(InetAddress address) {
         Button button = new Button(address.getHostAddress());
@@ -84,8 +93,8 @@ public class FXMLLobbyController implements Initializable, Observer {
 
     }
 
-    public void receiveInvite() {
-
+    public void receivedInvite() {
+        //TODO add if invite received
     }
 
     public void initUserName(String username) {
@@ -98,7 +107,27 @@ public class FXMLLobbyController implements Initializable, Observer {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        try {
+            inviter = new Inviter(8888);
+        } catch (IOException e) {
+            System.out.print("Failed to initialize Inviter");
+            e.printStackTrace();
+        }
+        fiveSeconds = new Timeline(new KeyFrame(Duration.seconds(5), (e)->{
+            try {
+                Packet packet = inviter.readReceivedPacket();
+                if (!packet.equals(null)){
+                    receivedInvite();
+                }
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
 
+            System.out.println("this is called every 5 seconds on UI thread");
+
+        }));
+        fiveSeconds.setCycleCount(Timeline.INDEFINITE);
+        fiveSeconds.play();
     }
 
     @Override

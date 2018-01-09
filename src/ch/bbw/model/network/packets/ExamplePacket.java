@@ -20,8 +20,6 @@ public class ExamplePacket extends Packet{
         byteBuffer.putInt(row);
         byteBuffer.putInt(column);
         Packet.writeBoolean(cell,byteBuffer);
-
-
     }
 
     @Override

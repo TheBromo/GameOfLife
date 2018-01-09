@@ -5,12 +5,12 @@ import java.nio.ByteBuffer;
 public class InvitePacket extends Packet {
 
     String name;
-    long inviteDuration;
+    long startTime;
     int id;
 
-    public InvitePacket(String name, long inviteDuration, int id) {
+    public InvitePacket(String name, long startTime, int id) {
         this.name = name;
-        this.inviteDuration = inviteDuration;
+        this.startTime = startTime;
         this.id = id;
     }
 
@@ -20,14 +20,14 @@ public class InvitePacket extends Packet {
     @Override
     public void serialize(ByteBuffer byteBuffer) {
         Packet.writeString(name, byteBuffer);
-        byteBuffer.putLong(inviteDuration);
+        byteBuffer.putLong(startTime);
         byteBuffer.putInt(id);
     }
 
     @Override
     public void deserialize(ByteBuffer byteBuffer) {
         name = readString(byteBuffer);
-        inviteDuration = byteBuffer.getLong();
+        startTime = byteBuffer.getLong();
         id = byteBuffer.getInt();
     }
 }

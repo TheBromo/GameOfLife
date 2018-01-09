@@ -13,7 +13,6 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -22,10 +21,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
-import java.beans.PropertyChangeEvent;
 import java.io.IOException;
 import java.net.InetAddress;
-import java.net.InetSocketAddress;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -113,10 +110,10 @@ public class FXMLLobbyController implements Initializable, Observer {
             System.out.print("Failed to initialize Inviter");
             e.printStackTrace();
         }
-        fiveSeconds = new Timeline(new KeyFrame(Duration.seconds(5), (e)->{
+        fiveSeconds = new Timeline(new KeyFrame(Duration.millis(50), (e) -> {
             try {
                 Packet packet = inviter.readReceivedPacket();
-                if (!packet.equals(null)){
+                if (!packet.equals(null)) {
                     receivedInvite();
                 }
             } catch (IOException e1) {

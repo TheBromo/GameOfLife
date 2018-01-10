@@ -11,6 +11,7 @@ import ch.bbw.model.data.User;
 import ch.bbw.model.data.UserManager;
 import ch.bbw.model.network.Inviter;
 import ch.bbw.model.network.NetToolsSearch;
+import ch.bbw.model.network.packets.AcceptPacket;
 import ch.bbw.model.network.packets.InvitePacket;
 import ch.bbw.model.network.packets.Packet;
 import ch.bbw.model.utils.TimeConverter;
@@ -53,10 +54,10 @@ public class FXMLLobbyController implements Initializable, Observer {
     private TimeConverter timeConverter;
     private UserManager userManager;
     private InviteManager inviteManager;
-    private User activeOpponent;
-    private NetToolsSearch search;
     private Inviter inviter;
     private Timeline fiveSeconds;
+    long inviteTime = 30000;
+    boolean inviteSent, inviteAccepted;
 
     public void addUser(InetAddress address) {
         Button button = new Button(address.getHostAddress());
@@ -70,8 +71,7 @@ public class FXMLLobbyController implements Initializable, Observer {
         Button button = (Button) event.getSource();
         for (User user : userManager.getUsers()) {
             if (user.getButton().equals(button)) {
-                activeOpponent = user;
-                System.out.println("sdas");
+                System.out.println("Sending invite...");
                 sendInvite(user.getAddress());
             }
         }
@@ -88,9 +88,24 @@ public class FXMLLobbyController implements Initializable, Observer {
         }
     }
 
+    private void disableAllInvites() {
+        for (Node button : users.getChildren()) {
+            Button edit = (Button) button;
+            edit.setDisable(true);
+        }
+    }
+
+
+    private void enableAllInvites() {
+        for (Node button : users.getChildren()) {
+            Button edit = (Button) button;
+            edit.setDisable(false);
+        }
+    }
+
     private void sendInvite(InetAddress address) {
         Random random = new Random();
-        Invite invite = new Invite(System.currentTimeMillis(), System.currentTimeMillis() + 30000, address.toString(), random.nextInt());
+        Invite invite = new Invite(System.currentTimeMillis(), System.currentTimeMillis() + inviteTime, address.toString(), random.nextInt());
         inviteManager.addReceivedInvite(invite);
 
         Packet packet = new InvitePacket(username.getText(), invite.getDeprecationTime(), invite.getId());
@@ -108,6 +123,7 @@ public class FXMLLobbyController implements Initializable, Observer {
 
         try {
             inviter.sendPacket(packet);
+            inviteSent = true;
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("Failed to send Packet");
@@ -125,9 +141,18 @@ public class FXMLLobbyController implements Initializable, Observer {
         }
     }
 
+    private void gameCountDown() {
+        //TODO
+    }
+
 
     public void receivedInvite(String name, Long time) throws IOException {
+        HBox box = new HBox();
+        Button button = new Button(name);
+        Label label = new Label();
 
+        Invite invite = new Invite();
+        inviteManager.addReceivedInvite(invite);
 
     }
 
@@ -135,9 +160,6 @@ public class FXMLLobbyController implements Initializable, Observer {
         this.username.setText(username);
     }
 
-    public void initNettools(NetToolsSearch search) {
-        this.search = search;
-    }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -160,9 +182,20 @@ public class FXMLLobbyController implements Initializable, Observer {
                         if (packet instanceof InvitePacket) {
                             InvitePacket invitePacket = (InvitePacket) packet;
                             receivedInvite(invitePacket.getName(), invitePacket.getStartTime());
+                        } else if (packet instanceof AcceptPacket) {
+                            AcceptPacket acceptPacket = (AcceptPacket) packet;
+                            for (Invite invite : inviteManager.getSentInvites()) {
+                                if (invite.getId() == acceptPacket.getId() && acceptPacket.isAcceptence()) {
+                                    gameCountDown();
+                                }
+                            }
                         }
                     }
                 }
+
+                updateTimeSentInvites(sentInvites);
+                updateTimeSentInvites(receivedInvites);
+
             } catch (IOException e1) {
                 e1.printStackTrace();
             }

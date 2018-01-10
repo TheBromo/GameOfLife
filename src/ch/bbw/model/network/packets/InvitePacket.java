@@ -17,6 +17,15 @@ public class InvitePacket extends Packet {
     public InvitePacket() {
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public long getStartTime() {
+        return startTime;
+    }
+
+
     @Override
     public void serialize(ByteBuffer byteBuffer) {
         Packet.writeString(name, byteBuffer);

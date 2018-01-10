@@ -16,7 +16,6 @@ import java.util.Iterator;
 public class Inviter {
 
 
-    boolean startTimeReceived = false;
     private ArrayList<Packet> sentPackets = new ArrayList<>();
     private ByteBuffer readBuffer, writeBuffer;
     private DatagramChannel socket;
@@ -54,7 +53,9 @@ public class Inviter {
         }
     }
 
-    public Packet readReceivedPacket() throws IOException {
+
+     public ArrayList<Packet> readReceivedPacket() throws IOException {
+        ArrayList<Packet> packets = new ArrayList<>();
         if (selector.selectNow() > 0) {
             Iterator<SelectionKey> keys = selector.selectedKeys().iterator();
             while (keys.hasNext()) {
@@ -73,14 +74,14 @@ public class Inviter {
                     InetAddress address = ((InetSocketAddress) sender).getAddress();
 
                     Packet packet = Packet.decompilePacket(readBuffer);
-                    return packet;
+                    packets.add(packet);
 
 
                 }
                 keys.remove();
             }
         }
-        return null;
+        return packets;
     }
 
 

@@ -154,6 +154,7 @@ public class FXMLLobbyController implements Initializable, Observer {
         Button button = new Button("Accept");
         button.setOnAction(this::handleAccept);
         Label label = new Label(packet.getName());
+        System.out.println("Invite received from: "+ packet.getName()+" :"+packet.getRecallAdress());
 
         Invite invite = new Invite(packet.getDeprecationTime() - inviteTime, packet.getDeprecationTime(), packet.getId(), box, packet.getRecallAdress());
         invite.setName(packet.getName());

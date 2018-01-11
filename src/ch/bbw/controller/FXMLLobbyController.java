@@ -15,6 +15,7 @@ import ch.bbw.model.network.Server;
 import ch.bbw.model.network.packets.AcceptPacket;
 import ch.bbw.model.network.packets.InvitePacket;
 import ch.bbw.model.network.packets.Packet;
+import ch.bbw.model.network.packets.PacketHandler;
 import ch.bbw.model.utils.TimeConverter;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -238,10 +239,14 @@ public class FXMLLobbyController implements Initializable, Observer {
 
         FXMLGameController controller = fxmlLoader.<FXMLGameController>getController();
 
+        PacketHandler packetHandler = new PacketHandler();
+
         Server server = new Server(6555);
-        Client client = new Client(new InetSocketAddress(InetAddress.getByName("localhost"), 6555));
+        Client client = new Client(new InetSocketAddress(InetAddress.getByName("localhost"), 6555),packetHandler);
         controller.initClient(client);
         controller.initServer(server);
+
+        packetHandler.addObserver(controller);
 
 
 
@@ -264,6 +269,11 @@ public class FXMLLobbyController implements Initializable, Observer {
     }
 
     private void gameUserCountDown(long startTime, InetAddress secondPlayer) throws IOException {
+        try {
+            Thread.sleep(50);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         Stage stage1 = (Stage) username.getScene().getWindow();
         stage1.close();
 
@@ -275,8 +285,10 @@ public class FXMLLobbyController implements Initializable, Observer {
 
         FXMLGameController controller = fxmlLoader.<FXMLGameController>getController();
 
-        Client client = new Client(new InetSocketAddress(InetAddress.getByName("localhost"), 6555));
+        PacketHandler packetHandler = new PacketHandler();
+        Client client = new Client(new InetSocketAddress(InetAddress.getByName("localhost"), 6555),packetHandler);
         controller.initClient(client);
+        packetHandler.addObserver(controller);
 
         new Thread(client).start();
 

@@ -227,6 +227,9 @@ public class FXMLLobbyController implements Initializable, Observer {
     }
 
     private void gameServerCountDown(long startTime, InetAddress secondPlayer) throws IOException {
+        Stage stage1 = (Stage) username.getScene().getWindow();
+        stage1.close();
+
         System.out.println(startTime + " " + secondPlayer.toString() + " Sever");
 
         Stage stage = new Stage();
@@ -239,7 +242,6 @@ public class FXMLLobbyController implements Initializable, Observer {
         Client client = new Client(new InetSocketAddress(InetAddress.getByName("localhost"), 6555));
         controller.initClient(client);
         controller.initServer(server);
-
 
         new Thread(server).start();
         new Thread(client).start();
@@ -256,10 +258,12 @@ public class FXMLLobbyController implements Initializable, Observer {
         stage.setScene(scene);
         stage.show();
 
-        //TODO
     }
 
     private void gameUserCountDown(long startTime, InetAddress secondPlayer) throws IOException {
+        Stage stage1 = (Stage) username.getScene().getWindow();
+        stage1.close();
+
         System.out.println(startTime + " " + secondPlayer.toString() + " User");
 
         Stage stage = new Stage();
@@ -270,7 +274,6 @@ public class FXMLLobbyController implements Initializable, Observer {
 
         Client client = new Client(new InetSocketAddress(InetAddress.getByName("localhost"), 6555));
         controller.initClient(client);
-
 
         new Thread(client).start();
 
@@ -283,7 +286,7 @@ public class FXMLLobbyController implements Initializable, Observer {
         stage.setResizable(false);
         stage.setScene(scene);
         stage.show();
-        //TODO
+
     }
 
     public void initUserName(String username) {

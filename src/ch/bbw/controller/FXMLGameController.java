@@ -3,6 +3,8 @@ package ch.bbw.controller;
 import ch.bbw.model.data.CellManager;
 import ch.bbw.model.network.Client;
 import ch.bbw.model.network.Server;
+import ch.bbw.model.network.packets.Packet;
+import ch.bbw.model.network.packets.TextPacket;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -25,7 +27,8 @@ public class FXMLGameController implements Initializable {
 
     @FXML
     private void handleTurnEnd(ActionEvent event) {
-
+        Packet packet = new TextPacket("Hello");
+        network.queuePacket(packet);
     }
 
     @FXML

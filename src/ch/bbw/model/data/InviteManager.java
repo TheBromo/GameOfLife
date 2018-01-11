@@ -1,5 +1,6 @@
 package ch.bbw.model.data;
 
+import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 
 import java.util.ArrayList;
@@ -47,6 +48,26 @@ public class InviteManager {
         }
         return false;
     }
+
+
+    public Invite getInviteByButton(Button button){
+        for (Invite invite:receivedInvites){
+            if (invite.getAcceptButton().equals(button)){
+                return invite;
+            }
+        }
+        return null;
+    }
+
+    public Invite getInviteById(int id){
+        for (Invite invite:sentInvites){
+            if (invite.getId()==id){
+                return invite;
+            }
+        }
+        return null;
+    }
+
 
 
 }

@@ -4,14 +4,15 @@ import java.nio.ByteBuffer;
 
 public class InvitePacket extends Packet {
 
-    String name;
+    String name, recallAdress;
     long deprecationTime;
     int id;
 
-    public InvitePacket(String name, long deprecationTime, int id) {
+    public InvitePacket(String name, long deprecationTime, int id, String recallAdress) {
         this.name = name;
         this.deprecationTime = deprecationTime;
         this.id = id;
+        this.recallAdress = recallAdress;
     }
 
     public InvitePacket() {
@@ -29,11 +30,16 @@ public class InvitePacket extends Packet {
         return id;
     }
 
+    public String getRecallAdress() {
+        return recallAdress;
+    }
+
     @Override
     public void serialize(ByteBuffer byteBuffer) {
         Packet.writeString(name, byteBuffer);
         byteBuffer.putLong(deprecationTime);
         byteBuffer.putInt(id);
+        Packet.writeString(recallAdress, byteBuffer);
     }
 
     @Override
@@ -41,5 +47,6 @@ public class InvitePacket extends Packet {
         name = readString(byteBuffer);
         deprecationTime = byteBuffer.getLong();
         id = byteBuffer.getInt();
+        recallAdress = Packet.readString(byteBuffer);
     }
 }

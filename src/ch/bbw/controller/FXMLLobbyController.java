@@ -55,8 +55,10 @@ public class FXMLLobbyController implements Initializable, Observer {
     private Timeline fiveSeconds;
 
     public void addUser(InetAddress address) {
+
         Button button = new Button(address.getHostAddress());
         button.setOnAction(this::handleUser);
+
         users.getChildren().add(button);
         userManager.addUser(new User(address, button));
     }
@@ -64,12 +66,21 @@ public class FXMLLobbyController implements Initializable, Observer {
     @FXML
     private void handleUser(ActionEvent event) {
         Button button = (Button) event.getSource();
+
         for (User user : userManager.getUsers()) {
             if (user.getButton().equals(button)) {
                 System.out.println("Sending invite...");
                 sendInvite(user.getAddress());
             }
         }
+    }
+
+    @FXML
+    private void handleAccept(ActionEvent event) {
+        Button button = (Button) event.getSource();
+        Invite invite = inviteManager.getInviteByButton(button);
+
+
     }
 
     @FXML
@@ -98,19 +109,28 @@ public class FXMLLobbyController implements Initializable, Observer {
         }
     }
 
+
     private void sendInvite(InetAddress address) {
+
         Random random = new Random();
-        Invite invite = new Invite(System.currentTimeMillis(), System.currentTimeMillis() + inviteTime, address.toString(), random.nextInt());
+        Invite invite = new Invite(System.currentTimeMillis(), System.currentTimeMillis() + inviteTime, address.toString(), random.nextInt(), address);
+
         if (!inviteManager.inviteExists(invite)) {
+
             inviteManager.addReceivedInvite(invite);
 
-            Packet packet = new InvitePacket(username.getText(), invite.getDeprecationTime(), invite.getId());
+            Packet packet = null;
+            try {
+                packet = new InvitePacket(username.getText(), invite.getDeprecationTime(), invite.getId(), InetAddress.getLocalHost().getHostAddress().toString());
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+            }
             packet.addTarget(address);
 
             HBox field = new HBox();
 
             Label timeLeft = new Label(timeConverter.longToString(timeConverter.getSecDif(invite.getDeprecationTime(), invite.getTimeSent())));
-            Label name = new Label(invite.getTarget());
+            Label name = new Label(invite.getRecallAdress());
             field.getChildren().add(name);
             field.getChildren().add(timeLeft);
             invite.setContainer(field);
@@ -118,39 +138,29 @@ public class FXMLLobbyController implements Initializable, Observer {
             sentInvites.getChildren().add(field);
 
             try {
+
                 inviter.sendPacket(packet);
                 inviteSent = true;
+
             } catch (IOException e) {
                 e.printStackTrace();
-                System.out.println("Failed to send Packet");
+                System.err.println("Failed to send Packet");
             }
         }
 
     }
 
-    private void updateTimeSentInvites(VBox container) {
-        ObservableList<Node> hBoxes = container.getChildren();
-        for (Node hBox : hBoxes) {
-            HBox box = (HBox) hBox;
-            Label label = (Label) box.getChildren().get(1);
-            Invite invite = inviteManager.getInviteByContainer(box);
-            label.setText(timeConverter.longToString(timeConverter.getSecDif(invite.getDeprecationTime(), invite.getTimeSent())));
-        }
-    }
-
-
-    private void gameCountDown() {
-        //TODO
-    }
-
-
-    public void receivedInvite(InvitePacket packet) throws IOException {
+    private void receivedInvite(InvitePacket packet) throws IOException {
 
         HBox box = new HBox();
-        Button button = new Button(packet.getName());
-        Label label = new Label(timeConverter.longToString(timeConverter.getSecDif(packet.getDeprecationTime(), System.currentTimeMillis())));
+        Button button = new Button("Accept");
+        button.setOnAction(this::handleAccept);
+        Label label = new Label(packet.getName());
 
-        Invite invite = new Invite(packet.getDeprecationTime()-inviteTime,packet.getDeprecationTime() , packet.getId(), box);
+        Invite invite = new Invite(packet.getDeprecationTime() - inviteTime, packet.getDeprecationTime(), packet.getId(), box, packet.getRecallAdress());
+        invite.setName(packet.getName());
+        invite.setAcceptButton(button);
+
         if (!inviteManager.inviteExists(invite)) {
             inviteManager.addReceivedInvite(invite);
 
@@ -160,13 +170,68 @@ public class FXMLLobbyController implements Initializable, Observer {
         }
     }
 
+    private void sendAccept(Invite invite) {
+
+        Packet packet = new AcceptPacket(invite.getId(), true);
+        try {
+
+            packet.addTarget(InetAddress.getByName(invite.getRecallAdress()));
+            inviter.sendPacket(packet);
+            gameUserCountDown(invite.getDeprecationTime(), InetAddress.getByName(invite.getRecallAdress()));
+
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void receiveAccept(AcceptPacket packet) {
+
+        if (packet.isAcceptence()) {
+
+            Invite invite = inviteManager.getInviteById(packet.getId());
+            if (invite != null) {
+
+                gameServerCountDown(invite.getDeprecationTime(), invite.getTarget());
+            } else {
+                System.err.println("No Packet was sent with this ID ");
+            }
+        }
+    }
+
+    private void updateTimeSentInvites(VBox container) {
+
+        ObservableList<Node> hBoxes = container.getChildren();
+
+        for (Node hBox : hBoxes) {
+
+            HBox box = (HBox) hBox;
+            Label label = (Label) box.getChildren().get(1);
+            Invite invite = inviteManager.getInviteByContainer(box);
+            label.setText(timeConverter.longToString(timeConverter.getSecDif(invite.getDeprecationTime(), invite.getTimeSent())));
+
+        }
+    }
+
+    private void gameServerCountDown(long startTime, InetAddress secondPlayer) {
+        System.out.println(startTime+" " +secondPlayer.toString()+ " Sever");
+        //TODO
+    }
+
+    private void gameUserCountDown(long startTime, InetAddress secondPlayer) {
+        System.out.println(startTime+" " +secondPlayer.toString()+ " User");
+
+        //TODO
+    }
+
     public void initUserName(String username) {
         this.username.setText(username);
     }
 
-
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+
         inviteManager = new InviteManager();
         userManager = new UserManager();
         timeConverter = new TimeConverter();
@@ -174,25 +239,26 @@ public class FXMLLobbyController implements Initializable, Observer {
         try {
             inviter = new Inviter(8888);
         } catch (IOException e) {
-            System.out.print("Failed to initialize Inviter");
+            System.err.print("Failed to initialize Inviter");
             e.printStackTrace();
         }
 
         fiveSeconds = new Timeline(new KeyFrame(Duration.millis(50), (e) -> {
             try {
+
                 ArrayList<Packet> packets = inviter.readReceivedPacket();
                 if (packets.size() != 0) {
                     for (Packet packet : packets) {
                         if (packet instanceof InvitePacket) {
+
                             InvitePacket invitePacket = (InvitePacket) packet;
                             receivedInvite(invitePacket);
+
                         } else if (packet instanceof AcceptPacket) {
+
                             AcceptPacket acceptPacket = (AcceptPacket) packet;
-                            for (Invite invite : inviteManager.getSentInvites()) {
-                                if (invite.getId() == acceptPacket.getId() && acceptPacket.isAcceptence()) {
-                                    gameCountDown();
-                                }
-                            }
+                            receiveAccept(acceptPacket);
+
                         }
                     }
                 }
@@ -206,6 +272,7 @@ public class FXMLLobbyController implements Initializable, Observer {
 
 
         }));
+
         fiveSeconds.setCycleCount(Timeline.INDEFINITE);
         fiveSeconds.play();
     }

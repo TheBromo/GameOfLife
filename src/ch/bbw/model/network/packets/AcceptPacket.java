@@ -7,6 +7,7 @@ public class AcceptPacket extends Packet{
    private int id;
    private boolean acceptence;
 
+
     public AcceptPacket(){}
 
     public int getId() {

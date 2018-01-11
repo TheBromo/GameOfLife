@@ -8,6 +8,12 @@ public class Invite {
     private int id;
     private HBox container;
 
+    public Invite(long timeSent, int id, HBox container) {
+        this.timeSent = timeSent;
+        this.id = id;
+        this.container = container;
+    }
+
     public Invite(long timeSent, long deprecationTime, String target, int id) {
         this.timeSent = timeSent;
         this.deprecationTime = deprecationTime;

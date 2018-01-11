@@ -25,6 +25,9 @@ public class InvitePacket extends Packet {
         return startTime;
     }
 
+    public int getId() {
+        return id;
+    }
 
     @Override
     public void serialize(ByteBuffer byteBuffer) {

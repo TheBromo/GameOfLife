@@ -55,6 +55,10 @@ public class Server implements Runnable {
         queue.add(packet);
     }
 
+    public void setRunning(boolean running) {
+        this.running = running;
+    }
+
     @Override
     public void run() {
         try {

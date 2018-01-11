@@ -18,6 +18,7 @@ public class Client implements Runnable {
     private ArrayList<Packet> queue;
 
     private PacketHandler packetHandler;
+    private boolean running;
 
     public Client(SocketAddress serverAddress) {
         this.serverAddress = serverAddress;
@@ -31,6 +32,10 @@ public class Client implements Runnable {
 
     public SocketAddress getServerAddress() {
         return serverAddress;
+    }
+
+    public void setRunning(boolean running) {
+        this.running = running;
     }
 
     @Override
@@ -47,7 +52,7 @@ public class Client implements Runnable {
             ByteBuffer readBuffer = ByteBuffer.allocate(1024);
             ByteBuffer writeBuffer = ByteBuffer.allocate(1024);
 
-            while (true) {
+            while (running) {
                 if (selector.selectNow() > 0) {
                     Iterator<SelectionKey> iterator = selector.selectedKeys().iterator();
 

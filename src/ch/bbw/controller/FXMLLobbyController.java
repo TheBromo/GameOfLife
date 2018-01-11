@@ -9,7 +9,9 @@ import ch.bbw.model.data.Invite;
 import ch.bbw.model.data.InviteManager;
 import ch.bbw.model.data.User;
 import ch.bbw.model.data.UserManager;
+import ch.bbw.model.network.Client;
 import ch.bbw.model.network.Inviter;
+import ch.bbw.model.network.Server;
 import ch.bbw.model.network.packets.AcceptPacket;
 import ch.bbw.model.network.packets.InvitePacket;
 import ch.bbw.model.network.packets.Packet;
@@ -20,17 +22,22 @@ import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.*;
@@ -148,14 +155,15 @@ public class FXMLLobbyController implements Initializable, Observer {
         }
 
     }
-//TODO Fix name, fix id
+
+    //TODO Fix name, fix id
     private void receivedInvite(InvitePacket packet) throws IOException {
 
         HBox box = new HBox();
         Button button = new Button("Accept");
         button.setOnAction(this::handleAccept);
         Label label = new Label(packet.getName());
-        System.out.println("Invite received from: "+ packet.getName()+" :"+packet.getRecallAdress());
+        System.out.println("Invite received from: " + packet.getName() + " :" + packet.getRecallAdress());
 
         Invite invite = new Invite(packet.getDeprecationTime() - inviteTime, packet.getDeprecationTime(), packet.getId(), box, packet.getRecallAdress());
         invite.setName(packet.getName());
@@ -193,9 +201,13 @@ public class FXMLLobbyController implements Initializable, Observer {
             Invite invite = inviteManager.getInviteById(packet.getId());
             if (invite != null) {
 
-                gameServerCountDown(invite.getDeprecationTime(), invite.getTarget());
+                try {
+                    gameServerCountDown(invite.getDeprecationTime(), invite.getTarget());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             } else {
-                System.err.println("No Packet was sent with this ID: "+invite.getId());
+                System.err.println("No Packet was sent with this ID: " + invite.getId());
             }
         }
     }
@@ -214,14 +226,63 @@ public class FXMLLobbyController implements Initializable, Observer {
         }
     }
 
-    private void gameServerCountDown(long startTime, InetAddress secondPlayer) {
-        System.out.println(startTime+" " +secondPlayer.toString()+ " Sever");
+    private void gameServerCountDown(long startTime, InetAddress secondPlayer) throws IOException {
+        System.out.println(startTime + " " + secondPlayer.toString() + " Sever");
+
+        Stage stage = new Stage();
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../view/FXMLGame.fxml"));
+        Parent root1 = (Parent) fxmlLoader.load();
+
+        FXMLGameController controller = fxmlLoader.<FXMLGameController>getController();
+
+        Server server = new Server(6555);
+        Client client = new Client(new InetSocketAddress(InetAddress.getByName("localhost"), 6555));
+        controller.initClient(client);
+        controller.initServer(server);
+
+
+        new Thread(server).start();
+        new Thread(client).start();
+        server.setIp(InetAddress.getByName("localhost"));
+
+        Scene scene = new Scene(root1);
+        stage.setOnCloseRequest((e) -> {
+            server.setRunning(false);
+            client.setRunning(false);
+        });
+
+        stage.setTitle("Game");
+        stage.setResizable(false);
+        stage.setScene(scene);
+        stage.show();
+
         //TODO
     }
 
-    private void gameUserCountDown(long startTime, InetAddress secondPlayer) {
-        System.out.println(startTime+" " +secondPlayer.toString()+ " User");
+    private void gameUserCountDown(long startTime, InetAddress secondPlayer) throws IOException {
+        System.out.println(startTime + " " + secondPlayer.toString() + " User");
 
+        Stage stage = new Stage();
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../view/FXMLGame.fxml"));
+        Parent root1 = (Parent) fxmlLoader.load();
+
+        FXMLGameController controller = fxmlLoader.<FXMLGameController>getController();
+
+        Client client = new Client(new InetSocketAddress(InetAddress.getByName("localhost"), 6555));
+        controller.initClient(client);
+
+
+        new Thread(client).start();
+
+        Scene scene = new Scene(root1);
+        stage.setOnCloseRequest((e) -> {
+            client.setRunning(false);
+        });
+
+        stage.setTitle("Game");
+        stage.setResizable(false);
+        stage.setScene(scene);
+        stage.show();
         //TODO
     }
 
@@ -262,7 +323,6 @@ public class FXMLLobbyController implements Initializable, Observer {
                         }
                     }
                 }
-
 
 
             } catch (IOException e1) {

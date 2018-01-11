@@ -24,6 +24,7 @@ public class Client implements Runnable {
         this.serverAddress = serverAddress;
         queue = new ArrayList<>();
         packetHandler = new PacketHandler();
+        running = true;
     }
 
     public void queuePacket(Packet packet) {

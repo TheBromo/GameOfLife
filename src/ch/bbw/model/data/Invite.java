@@ -8,7 +8,7 @@ public class Invite {
     private int id;
     private HBox container;
 
-    public Invite(long timeSent, int id, HBox container) {
+    public Invite(long timeSent, long deprecationTime,int id, HBox container) {
         this.timeSent = timeSent;
         this.id = id;
         this.container = container;

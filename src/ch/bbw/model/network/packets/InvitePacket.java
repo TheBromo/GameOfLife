@@ -5,12 +5,12 @@ import java.nio.ByteBuffer;
 public class InvitePacket extends Packet {
 
     String name;
-    long startTime;
+    long deprecationTime;
     int id;
 
-    public InvitePacket(String name, long startTime, int id) {
+    public InvitePacket(String name, long deprecationTime, int id) {
         this.name = name;
-        this.startTime = startTime;
+        this.deprecationTime = deprecationTime;
         this.id = id;
     }
 
@@ -21,8 +21,8 @@ public class InvitePacket extends Packet {
         return name;
     }
 
-    public long getStartTime() {
-        return startTime;
+    public long getDeprecationTime() {
+        return deprecationTime;
     }
 
     public int getId() {
@@ -32,14 +32,14 @@ public class InvitePacket extends Packet {
     @Override
     public void serialize(ByteBuffer byteBuffer) {
         Packet.writeString(name, byteBuffer);
-        byteBuffer.putLong(startTime);
+        byteBuffer.putLong(deprecationTime);
         byteBuffer.putInt(id);
     }
 
     @Override
     public void deserialize(ByteBuffer byteBuffer) {
         name = readString(byteBuffer);
-        startTime = byteBuffer.getLong();
+        deprecationTime = byteBuffer.getLong();
         id = byteBuffer.getInt();
     }
 }

@@ -5,14 +5,14 @@ import javafx.scene.layout.HBox;
 import java.util.ArrayList;
 
 public class InviteManager {
-    private ArrayList<Invite>sentInvites= new ArrayList<>();
-    private ArrayList<Invite>receivedInvites= new ArrayList<>();
+    private ArrayList<Invite> sentInvites = new ArrayList<>();
+    private ArrayList<Invite> receivedInvites = new ArrayList<>();
 
-    public void addSentInvite(Invite invite){
+    public void addSentInvite(Invite invite) {
         sentInvites.add(invite);
     }
 
-    public void addReceivedInvite(Invite invite){
+    public void addReceivedInvite(Invite invite) {
         receivedInvites.add(invite);
     }
 
@@ -24,24 +24,24 @@ public class InviteManager {
         return sentInvites;
     }
 
-    public Invite getInviteByContainer(HBox container){
-        for (Invite invite:sentInvites){
-            if (container.equals(invite.getContainer()))return invite;
+    public Invite getInviteByContainer(HBox container) {
+        for (Invite invite : sentInvites) {
+            if (container.equals(invite.getContainer())) return invite;
         }
-        for (Invite invite:receivedInvites){
-            if (container.equals(invite.getContainer()))return invite;
+        for (Invite invite : receivedInvites) {
+            if (container.equals(invite.getContainer())) return invite;
         }
         return null;
     }
 
-    public boolean inviteExists(Invite invite){
-        for (Invite secInvite:sentInvites){
-            if (invite.getId()==secInvite.getId()){
+    public boolean inviteExists(Invite invite) {
+        for (Invite secInvite : sentInvites) {
+            if (invite.getTimeSent() == secInvite.getTimeSent()) {
                 return true;
             }
         }
-        for (Invite secInvite:receivedInvites){
-            if (invite.getId()==secInvite.getId()){
+        for (Invite secInvite : receivedInvites) {
+            if (invite.getId() == secInvite.getId()) {
                 return true;
             }
         }

@@ -148,9 +148,9 @@ public class FXMLLobbyController implements Initializable, Observer {
 
         HBox box = new HBox();
         Button button = new Button(packet.getName());
-        Label label = new Label(timeConverter.longToString(timeConverter.getSecDif(packet.getStartTime(), System.currentTimeMillis())));
+        Label label = new Label(timeConverter.longToString(timeConverter.getSecDif(packet.getDeprecationTime(), System.currentTimeMillis())));
 
-        Invite invite = new Invite(packet.getStartTime(), packet.getId(), box);
+        Invite invite = new Invite(packet.getDeprecationTime()-inviteTime,packet.getDeprecationTime() , packet.getId(), box);
         if (!inviteManager.inviteExists(invite)) {
             inviteManager.addReceivedInvite(invite);
 

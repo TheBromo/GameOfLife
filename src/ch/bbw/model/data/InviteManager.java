@@ -34,5 +34,19 @@ public class InviteManager {
         return null;
     }
 
+    public boolean inviteExists(Invite invite){
+        for (Invite secInvite:sentInvites){
+            if (invite.getId()==secInvite.getId()){
+                return true;
+            }
+        }
+        for (Invite secInvite:receivedInvites){
+            if (invite.getId()==secInvite.getId()){
+                return true;
+            }
+        }
+        return false;
+    }
+
 
 }

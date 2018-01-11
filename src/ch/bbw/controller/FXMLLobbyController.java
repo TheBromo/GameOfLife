@@ -79,8 +79,7 @@ public class FXMLLobbyController implements Initializable, Observer {
     private void handleAccept(ActionEvent event) {
         Button button = (Button) event.getSource();
         Invite invite = inviteManager.getInviteByButton(button);
-
-
+        sendAccept(invite);
     }
 
     @FXML

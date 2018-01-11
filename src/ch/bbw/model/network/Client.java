@@ -11,6 +11,7 @@ import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Observable;
 
 public class Client implements Runnable {
 
@@ -20,10 +21,10 @@ public class Client implements Runnable {
     private PacketHandler packetHandler;
     private boolean running;
 
-    public Client(SocketAddress serverAddress) {
+    public Client(SocketAddress serverAddress,PacketHandler packetHandler) {
         this.serverAddress = serverAddress;
         queue = new ArrayList<>();
-        packetHandler = new PacketHandler();
+        this.packetHandler = packetHandler;
         running = true;
     }
 

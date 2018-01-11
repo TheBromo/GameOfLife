@@ -13,9 +13,11 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 
 import java.net.URL;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.ResourceBundle;
 
-public class FXMLGameController implements Initializable {
+public class FXMLGameController implements Initializable,Observer {
     @FXML
     private Label blueName, redName, blueBlocks, redBlocks;
     @FXML
@@ -53,6 +55,11 @@ public class FXMLGameController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         cellManager = new CellManager();
+
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
 
     }
 }

@@ -65,6 +65,11 @@ public class InviteManager {
                 return invite;
             }
         }
+        for (Invite invite:receivedInvites){
+            if (invite.getId()==id){
+                return invite;
+            }
+        }
         return null;
     }
 

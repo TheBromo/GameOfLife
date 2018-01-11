@@ -128,10 +128,9 @@ public class FXMLLobbyController implements Initializable, Observer {
 
             HBox field = new HBox();
 
-            Label timeLeft = new Label(timeConverter.longToString(timeConverter.getSecDif(invite.getDeprecationTime(), invite.getTimeSent())));
+
             Label name = new Label(invite.getRecallAdress());
             field.getChildren().add(name);
-            field.getChildren().add(timeLeft);
             invite.setContainer(field);
 
             sentInvites.getChildren().add(field);
@@ -148,7 +147,7 @@ public class FXMLLobbyController implements Initializable, Observer {
         }
 
     }
-
+//TODO Fix name, fix id
     private void receivedInvite(InvitePacket packet) throws IOException {
 
         HBox box = new HBox();

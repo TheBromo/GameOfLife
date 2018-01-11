@@ -1,5 +1,6 @@
 package ch.bbw.controller;
 
+import ch.bbw.model.data.CellManager;
 import ch.bbw.model.network.Client;
 import ch.bbw.model.network.Server;
 import javafx.event.ActionEvent;
@@ -19,6 +20,7 @@ public class FXMLGameController implements Initializable {
     private Canvas canvas;
     private Client network;
     private Server server;
+    private CellManager cellManager;
 
 
     @FXML
@@ -42,6 +44,7 @@ public class FXMLGameController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        cellManager = new CellManager();
 
     }
 }

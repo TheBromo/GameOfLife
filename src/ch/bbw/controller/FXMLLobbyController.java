@@ -243,12 +243,15 @@ public class FXMLLobbyController implements Initializable, Observer {
         controller.initClient(client);
         controller.initServer(server);
 
+
+
         new Thread(server).start();
         new Thread(client).start();
         server.setIp(InetAddress.getByName("localhost"));
 
         Scene scene = new Scene(root1);
         stage.setOnCloseRequest((e) -> {
+            System.out.println("Shutting down");
             server.setRunning(false);
             client.setRunning(false);
         });
@@ -279,6 +282,7 @@ public class FXMLLobbyController implements Initializable, Observer {
 
         Scene scene = new Scene(root1);
         stage.setOnCloseRequest((e) -> {
+            System.out.println("Shutting down");
             client.setRunning(false);
         });
 

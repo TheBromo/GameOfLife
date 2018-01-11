@@ -45,6 +45,11 @@ public class FXMLGameController implements Initializable {
         this.server= server;
     }
 
+    public void initName(String redName,String blueName){
+        this.redName.setText(redName);
+        this.blueName.setText(blueName);
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         cellManager = new CellManager();

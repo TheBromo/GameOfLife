@@ -263,8 +263,7 @@ public class FXMLLobbyController implements Initializable, Observer {
                     }
                 }
 
-                updateTimeSentInvites(sentInvites);
-                updateTimeSentInvites(receivedInvites);
+
 
             } catch (IOException e1) {
                 e1.printStackTrace();

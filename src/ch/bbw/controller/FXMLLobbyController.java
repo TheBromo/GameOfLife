@@ -195,7 +195,7 @@ public class FXMLLobbyController implements Initializable, Observer {
 
                 gameServerCountDown(invite.getDeprecationTime(), invite.getTarget());
             } else {
-                System.err.println("No Packet was sent with this ID ");
+                System.err.println("No Packet was sent with this ID: "+invite.getId());
             }
         }
     }
@@ -263,8 +263,7 @@ public class FXMLLobbyController implements Initializable, Observer {
                     }
                 }
 
-                updateTimeSentInvites(sentInvites);
-                updateTimeSentInvites(receivedInvites);
+
 
             } catch (IOException e1) {
                 e1.printStackTrace();

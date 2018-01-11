@@ -116,7 +116,7 @@ public class FXMLLobbyController implements Initializable, Observer {
 
         if (!inviteManager.inviteExists(invite)) {
 
-            inviteManager.addReceivedInvite(invite);
+            inviteManager.addSentInvite(invite);
 
             Packet packet = null;
             try {

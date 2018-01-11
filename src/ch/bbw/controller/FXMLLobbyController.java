@@ -114,6 +114,7 @@ public class FXMLLobbyController implements Initializable, Observer {
         Random random = new Random();
         Invite invite = new Invite(System.currentTimeMillis(), System.currentTimeMillis() + inviteTime, address.toString(), random.nextInt(), address);
 
+
         if (!inviteManager.inviteExists(invite)) {
 
             inviteManager.addSentInvite(invite);

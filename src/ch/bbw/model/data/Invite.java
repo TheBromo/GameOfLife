@@ -26,11 +26,16 @@ public class Invite {
         this.deprecationTime = deprecationTime;
         this.recallAdress = recallAdress;
         this.id = id;
+        this.target=target;
     }
 
 
     public InetAddress getTarget() {
         return target;
+    }
+
+    public void setTarget(InetAddress target) {
+        this.target = target;
     }
 
     public HBox getContainer() {

@@ -20,7 +20,7 @@ public class Client implements Runnable {
     private PacketHandler packetHandler;
     private boolean running;
 
-    public Client(SocketAddress serverAddress,PacketHandler packetHandler) {
+    public Client(SocketAddress serverAddress, PacketHandler packetHandler) {
         this.serverAddress = serverAddress;
         queue = new ArrayList<>();
         this.packetHandler = packetHandler;
@@ -45,7 +45,10 @@ public class Client implements Runnable {
             SocketChannel channel = SocketChannel.open();
             channel.configureBlocking(false);
 
-            channel.connect(serverAddress);
+            System.out.println(serverAddress);
+            boolean connect = channel.connect(serverAddress);
+            System.out.println(connect);
+
 
             Selector selector = Selector.open();
             channel.register(selector, SelectionKey.OP_CONNECT | SelectionKey.OP_READ);
@@ -60,10 +63,10 @@ public class Client implements Runnable {
                     while (iterator.hasNext()) {
                         SelectionKey key = iterator.next();
 
-                        if (key.isConnectable()){
+                        if (key.isConnectable()) {
                             channel.finishConnect();
-                        }else if (key.isReadable()){
-                            SocketChannel sChannel  =(SocketChannel)key.channel();
+                        } else if (key.isReadable()) {
+                            SocketChannel sChannel = (SocketChannel) key.channel();
 
                             readBuffer.position(0);
                             readBuffer.limit(readBuffer.capacity());

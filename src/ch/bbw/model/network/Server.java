@@ -2,6 +2,7 @@ package ch.bbw.model.network;
 
 import ch.bbw.model.network.packets.Packet;
 import ch.bbw.model.network.packets.PacketHandler;
+import ch.bbw.model.network.packets.TextPacket;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -87,6 +88,8 @@ public class Server implements Runnable {
                                 sChannel.configureBlocking(false);
                                 sChannel.register(selector, SelectionKey.OP_READ);
 
+
+                                sendHello(((InetSocketAddress) sChannel.getRemoteAddress()).getAddress());
                                 clients.put(((InetSocketAddress) sChannel.getRemoteAddress()).getAddress(), sChannel);
 
                             }catch (ClosedChannelException ex){
@@ -147,5 +150,12 @@ public class Server implements Runnable {
             }
         } catch (Exception e) {
         }
+    }
+
+    private void sendHello(InetAddress address) {
+        Packet packet = new TextPacket("Hello");
+        packet.addTarget(address);
+        queuePacket(packet);
+
     }
 }

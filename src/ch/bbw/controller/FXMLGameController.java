@@ -68,7 +68,7 @@ public class FXMLGameController implements Initializable, Observer {
         }
         lastDragX = event.getX();
         lastDragY = event.getY();
-        drawBackground(0, 0);
+        drawBackground();
     }
 
     @FXML
@@ -80,11 +80,11 @@ public class FXMLGameController implements Initializable, Observer {
             zoomFactor = 2.0 - zoomFactor;
         }
         zoom = zoomFactor;
-        drawBackground(event.getX(), event.getY());
+        drawBackground();
         zoomed = true;
     }
 
-    private void drawBackground(double xM, double yM) {
+    private void drawBackground() {
         gc.setFill(rgb(44, 62, 80));
         gc.fillRect(0, 0, 100000, 10000);
         gc.setFill(rgb(52, 73, 94));
@@ -125,7 +125,7 @@ public class FXMLGameController implements Initializable, Observer {
         cellManager = new CellManager();
         gc = canvas.getGraphicsContext2D();
 
-        drawBackground(0, 0);
+        drawBackground();
     }
 
     @Override

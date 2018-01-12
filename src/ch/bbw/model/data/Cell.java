@@ -7,6 +7,11 @@ public class Cell {
     private boolean alive,aliveNextTurn;
     private Color color;
 
+    public Cell(boolean alive, Color color) {
+        this.alive = alive;
+        this.color = color;
+    }
+
     public boolean isAlive() {
         return alive;
     }

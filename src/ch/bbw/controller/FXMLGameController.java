@@ -12,6 +12,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 
+import java.net.InetAddress;
 import java.net.URL;
 import java.util.Observable;
 import java.util.Observer;
@@ -24,12 +25,14 @@ public class FXMLGameController implements Initializable,Observer {
     private Canvas canvas;
     private Client network;
     private Server server;
+    private InetAddress serverAdress;
     private CellManager cellManager;
 
 
     @FXML
     private void handleTurnEnd(ActionEvent event) {
         Packet packet = new TextPacket("Hello");
+        packet.addTarget(serverAdress);
         network.queuePacket(packet);
     }
 
@@ -50,6 +53,10 @@ public class FXMLGameController implements Initializable,Observer {
     public void initName(String redName,String blueName){
         this.redName.setText(redName);
         this.blueName.setText(blueName);
+    }
+
+    public void initServerAddress(InetAddress serverAdress) {
+        this.serverAdress = serverAdress;
     }
 
     @Override

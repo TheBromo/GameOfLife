@@ -11,7 +11,6 @@ import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Observable;
 
 public class Client implements Runnable {
 
@@ -51,8 +50,8 @@ public class Client implements Runnable {
             Selector selector = Selector.open();
             channel.register(selector, SelectionKey.OP_CONNECT | SelectionKey.OP_READ);
 
-            ByteBuffer readBuffer = ByteBuffer.allocate(1024);
-            ByteBuffer writeBuffer = ByteBuffer.allocate(1024);
+            ByteBuffer readBuffer = ByteBuffer.allocate(2048);
+            ByteBuffer writeBuffer = ByteBuffer.allocate(2048);
 
             while (running) {
                 if (selector.selectNow() > 0) {
@@ -88,6 +87,7 @@ public class Client implements Runnable {
                         Packet.compilePacket(packet, writeBuffer);
                         writeBuffer.flip();
 
+                        System.out.println("Sending Packet to:" + channel.getRemoteAddress());
                         channel.write(writeBuffer);
 
                         packetIterator.remove();

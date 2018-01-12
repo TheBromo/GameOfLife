@@ -247,6 +247,7 @@ public class FXMLLobbyController implements Initializable, Observer {
         Client client = new Client(new InetSocketAddress(InetAddress.getByName("localhost"), 6555), packetHandler);
         controller.initClient(client);
         controller.initServer(server);
+        controller.initServerAddress(InetAddress.getByName("localhost"));
 
         packetHandler.addObserver(controller);
 
@@ -290,6 +291,7 @@ public class FXMLLobbyController implements Initializable, Observer {
         PacketHandler packetHandler = new PacketHandler();
         Client client = new Client(new InetSocketAddress(secondPlayer, 6555), packetHandler);
         controller.initClient(client);
+        controller.initServerAddress(secondPlayer);
         packetHandler.addObserver(controller);
 
         new Thread(client).start();

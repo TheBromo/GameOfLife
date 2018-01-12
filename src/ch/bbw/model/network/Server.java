@@ -68,8 +68,8 @@ public class Server implements Runnable {
             Selector selector = Selector.open();
             channel.register(selector, SelectionKey.OP_ACCEPT);
 
-            ByteBuffer readBuffer = ByteBuffer.allocate(1024);
-            ByteBuffer writeBuffer = ByteBuffer.allocate(1024);
+            ByteBuffer readBuffer = ByteBuffer.allocate(2048);
+            ByteBuffer writeBuffer = ByteBuffer.allocate(2048);
 
             while (running) {
                 if (selector.selectNow() > 0) {

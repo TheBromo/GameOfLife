@@ -50,7 +50,11 @@ public class CellManager {
 
         for (int x = 0; x < cells.length; x++) {
             for (int y = 0; y < cells[x].length; y++) {
-                cells[cells.length - x][cells[cells.length - x].length - y].setColor(cells[x][y].getColor());
+                if (cells[x][y].getColor().equals(rgb(52, 152, 219))) {
+                    cells[cells.length - x][cells[cells.length - x].length - y].setColor(rgb(231, 76, 60));
+                } else {
+                    cells[cells.length - x][cells[cells.length - x].length - y].setColor(rgb(52, 152, 219));
+                }
                 cells[cells.length - x][cells[cells.length - x].length - y].setAlive(cells[x][y].isAlive());
             }
         }

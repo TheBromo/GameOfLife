@@ -45,9 +45,7 @@ public class Client implements Runnable {
             SocketChannel channel = SocketChannel.open();
             channel.configureBlocking(false);
 
-            if (!channel.connect(serverAddress)) {
-                channel.finishConnect();
-            }
+            channel.connect(serverAddress);
 
 
             Selector selector = Selector.open();

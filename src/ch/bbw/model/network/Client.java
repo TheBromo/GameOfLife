@@ -45,9 +45,9 @@ public class Client implements Runnable {
             SocketChannel channel = SocketChannel.open();
             channel.configureBlocking(false);
 
-            System.out.println(serverAddress);
-            boolean connect = channel.connect(serverAddress);
-            System.out.println(connect);
+            if (!channel.connect(serverAddress)) {
+                channel.finishConnect();
+            }
 
 
             Selector selector = Selector.open();
@@ -56,7 +56,7 @@ public class Client implements Runnable {
             ByteBuffer readBuffer = ByteBuffer.allocate(2048);
             ByteBuffer writeBuffer = ByteBuffer.allocate(2048);
 
-            while (running) {
+            while (true) {
                 if (selector.selectNow() > 0) {
                     Iterator<SelectionKey> iterator = selector.selectedKeys().iterator();
 

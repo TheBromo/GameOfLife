@@ -80,7 +80,7 @@ public class Server implements Runnable {
                         if (key.isAcceptable()) {
                             try {
 
-                                System.out.println("User found");
+
 
                                 SocketChannel sChannel = channel.accept();
                                 SocketAddress sender = sChannel.getRemoteAddress();
@@ -88,12 +88,12 @@ public class Server implements Runnable {
                                 sChannel.configureBlocking(false);
                                 sChannel.register(selector, SelectionKey.OP_READ);
 
-
+                                System.out.println("Server: User found: " + sender);
                                 sendHello(((InetSocketAddress) sChannel.getRemoteAddress()).getAddress());
                                 clients.put(((InetSocketAddress) sChannel.getRemoteAddress()).getAddress(), sChannel);
 
                             }catch (ClosedChannelException ex){
-                                System.out.println("User Disconnected");
+                                System.out.println("Server: User Disconnected");
                             }
                         }
                         if (key.isReadable()){
@@ -139,7 +139,7 @@ public class Server implements Runnable {
                             System.out.println(target);
 
                             clients.get(target).write(writeBuffer);
-                            System.out.println("Sending Packet to:" + target);
+                            System.out.println("Server: Sending Packet to: " + target);
 
                             writeBuffer.flip();
                         }

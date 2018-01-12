@@ -11,6 +11,7 @@ import ch.bbw.model.data.User;
 import ch.bbw.model.data.UserManager;
 import ch.bbw.model.network.Client;
 import ch.bbw.model.network.Inviter;
+import ch.bbw.model.network.NetToolsSearch;
 import ch.bbw.model.network.Server;
 import ch.bbw.model.network.packets.AcceptPacket;
 import ch.bbw.model.network.packets.InvitePacket;
@@ -61,6 +62,7 @@ public class FXMLLobbyController implements Initializable, Observer {
     private InviteManager inviteManager;
     private Inviter inviter;
     private Timeline fiveSeconds;
+    private NetToolsSearch search;
 
     public void addUser(InetAddress address) {
 
@@ -242,12 +244,11 @@ public class FXMLLobbyController implements Initializable, Observer {
         PacketHandler packetHandler = new PacketHandler();
 
         Server server = new Server(6555);
-        Client client = new Client(new InetSocketAddress(InetAddress.getByName("localhost"), 6555),packetHandler);
+        Client client = new Client(new InetSocketAddress(InetAddress.getByName("localhost"), 6555), packetHandler);
         controller.initClient(client);
         controller.initServer(server);
 
         packetHandler.addObserver(controller);
-
 
 
         new Thread(server).start();
@@ -265,6 +266,7 @@ public class FXMLLobbyController implements Initializable, Observer {
         stage.setResizable(false);
         stage.setScene(scene);
         stage.show();
+        search.setRunning(false);
 
     }
 
@@ -286,7 +288,7 @@ public class FXMLLobbyController implements Initializable, Observer {
         FXMLGameController controller = fxmlLoader.<FXMLGameController>getController();
 
         PacketHandler packetHandler = new PacketHandler();
-        Client client = new Client(new InetSocketAddress(InetAddress.getByName("localhost"), 6555),packetHandler);
+        Client client = new Client(new InetSocketAddress(secondPlayer, 6555), packetHandler);
         controller.initClient(client);
         packetHandler.addObserver(controller);
 
@@ -302,11 +304,16 @@ public class FXMLLobbyController implements Initializable, Observer {
         stage.setResizable(false);
         stage.setScene(scene);
         stage.show();
+        search.setRunning(false);
 
     }
 
     public void initUserName(String username) {
         this.username.setText(username);
+    }
+
+    public void initNetThread(NetToolsSearch thread) {
+        this.search = thread;
     }
 
     @Override

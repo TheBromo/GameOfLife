@@ -52,6 +52,8 @@ public class FXMLLoginController implements Initializable {
             search.addObserver(controller);
 
             new Thread(search).start();
+            controller.initNetThread(search);
+
 
             Scene scene = new Scene(root1);
             stage.setOnCloseRequest((e) -> {

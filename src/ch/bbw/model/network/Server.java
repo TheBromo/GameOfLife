@@ -136,6 +136,7 @@ public class Server implements Runnable {
                             System.out.println(target);
 
                             clients.get(target).write(writeBuffer);
+                            System.out.println("Sending Packet to:" + target);
 
                             writeBuffer.flip();
                         }

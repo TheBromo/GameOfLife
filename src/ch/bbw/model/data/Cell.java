@@ -4,20 +4,20 @@ import javafx.scene.paint.Color;
 
 public class Cell {
 
-    private boolean alive,aliveNextTurn;
-    private Color color,nextColor;
+    private boolean alive,aliveNextTurn,selected;
+    private Color color;
 
     public Cell(boolean alive, Color color) {
         this.alive = alive;
         this.color = color;
     }
 
-    public void setNextColor(Color nextColor) {
-        this.nextColor = nextColor;
+    public boolean isSelected() {
+        return selected;
     }
 
-    public Color getNextColor() {
-        return nextColor;
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 
     public boolean isAlive() {

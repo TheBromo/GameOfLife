@@ -14,7 +14,6 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
-import javafx.scene.transform.Scale;
 
 import java.net.InetAddress;
 import java.net.URL;
@@ -34,9 +33,8 @@ public class FXMLGameController implements Initializable, Observer {
     private Server server;
     private InetAddress serverAdress;
     private CellManager cellManager;
-    private double xOffset, yOffset, zoom, lastDragY, lastDragX;
+    private double xOffset, yOffset, zoom, recZoom, lastDragY, lastDragX;
     private boolean dragInProgress, zoomed;
-    private Scale norm;
 
 
     @FXML
@@ -45,7 +43,7 @@ public class FXMLGameController implements Initializable, Observer {
         packet.addTarget(serverAdress);
         network.queuePacket(packet);
         cellManager.iterate();
-        drawBackground();
+        draw();
     }
 
     @FXML
@@ -54,7 +52,18 @@ public class FXMLGameController implements Initializable, Observer {
         if (dragInProgress) {
             dragInProgress = false;
             return;
+        } else {
+            double x = event.getX() / recZoom - xOffset;
+            double y = event.getY() / recZoom - yOffset;
+            System.out.println("y = " + y);
+            System.out.println("x = " + x);
+            if (y > 0 && y < 400 && x > 0 && x < 400) {
+                Cell cell = cellManager.getCellByCoordinates(x, y, canvas.getWidth());
+                cellManager.select(cell);
+                draw();
+            }
         }
+
     }
 
 
@@ -71,7 +80,7 @@ public class FXMLGameController implements Initializable, Observer {
         }
         lastDragX = event.getX();
         lastDragY = event.getY();
-        drawBackground();
+        draw();
     }
 
     @FXML
@@ -83,11 +92,12 @@ public class FXMLGameController implements Initializable, Observer {
             zoomFactor = 2.0 - zoomFactor;
         }
         zoom = zoomFactor;
-        drawBackground();
+        recZoom *= zoom;
+        draw();
         zoomed = true;
     }
 
-    private void drawBackground() {
+    private void draw() {
         gc.setFill(rgb(44, 62, 80));
         gc.fillRect(0, 0, 100000, 10000);
         gc.setFill(rgb(52, 73, 94));
@@ -100,20 +110,24 @@ public class FXMLGameController implements Initializable, Observer {
             for (double y = 0; y < canvas.getHeight(); y = y + (canvas.getWidth() / cellManager.getCells().length)) {
                 gc.fillRect(x + 4 + xOffset, y + 4 + yOffset, 32, 32);
                 Cell cell = cells[(int) (x / (canvas.getWidth() / cellManager.getCells().length))][(int) (y / (canvas.getWidth() / cellManager.getCells().length))];
+
                 if (cell.isAlive() && cell.isAliveNextTurn()) {
                     gc.setFill(cell.getColor());
                     gc.fillRect(x + 4 + xOffset, y + 4 + yOffset, 32, 32);
-                    gc.setFill(rgb(52, 73, 94));
                 } else if (!cell.isAlive() && cell.isAliveNextTurn()) {
                     gc.setFill(cell.getColor());
                     gc.fillRect(x + 15 + xOffset, y + 15 + yOffset, 10, 10);
-                    gc.setFill(rgb(52, 73, 94));
                 } else if (cell.isAlive() && !cell.isAliveNextTurn()) {
                     gc.setFill(cell.getColor());
                     gc.fillRect(x + 4 + xOffset, y + 4 + yOffset, 32, 32);
                     gc.setFill(rgb(52, 73, 94));
                     gc.fillRect(x + 15 + xOffset, y + 15 + yOffset, 10, 10);
                 }
+                if (cell.isSelected()){
+                    gc.setStroke(rgb(236, 240, 241,1.0));
+                    gc.strokeRect(x + 4 + xOffset, y + 4 + yOffset, 32, 32);
+                }
+                gc.setFill(rgb(52, 73, 94));
 
             }
         }
@@ -142,10 +156,11 @@ public class FXMLGameController implements Initializable, Observer {
     public void initialize(URL location, ResourceBundle resources) {
         zoomed = false;
         zoom = 1;
+        recZoom = 1;
         cellManager = new CellManager();
         gc = canvas.getGraphicsContext2D();
 
-        drawBackground();
+        draw();
     }
 
     @Override

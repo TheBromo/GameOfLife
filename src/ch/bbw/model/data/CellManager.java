@@ -9,6 +9,7 @@ import static javafx.scene.paint.Color.rgb;
 public class CellManager {
     private Cell[][] cells = new Cell[10][10];
     private Color blue, red;
+    private Cell selected;
 
 
     public CellManager() {
@@ -29,6 +30,33 @@ public class CellManager {
 
     public Cell[][] getCells() {
         return cells;
+    }
+
+    public Cell getSelected() {
+        return selected;
+    }
+
+    public void select(Cell cell) {
+        if (selected != null) {
+            if (cell.equals(selected)){
+                cell.setSelected(false);
+                return;
+            }
+
+            selected.setSelected(false);
+        }
+        cell.setSelected(true);
+        selected = cell;
+    }
+
+    public void setSelected(Cell selected) {
+        this.selected = selected;
+    }
+
+    public Cell getCellByCoordinates(double x, double y, double canvasWidth) {
+        Cell cell = cells[(int) (x / (canvasWidth / cells.length))][(int) (y / (canvasWidth / cells.length))];
+        System.out.println("Cell: " + cell.getColor() + " alive: " + cell.isAlive());
+        return cell;
     }
 
     public void generate() {
@@ -69,6 +97,7 @@ public class CellManager {
                 cells[cells.length - 1 - x][cells[cells.length - 1 - x].length - 1 - y].setAlive(cells[x][y].isAlive());
             }
         }
+        setNextIteration();
     }
 
 
@@ -93,7 +122,7 @@ public class CellManager {
             for (int y = 0; y < cells[x].length; y++) {
                 cells[x][y].setAliveNextTurn(getNextCellStage(x, y));
                 if (!cells[x][y].isAlive() && cells[x][y].isAliveNextTurn()) {
-                    cells[x][y].setColor(getDominantColor(x,y));
+                    cells[x][y].setColor(getDominantColor(x, y));
                 }
             }
         }
@@ -153,15 +182,15 @@ public class CellManager {
     }
 
     private int getNumberOfNeighbours(int x, int y) {
-        int nb = 0;
+        int neighbours = 0;
         for (int i = Math.max(0, x - 1); i < Math.min(cells.length, x + 2); i++) {
             for (int k = Math.max(0, y - 1); k < Math.min(cells.length, y + 2); k++) {
                 if (!(i == x && k == y)) {
                     if (cells[i][k].isAlive())
-                        nb++;
+                        neighbours++;
                 }
             }
         }
-        return nb;
+        return neighbours;
     }
 }

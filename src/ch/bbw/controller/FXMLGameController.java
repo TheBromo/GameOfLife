@@ -143,7 +143,6 @@ public class FXMLGameController implements Initializable, Observer {
         zoomed = false;
         zoom = 1;
         cellManager = new CellManager();
-        cellManager.iterate();
         gc = canvas.getGraphicsContext2D();
 
         drawBackground();

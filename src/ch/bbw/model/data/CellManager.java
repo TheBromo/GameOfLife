@@ -40,6 +40,7 @@ public class CellManager {
         if (selected != null) {
             if (cell.equals(selected)){
                 cell.setSelected(false);
+                selected=null;
                 return;
             }
 

@@ -17,7 +17,7 @@
                   <Label fx:id="blueBlocks" prefHeight="72.0" prefWidth="93.0" text="Blocks:" textFill="WHITE" />
                </children>
             </HBox>
-            <HBox layoutX="10.0" layoutY="10.0" prefHeight="72.0" prefWidth="190.0" style="-fx-background-color: #e74c3c;">
+             <HBox prefHeight="72.0" prefWidth="190.0" style="-fx-background-color: #e74c3c;">
                <children>
                   <Label fx:id="redName" prefHeight="72.0" prefWidth="93.0" text="Name" textFill="WHITE" />
                   <Label fx:id="redBlocks" prefHeight="72.0" prefWidth="93.0" text="Blocks:" textFill="WHITE" />

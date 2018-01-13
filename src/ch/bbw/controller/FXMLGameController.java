@@ -1,5 +1,6 @@
 package ch.bbw.controller;
 
+import ch.bbw.model.data.Cell;
 import ch.bbw.model.data.CellManager;
 import ch.bbw.model.network.Client;
 import ch.bbw.model.network.Server;
@@ -43,6 +44,8 @@ public class FXMLGameController implements Initializable, Observer {
         Packet packet = new TextPacket("Hello");
         packet.addTarget(serverAdress);
         network.queuePacket(packet);
+        cellManager.iterate();
+        drawBackground();
     }
 
     @FXML
@@ -92,9 +95,26 @@ public class FXMLGameController implements Initializable, Observer {
             gc.scale(zoom, zoom);
             zoomed = false;
         }
-        for (double x = 0; x < canvas.getWidth(); x = x + 20) {
-            for (double y = 0; y < canvas.getHeight(); y = y + 20) {
-                gc.fillRect(x + 2 + xOffset, y + 2 + yOffset, 16, 16);
+        Cell[][] cells = cellManager.getCells();
+        for (double x = 0; x < canvas.getWidth(); x = x + (canvas.getWidth() / cellManager.getCells().length)) {
+            for (double y = 0; y < canvas.getHeight(); y = y + (canvas.getWidth() / cellManager.getCells().length)) {
+                gc.fillRect(x + 4 + xOffset, y + 4 + yOffset, 32, 32);
+                Cell cell = cells[(int) (x / (canvas.getWidth() / cellManager.getCells().length))][(int) (y / (canvas.getWidth() / cellManager.getCells().length))];
+                if (cell.isAlive() && cell.isAliveNextTurn()) {
+                    gc.setFill(cell.getColor());
+                    gc.fillRect(x + 4 + xOffset, y + 4 + yOffset, 32, 32);
+                    gc.setFill(rgb(52, 73, 94));
+                } else if (!cell.isAlive() && cell.isAliveNextTurn()) {
+                    gc.setFill(cell.getColor());
+                    gc.fillRect(x + 15 + xOffset, y + 15 + yOffset, 10, 10);
+                    gc.setFill(rgb(52, 73, 94));
+                } else if (cell.isAlive() && !cell.isAliveNextTurn()) {
+                    gc.setFill(cell.getColor());
+                    gc.fillRect(x + 4 + xOffset, y + 4 + yOffset, 32, 32);
+                    gc.setFill(rgb(52, 73, 94));
+                    gc.fillRect(x + 15 + xOffset, y + 15 + yOffset, 10, 10);
+                }
+
             }
         }
 
@@ -123,6 +143,7 @@ public class FXMLGameController implements Initializable, Observer {
         zoomed = false;
         zoom = 1;
         cellManager = new CellManager();
+        cellManager.iterate();
         gc = canvas.getGraphicsContext2D();
 
         drawBackground();

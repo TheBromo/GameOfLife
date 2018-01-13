@@ -94,11 +94,9 @@ public class FXMLLobbyController implements Initializable, Observer {
 
     @FXML
     private void handleInviteButton(ActionEvent event) {
-        InetAddress address = null;
         try {
-            address = InetAddress.getByName(ipadress.getText());
-            sendInvite(address);
-        } catch (UnknownHostException e) {
+            gameUserCountDown(0, InetAddress.getLocalHost());
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

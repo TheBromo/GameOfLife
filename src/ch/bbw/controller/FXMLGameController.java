@@ -6,6 +6,7 @@ import ch.bbw.model.network.Client;
 import ch.bbw.model.network.Server;
 import ch.bbw.model.network.packets.Packet;
 import ch.bbw.model.network.packets.TextPacket;
+import ch.bbw.model.utils.ActionHandler;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -33,6 +34,7 @@ public class FXMLGameController implements Initializable, Observer {
     private Server server;
     private InetAddress serverAddress;
     private CellManager cellManager;
+    private ActionHandler actionHandler;
     private double xOffset, yOffset, zoom, recZoom, lastDragY, lastDragX;
     private boolean dragInProgress, zoomed,host;
 
@@ -44,6 +46,8 @@ public class FXMLGameController implements Initializable, Observer {
         network.queuePacket(packet);
         cellManager.iterate();
         draw();
+        updateCellCount();
+        actionHandler.newTurn();
     }
 
     @FXML
@@ -60,10 +64,16 @@ public class FXMLGameController implements Initializable, Observer {
             if (y > 0 && y < 400 && x > 0 && x < 400) {
                 Cell cell = cellManager.getCellByCoordinates(x, y, canvas.getWidth());
                 cellManager.select(cell);
+                actionHandler.handleAction(cell);
+                cellManager.setNextIteration();
                 draw();
+
             }
         }
 
+    }
+    @FXML
+    private  void handleActionUndo(ActionEvent event){
     }
 
 
@@ -133,7 +143,10 @@ public class FXMLGameController implements Initializable, Observer {
         }
 
     }
-
+    private void updateCellCount(){
+        redBlocks.setText("x "+cellManager.getRedCount());
+        blueBlocks.setText("x "+cellManager.getBlueCount());
+    }
 
     public void initClient(Client network) {
         this.network = network;
@@ -163,8 +176,9 @@ public class FXMLGameController implements Initializable, Observer {
         zoom = 1;
         recZoom = 1;
         cellManager = new CellManager();
+        actionHandler = new ActionHandler(host);
         gc = canvas.getGraphicsContext2D();
-
+        updateCellCount();
         draw();
     }
 

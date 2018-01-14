@@ -1,14 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.canvas.Canvas?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="586.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ch.bbw.controller.FXMLGameController">
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="586.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ch.bbw.controller.FXMLGameController">
    <children>
-       <Canvas fx:id="canvas" height="400.0" onMouseClicked="#handleCanvasClick" onMouseDragged="#handleMouseDrag"
-               onScroll="#handleScroll" width="400.0"/>
-       <Pane prefHeight="400.0" prefWidth="10.0" style="-fx-background-color: #1F2D3F;"/>
-       <Pane prefHeight="400.0" prefWidth="10.0" style="-fx-background-color: #2c3e50;"/>
+       <Canvas fx:id="canvas" height="400.0" onMouseClicked="#handleCanvasClick" onMouseDragged="#handleMouseDrag" onScroll="#handleScroll" width="400.0" />
+       <Pane prefHeight="400.0" prefWidth="10.0" style="-fx-background-color: #1F2D3F;" />
+       <Pane prefHeight="400.0" prefWidth="10.0" style="-fx-background-color: #2c3e50;" />
       <VBox prefHeight="400.0" prefWidth="189.0" style="-fx-background-color: #2c3e50;">
          <children>
             <HBox prefHeight="72.0" prefWidth="190.0" style="-fx-background-color: #3498db;">
@@ -30,11 +36,14 @@
               </columnConstraints>
               <rowConstraints>
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <Button mnemonicParsing="false" onAction="#handleTurnEnd" prefHeight="26.0" prefWidth="185.0" text="End Turn" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+                  <Button mnemonicParsing="false" onAction="#handleTurnEnd" prefHeight="26.0" prefWidth="185.0" text="End Turn" GridPane.columnSpan="2" GridPane.rowIndex="4" />
+                  <Button mnemonicParsing="false" onAction="#handleActionUndo" prefHeight="26.0" prefWidth="185.0" text="Undo Action" GridPane.columnSpan="2" GridPane.rowIndex="3" />
                </children>
             </GridPane>
          </children>

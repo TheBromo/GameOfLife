@@ -19,7 +19,7 @@ public class CellManager {
         generate();
     }
 
-    public void fill() {
+    private void fill() {
         for (int x = 0; x < cells.length; x++) {
             for (int y = 0; y < cells[x].length; y++) {
                 Cell cell = new Cell(false, Color.WHITE);
@@ -32,9 +32,6 @@ public class CellManager {
         return cells;
     }
 
-    public Cell getSelected() {
-        return selected;
-    }
 
     public void select(Cell cell) {
         if (selected != null) {
@@ -50,9 +47,6 @@ public class CellManager {
         selected = cell;
     }
 
-    public void setSelected(Cell selected) {
-        this.selected = selected;
-    }
 
     public Cell getCellByCoordinates(double x, double y, double canvasWidth) {
         int newX = (int) (x / (canvasWidth / cells.length));
@@ -63,40 +57,37 @@ public class CellManager {
         return cell;
     }
 
-    public void generate() {
+    private void generate() {
 
         System.out.println(rgb(52, 152, 219).equals(blue));
         int blueCount = 15, redCount = 15;
 
         Random random = new Random();
         while (blueCount > 0 && redCount > 0) {
-            for (int x = 0; x < cells.length; x++) {
-                for (int y = 0; y < cells[x].length; y++) {
+            for (Cell[] cell1 : cells)
+                for (Cell aCell1 : cell1) {
                     int num = random.nextInt(3);
-                    if (num == 2 && cells[x][y].getColor().equals(Color.WHITE) && redCount > 0) {
+                    if (num == 2 && aCell1.getColor().equals(Color.WHITE) && redCount > 0) {
                         redCount--;
-                        Cell cell = cells[x][y];
-                        cell.setColor(rgb(231, 76, 60));
-                        cell.setAlive(true);
+                        aCell1.setColor(red);
+                        aCell1.setAlive(true);
                         System.out.println("Generated red");
-                    } else if (num == 1 && cells[x][y].getColor().equals(Color.WHITE) && blueCount > 0) {
+                    } else if (num == 1 && aCell1.getColor().equals(Color.WHITE) && blueCount > 0) {
                         blueCount--;
-                        Cell cell = cells[x][y];
-                        cell.setColor(rgb(52, 152, 219));
-                        cell.setAlive(true);
+                        aCell1.setColor(blue);
+                        aCell1.setAlive(true);
                         System.out.println("Generated blue");
                     }
 
                 }
-            }
         }
 
         for (int x = 0; x < cells.length; x++) {
             for (int y = 0; y < cells[x].length; y++) {
-                if (cells[x][y].getColor().equals(rgb(52, 152, 219))) {
-                    cells[cells.length - 1 - x][cells[cells.length - 1 - x].length - 1 - y].setColor(rgb(231, 76, 60));
+                if (cells[x][y].getColor().equals(blue)) {
+                    cells[cells.length - 1 - x][cells[cells.length - 1 - x].length - 1 - y].setColor(red);
                 } else {
-                    cells[cells.length - 1 - x][cells[cells.length - 1 - x].length - 1 - y].setColor(rgb(52, 152, 219));
+                    cells[cells.length - 1 - x][cells[cells.length - 1 - x].length - 1 - y].setColor(blue);
                 }
                 cells[cells.length - 1 - x][cells[cells.length - 1 - x].length - 1 - y].setAlive(cells[x][y].isAlive());
             }
@@ -107,15 +98,15 @@ public class CellManager {
 
     public void iterate() {
 
-        for (int x = 0; x < cells.length; x++) {
-            for (int y = 0; y < cells[x].length; y++) {
-                cells[x][y].setAlive(cells[x][y].isAliveNextTurn());
+        for (Cell[] cell : cells) {
+            for (Cell aCell : cell) {
+                aCell.setAlive(aCell.isAliveNextTurn());
             }
         }
         setNextIteration();
     }
 
-    private void setNextIteration() {
+    public void setNextIteration() {
         for (int x = 0; x < cells.length; x++) {
             for (int y = 0; y < cells[x].length; y++) {
                 cells[x][y].setAliveNextTurn(getNextCellStage(x, y));
@@ -127,18 +118,9 @@ public class CellManager {
     }
 
 
-
     private boolean getNextCellStage(int x, int y) {
         int neighbours = getNumberOfNeighbours(x, y);
-        if (neighbours < 2 || neighbours > 3) {
-            return false;
-        }
-        if (cells[x][y].isAlive()) {
-            return true;
-        } else if (neighbours == 3) {
-            return true;
-        }
-        return false;
+        return neighbours >= 2 && neighbours <= 3 && (cells[x][y].isAlive() || neighbours == 3);
 
     }
 
@@ -177,5 +159,25 @@ public class CellManager {
             }
         }
         return neighbours;
+    }
+
+    public int getRedCount() {
+        int reds = 0;
+        for (Cell[] cell : cells) {
+            for (Cell aCell : cell) {
+                if (aCell.isAlive() && aCell.getColor().equals(red)) reds++;
+            }
+        }
+        return reds;
+    }
+
+    public int getBlueCount() {
+        int blues = 0;
+        for (Cell[] cell : cells) {
+            for (Cell aCell : cell) {
+                if (aCell.isAlive() && aCell.getColor().equals(blue)) blues++;
+            }
+        }
+        return blues;
     }
 }

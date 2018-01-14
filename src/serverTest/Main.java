@@ -16,7 +16,7 @@ public class Main {
     public static void main(String[] args) {
         Client client = null;
         PacketHandler packetHandler = new PacketHandler();
-        boolean host = false;
+        boolean host = true;
         if (host) {
             Server server = new Server(6666);
             new Thread(server).start();
@@ -35,7 +35,7 @@ public class Main {
                 e.printStackTrace();
             }
         }
-
+        new Thread(client).start();
 
         Packet packet = new TextPacket("Test");
         client.queuePacket(packet);

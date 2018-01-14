@@ -216,7 +216,8 @@ public class FXMLLobbyController implements Initializable, Observer {
         Stage stage1 = (Stage) username.getScene().getWindow();
         stage1.close();
 
-        System.out.println(startTime + " " + secondPlayer.toString() + " Sever");
+
+        System.out.println("Server: Clients:" + InetAddress.getLocalHost() + ", " + secondPlayer);
 
         Stage stage = new Stage();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../view/FXMLGame.fxml"));
@@ -264,13 +265,14 @@ public class FXMLLobbyController implements Initializable, Observer {
         Stage stage1 = (Stage) username.getScene().getWindow();
         stage1.close();
 
-        System.out.println(startTime + "Connecting to: " + secondPlayer.toString() + "as a User");
+        System.out.println(startTime + "Connecting to: " + secondPlayer + "as a User");
 
         Stage stage = new Stage();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../view/FXMLGame.fxml"));
         Parent root1 = (Parent) fxmlLoader.load();
 
         FXMLGameController controller = fxmlLoader.<FXMLGameController>getController();
+
 
         PacketHandler packetHandler = new PacketHandler();
         Client client = new Client(new InetSocketAddress(secondPlayer, 6555), packetHandler);

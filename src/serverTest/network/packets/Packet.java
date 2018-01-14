@@ -1,6 +1,5 @@
 package serverTest.network.packets;
 
-import java.lang.reflect.InvocationTargetException;
 import java.net.InetAddress;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -32,16 +31,12 @@ public abstract class Packet {
     public static Packet createPacket(String className) {
         try {
             Class<Packet> packetClass = Class.forName(className).asSubclass((Class) Packet.class);
-            return packetClass.getDeclaredConstructor().newInstance();
+            return packetClass.newInstance();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
             e.printStackTrace();
         }
         return null;

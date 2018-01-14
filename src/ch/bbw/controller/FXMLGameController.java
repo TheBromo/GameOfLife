@@ -31,16 +31,16 @@ public class FXMLGameController implements Initializable, Observer {
     private GraphicsContext gc;
     private Client network;
     private Server server;
-    private InetAddress serverAdress;
+    private InetAddress serverAddress;
     private CellManager cellManager;
     private double xOffset, yOffset, zoom, recZoom, lastDragY, lastDragX;
-    private boolean dragInProgress, zoomed;
+    private boolean dragInProgress, zoomed,host;
 
 
     @FXML
     private void handleTurnEnd(ActionEvent event) {
         Packet packet = new TextPacket("Hello");
-        packet.addTarget(serverAdress);
+        packet.addTarget(serverAddress);
         network.queuePacket(packet);
         cellManager.iterate();
         draw();
@@ -148,8 +148,13 @@ public class FXMLGameController implements Initializable, Observer {
         this.blueName.setText(blueName);
     }
 
+
+    public void initHost(boolean host){
+        this.host=host;
+    }
+
     public void initServerAddress(InetAddress serverAdress) {
-        this.serverAdress = serverAdress;
+        this.serverAddress = serverAdress;
     }
 
     @Override

@@ -38,9 +38,9 @@ public class CellManager {
 
     public void select(Cell cell) {
         if (selected != null) {
-            if (cell.equals(selected)){
+            if (cell.equals(selected)) {
                 cell.setSelected(false);
-                selected=null;
+                selected = null;
                 return;
             }
 
@@ -55,8 +55,11 @@ public class CellManager {
     }
 
     public Cell getCellByCoordinates(double x, double y, double canvasWidth) {
+        int newX = (int) (x / (canvasWidth / cells.length));
+        int newY = (int) (y / (canvasWidth / cells.length));
         Cell cell = cells[(int) (x / (canvasWidth / cells.length))][(int) (y / (canvasWidth / cells.length))];
-        System.out.println("Cell: " + cell.getColor() + " alive: " + cell.isAlive());
+        System.out.println("Cell [" + newX + "][" + newY + "]: " + cell.getColor() + " alive: " + cell.isAlive() + " Neighbours: " + getNumberOfNeighbours(newX, newY) +
+                " Dominant Color: " + getDominantColor(newX, newY));
         return cell;
     }
 
@@ -103,16 +106,10 @@ public class CellManager {
 
 
     public void iterate() {
-        Cell[][] nextStage = cells;
+
         for (int x = 0; x < cells.length; x++) {
             for (int y = 0; y < cells[x].length; y++) {
-                nextStage[x][y].setAlive(getNextCellStage(x, y, nextStage[x][y]));
-            }
-        }
-        for (int x = 0; x < cells.length; x++) {
-            for (int y = 0; y < cells[x].length; y++) {
-                cells[x][y].setAlive(nextStage[x][y].isAlive());
-                cells[x][y].setColor(nextStage[x][y].getColor());
+                cells[x][y].setAlive(cells[x][y].isAliveNextTurn());
             }
         }
         setNextIteration();
@@ -129,20 +126,7 @@ public class CellManager {
         }
     }
 
-    private boolean getNextCellStage(int x, int y, Cell cell) {
-        int neighbours = getNumberOfNeighbours(x, y);
-        if (neighbours < 2 || neighbours > 3) {
-            return false;
-        }
-        if (cells[x][y].isAlive()) {
-            return true;
-        } else if (neighbours == 3) {
-            cell.setColor(getDominantColor(x, y));
-            return true;
-        }
-        return false;
 
-    }
 
     private boolean getNextCellStage(int x, int y) {
         int neighbours = getNumberOfNeighbours(x, y);

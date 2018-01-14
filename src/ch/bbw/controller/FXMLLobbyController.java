@@ -246,6 +246,7 @@ public class FXMLLobbyController implements Initializable, Observer {
         controller.initClient(client);
         controller.initServer(server);
         controller.initServerAddress(InetAddress.getByName("localhost"));
+        controller.initHost(true);
 
         packetHandler.addObserver(controller);
 
@@ -278,7 +279,7 @@ public class FXMLLobbyController implements Initializable, Observer {
         Stage stage1 = (Stage) username.getScene().getWindow();
         stage1.close();
 
-        System.out.println(startTime + " " + secondPlayer.toString() + " User");
+        System.out.println(startTime + "Connecting to: " + secondPlayer.toString() + "as a User");
 
         Stage stage = new Stage();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../view/FXMLGame.fxml"));
@@ -290,6 +291,7 @@ public class FXMLLobbyController implements Initializable, Observer {
         Client client = new Client(new InetSocketAddress(secondPlayer, 6555), packetHandler);
         controller.initClient(client);
         controller.initServerAddress(secondPlayer);
+        controller.initHost(false);
         packetHandler.addObserver(controller);
 
         new Thread(client).start();

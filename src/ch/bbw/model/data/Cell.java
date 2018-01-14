@@ -31,6 +31,10 @@ public class Cell {
         this.bornNextTurn = bornNextTurn;
     }
 
+    public boolean isBornNextTurn() {
+        return bornNextTurn;
+    }
+
     public ArrayList<Cell> getParents() {
         return parents;
     }

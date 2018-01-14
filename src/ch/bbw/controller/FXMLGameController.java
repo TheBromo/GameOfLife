@@ -41,13 +41,16 @@ public class FXMLGameController implements Initializable, Observer {
 
     @FXML
     private void handleTurnEnd(ActionEvent event) {
-        Packet packet = new TextPacket("Hello");
-        packet.addTarget(serverAddress);
-        network.queuePacket(packet);
-        cellManager.iterate();
-        draw();
-        updateCellCount();
-        actionHandler.newTurn();
+        if (actionHandler.canEndTurn()) {
+            Packet packet = new TextPacket("Hello");
+            packet.addTarget(serverAddress);
+            network.queuePacket(packet);
+            cellManager.iterate();
+            actionHandler.newTurn();
+            updateCellCount();
+            draw();
+
+        }
     }
 
     @FXML
@@ -74,6 +77,9 @@ public class FXMLGameController implements Initializable, Observer {
     }
     @FXML
     private  void handleActionUndo(ActionEvent event){
+        actionHandler.undoAction();
+        cellManager.setNextIteration();
+        draw();
     }
 
 
@@ -121,6 +127,27 @@ public class FXMLGameController implements Initializable, Observer {
                 gc.fillRect(x + 4 + xOffset, y + 4 + yOffset, 32, 32);
                 Cell cell = cells[(int) (x / (canvas.getWidth() / cellManager.getCells().length))][(int) (y / (canvas.getWidth() / cellManager.getCells().length))];
 
+                if (cell.isBornNextTurn()) {
+                    System.out.println("Born cell: " + cell.getParents().size() + " alive?" + cell.isAliveNextTurn());
+                    gc.setFill(cell.getColor());
+                    gc.setStroke(cell.getColor());
+                    gc.strokeRect(x + 4 + xOffset, y + 4 + yOffset, 32, 32);
+                    gc.fillRect(x + 19 + xOffset, y + 5 + yOffset, 2, 30);
+                    if (cell.getParents().size() == 1) {
+                        gc.fillRect(x + 4 + xOffset, y + 4 + yOffset, 16, 32);
+                    } else if (cell.getParents().size() == 2) {
+                        gc.fillRect(x + 4 + xOffset, y + 4 + yOffset, 32, 32);
+                        System.out.println(cell.isAliveNextTurn());
+                        if (!cell.isAliveNextTurn()) {
+                            gc.setFill(rgb(52, 73, 94));
+                            gc.fillRect(x + 15 + xOffset, y + 15 + yOffset, 10, 10);
+                            System.out.println("hey");
+                        }
+                    }
+
+                    gc.setFill(rgb(52, 73, 94));
+                    continue;
+                }
                 if (cell.isAlive() && cell.isAliveNextTurn()) {
                     gc.setFill(cell.getColor());
                     gc.fillRect(x + 4 + xOffset, y + 4 + yOffset, 32, 32);

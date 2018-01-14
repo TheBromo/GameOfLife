@@ -101,20 +101,6 @@ public class FXMLLobbyController implements Initializable, Observer {
         }
     }
 
-    private void disableAllInvites() {
-        for (Node button : users.getChildren()) {
-            Button edit = (Button) button;
-            edit.setDisable(true);
-        }
-    }
-
-
-    private void enableAllInvites() {
-        for (Node button : users.getChildren()) {
-            Button edit = (Button) button;
-            edit.setDisable(false);
-        }
-    }
 
 
     private void sendInvite(InetAddress address) {
@@ -157,7 +143,6 @@ public class FXMLLobbyController implements Initializable, Observer {
 
     }
 
-    //TODO Fix name, fix id
     private void receivedInvite(InvitePacket packet) throws IOException {
 
         HBox box = new HBox();

@@ -7,24 +7,24 @@ import java.net.InetAddress;
 
 public class Invite {
     private long timeSent, deprecationTime;
-    private String recallAdress, name;
+    private String recallAddress, name;
     private int id;
     private HBox container;
     private Button acceptButton;
     private InetAddress target;
 
-    public Invite(long timeSent, long deprecationTime, int id, HBox container, String recallAdress) {
+    public Invite(long timeSent, long deprecationTime, int id, HBox container, String recallAddress) {
         this.timeSent = timeSent;
         this.id = id;
         this.container = container;
-        this.recallAdress = recallAdress;
+        this.recallAddress = recallAddress;
         this.deprecationTime = deprecationTime;
     }
 
-    public Invite(long timeSent, long deprecationTime, String recallAdress, int id,InetAddress target) {
+    public Invite(long timeSent, long deprecationTime, String recallAddress, int id, InetAddress target) {
         this.timeSent = timeSent;
         this.deprecationTime = deprecationTime;
-        this.recallAdress = recallAdress;
+        this.recallAddress = recallAddress;
         this.id = id;
         this.target=target;
     }
@@ -87,11 +87,11 @@ public class Invite {
         this.deprecationTime = deprecationTime;
     }
 
-    public String getRecallAdress() {
-        return recallAdress;
+    public String getRecallAddress() {
+        return recallAddress;
     }
 
-    public void setRecallAdress(String recallAdress) {
-        this.recallAdress = recallAdress;
+    public void setRecallAddress(String recallAddress) {
+        this.recallAddress = recallAddress;
     }
 }

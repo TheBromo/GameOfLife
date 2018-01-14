@@ -124,7 +124,7 @@ public class FXMLLobbyController implements Initializable, Observer {
             HBox field = new HBox();
 
 
-            Label name = new Label(invite.getRecallAdress());
+            Label name = new Label(invite.getRecallAddress());
             field.getChildren().add(name);
             invite.setContainer(field);
 
@@ -168,10 +168,10 @@ public class FXMLLobbyController implements Initializable, Observer {
 
         Packet packet = new AcceptPacket(invite.getId(), true);
         try {
-
-            packet.addTarget(InetAddress.getByName(invite.getRecallAdress()));
+            System.out.println(invite.getRecallAddress());
+            packet.addTarget(InetAddress.getByName(invite.getRecallAddress()));
             inviter.sendPacket(packet);
-            gameUserCountDown(invite.getDeprecationTime(), InetAddress.getByName(invite.getRecallAdress()));
+            gameUserCountDown(invite.getDeprecationTime(), InetAddress.getByName(invite.getRecallAddress()));
 
         } catch (UnknownHostException e) {
             e.printStackTrace();
@@ -223,12 +223,13 @@ public class FXMLLobbyController implements Initializable, Observer {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../view/FXMLGame.fxml"));
         Parent root1 = (Parent) fxmlLoader.load();
 
+
         FXMLGameController controller = fxmlLoader.<FXMLGameController>getController();
 
         PacketHandler packetHandler = new PacketHandler();
 
-        Server server = new Server(6555);
-        Client client = new Client(new InetSocketAddress(InetAddress.getByName("localhost"), 6555), packetHandler);
+        Server server = new Server(6666);
+        Client client = new Client(new InetSocketAddress(InetAddress.getByName("localhost"), 6666), packetHandler);
         controller.initClient(client);
         controller.initServer(server);
         controller.initServerAddress(InetAddress.getByName("localhost"));
@@ -275,7 +276,7 @@ public class FXMLLobbyController implements Initializable, Observer {
 
 
         PacketHandler packetHandler = new PacketHandler();
-        Client client = new Client(new InetSocketAddress(secondPlayer, 6555), packetHandler);
+        Client client = new Client(new InetSocketAddress(secondPlayer, 6666), packetHandler);
         controller.initClient(client);
         controller.initServerAddress(secondPlayer);
         controller.initHost(false);

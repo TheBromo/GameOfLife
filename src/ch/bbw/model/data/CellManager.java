@@ -27,6 +27,14 @@ public class CellManager {
         mirror();
     }
 
+    private void reset() {
+        for (int x = 0; x < cells.length; x++) {
+            for (int y = 0; y < cells[x].length; y++) {
+                cells[x][y] = null;
+            }
+        }
+    }
+
     private void fill() {
         for (int x = 0; x < cells.length; x++) {
             for (int y = 0; y < cells[x].length; y++) {

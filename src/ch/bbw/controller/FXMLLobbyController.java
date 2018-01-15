@@ -212,14 +212,14 @@ public class FXMLLobbyController implements Initializable, Observer {
 
         FXMLGameController controller = fxmlLoader.<FXMLGameController>getController();
 
-
+        controller.initName(username);
         Server server = new Server();
         Client client = new Client(new InetSocketAddress(InetAddress.getLocalHost(), Client.port));
 
         controller.initClient(client);
         controller.initServerAddress(InetAddress.getLocalHost());
         controller.initHost(true);
-        controller.initName(username);
+
 
         client.addObserver(controller);
 
@@ -247,6 +247,7 @@ public class FXMLLobbyController implements Initializable, Observer {
             e.printStackTrace();
         }
         String username = this.username.getText();
+        System.out.println("Username: " + username);
         Stage stage1 = (Stage) this.username.getScene().getWindow();
         stage1.close();
 

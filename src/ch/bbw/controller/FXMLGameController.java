@@ -8,6 +8,7 @@ import ch.bbw.model.network.packets.NamePacket;
 import ch.bbw.model.network.packets.Packet;
 import ch.bbw.model.network.packets.SeedPacket;
 import ch.bbw.model.utils.ActionHandler;
+import ch.bbw.model.utils.CellCoordinates;
 import ch.bbw.model.utils.TurnHandler;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -49,7 +50,7 @@ public class FXMLGameController implements Initializable, Observer {
         packet.addTarget(new InetSocketAddress(serverAddress, Client.port));
         client.queuePacket(packet);
         if (actionHandler.canEndTurn() && turnHandler.canPlay()) {
-            ActionPacket actionPacket = new ActionPacket();
+            ActionPacket actionPacket = new ActionPacket(false, new CellCoordinates(true, 1, 1), null);
             actionPacket.addTarget(new InetSocketAddress(serverAddress, Client.port));
             client.queuePacket(actionPacket);
             cellManager.iterate();

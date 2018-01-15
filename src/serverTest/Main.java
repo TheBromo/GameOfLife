@@ -26,9 +26,8 @@ public class Main {
                 e.printStackTrace();
             }
         } else {
-            Scanner scanner = new Scanner(System.in);
             System.out.println("IP: ");
-            String ip = scanner.nextLine();
+            String ip = "192.168.1.6";
             try {
                 client = new Client(new InetSocketAddress(InetAddress.getByName(ip), 6666), packetHandler);
             } catch (UnknownHostException e) {
@@ -39,5 +38,12 @@ public class Main {
 
         Packet packet = new TextPacket("Test");
         client.queuePacket(packet);
+        Scanner scanner = new Scanner(System.in);
+
+        while (true){
+            if (scanner.nextLine().equals("send")){
+                client.queuePacket(packet);
+            }
+        }
     }
 }

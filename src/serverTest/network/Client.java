@@ -45,11 +45,13 @@ public class Client implements Runnable {
             SocketChannel channel = SocketChannel.open();
             channel.configureBlocking(false);
 
-            channel.connect(serverAddress);
+
 
 
             Selector selector = Selector.open();
             channel.register(selector, SelectionKey.OP_CONNECT | SelectionKey.OP_READ);
+
+            channel.connect(serverAddress);
 
             ByteBuffer readBuffer = ByteBuffer.allocate(2048);
             ByteBuffer writeBuffer = ByteBuffer.allocate(2048);

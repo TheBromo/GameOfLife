@@ -5,6 +5,7 @@ import ch.bbw.model.data.CellManager;
 import ch.bbw.model.network.Client;
 import ch.bbw.model.network.packets.NamePacket;
 import ch.bbw.model.network.packets.Packet;
+import ch.bbw.model.network.packets.SeedPacket;
 import ch.bbw.model.utils.ActionHandler;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -231,6 +232,11 @@ public class FXMLGameController implements Initializable, Observer {
             if (packet instanceof NamePacket) {
                 NamePacket pm = (NamePacket) packet;
                 setName(pm.getText());
+            } else if (packet instanceof SeedPacket) {
+                SeedPacket pm = (SeedPacket) packet;
+                cellManager.setSeed(pm.getSeed());
+                updateCellCount();
+                draw();
             }
         });
     }

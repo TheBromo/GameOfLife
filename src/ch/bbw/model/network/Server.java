@@ -3,16 +3,14 @@ package ch.bbw.model.network;
 
 import ch.bbw.model.network.packets.NamePacket;
 import ch.bbw.model.network.packets.Packet;
+import ch.bbw.model.network.packets.SeedPacket;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 
 public class Server implements Runnable {
 
@@ -21,6 +19,7 @@ public class Server implements Runnable {
 
     private ServerSocketChannel channel;
     private ArrayList<Packet> queue;
+    private long seed;
 
     private HashMap<InetSocketAddress, SocketChannel> clients;
 
@@ -31,6 +30,8 @@ public class Server implements Runnable {
         running = true;
         clients = new HashMap<>();
         queue = new ArrayList<>();
+        Random random = new Random();
+        seed = random.nextLong();
     }
 
     public void setIp(InetAddress ip) {
@@ -82,6 +83,11 @@ public class Server implements Runnable {
 
                                 System.out.println("Server: Client connected: " + sender);
                                 clients.put(((InetSocketAddress) sChannel.getRemoteAddress()), sChannel);
+
+
+                                Packet packet = new SeedPacket(seed);
+                                packet.addTarget((InetSocketAddress) sChannel.getRemoteAddress());
+                                queuePacket(packet);
 
                             } catch (ClosedChannelException ex) {
                                 System.out.println("Server: User Disconnected");

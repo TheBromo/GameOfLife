@@ -10,12 +10,19 @@ public class CellManager {
     private Cell[][] cells = new Cell[10][10];
     private Color blue, red;
     private Cell selected;
+    private int cellCount = 10;
+    private Random random;
 
 
     public CellManager() {
         blue = rgb(52, 152, 219);
         red = rgb(231, 76, 60);
         //generate();
+        mirror();
+    }
+
+    public void setSeed(long seed) {
+        random.setSeed(seed);
         mirror();
     }
 
@@ -57,38 +64,9 @@ public class CellManager {
         return cell;
     }
 
-    private void generate() {
-
-        System.out.println(rgb(52, 152, 219).equals(blue));
-        int blueCount = 15, redCount = 15;
-
-        Random random = new Random();
-        while (blueCount > 0 && redCount > 0) {
-            for (Cell[] cell1 : cells)
-                for (Cell aCell1 : cell1) {
-                    int num = random.nextInt(3);
-                    if (num == 2 && aCell1.getColor().equals(Color.WHITE) && redCount > 0) {
-                        redCount--;
-                        aCell1.setColor(red);
-                        aCell1.setAlive(true);
-                        System.out.println("Generated red");
-                    } else if (num == 1 && aCell1.getColor().equals(Color.WHITE) && blueCount > 0) {
-                        blueCount--;
-                        aCell1.setColor(blue);
-                        aCell1.setAlive(true);
-                        System.out.println("Generated blue");
-                    }
-
-                }
-        }
-
-
-    }
-
-
     private void placeCells(Color color) {
         Random random = new Random();
-        for (int i = 0; i < 15; i++) {
+        for (int i = 0; i < cellCount; i++) {
             int x, y;
             do {
                 x = (random.nextInt() & 0x7fffffff) % cells.length;
@@ -114,7 +92,6 @@ public class CellManager {
         setNextIteration();
     }
 
-
     public void iterate() {
 
         for (Cell[] cell : cells) {
@@ -136,13 +113,11 @@ public class CellManager {
         }
     }
 
-
     private boolean getNextCellStage(int x, int y) {
         int neighbours = getNumberOfNeighbours(x, y);
         return neighbours >= 2 && neighbours <= 3 && (cells[x][y].isAlive() || neighbours == 3);
 
     }
-
 
     private Color getDominantColor(int x, int y) {
         int blueCount = 0, redCount = 0;

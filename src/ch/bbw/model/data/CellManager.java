@@ -24,6 +24,7 @@ public class CellManager {
 
     public void setSeed(long seed) {
         random.setSeed(seed);
+        reset();
         mirror();
     }
 

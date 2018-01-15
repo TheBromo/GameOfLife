@@ -5,34 +5,6 @@ import javafx.scene.paint.Color;
 
 import static javafx.scene.paint.Color.rgb;
 
-enum Action {
-
-    CREATE_NEW_CELL, KILL_CELL;
-
-    private Cell cell;
-    private Color oldColor;
-
-
-    public void setCell(Cell cell) {
-        this.cell = cell;
-    }
-
-    public Cell getCell() {
-        return cell;
-    }
-
-
-    public void setOldColor(Color oldColor) {
-        this.oldColor = oldColor;
-    }
-
-    public Color getOldColor() {
-        return oldColor;
-    }
-
-
-}
-
 public class ActionHandler {
     private Color color;
     private boolean cellKilled, canEndTurn;
@@ -130,6 +102,31 @@ public class ActionHandler {
         }
     }
 
+    enum Action {
+
+        CREATE_NEW_CELL, KILL_CELL;
+
+        private Cell cell;
+        private Color oldColor;
 
 
+        public void setCell(Cell cell) {
+            this.cell = cell;
+        }
+
+        public Cell getCell() {
+            return cell;
+        }
+
+
+        public void setOldColor(Color oldColor) {
+            this.oldColor = oldColor;
+        }
+
+        public Color getOldColor() {
+            return oldColor;
+        }
+
+
+    }
 }

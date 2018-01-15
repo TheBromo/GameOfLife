@@ -79,9 +79,6 @@ public class Server implements Runnable {
                         SelectionKey key = iterator.next();
                         if (key.isAcceptable()) {
                             try {
-
-
-
                                 SocketChannel sChannel = channel.accept();
                                 SocketAddress sender = sChannel.getRemoteAddress();
 

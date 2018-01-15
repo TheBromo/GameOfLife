@@ -232,7 +232,7 @@ public class FXMLLobbyController implements Initializable, Observer {
         Client client = new Client(new InetSocketAddress(InetAddress.getByName("localhost"), 6666), packetHandler);
         controller.initClient(client);
         controller.initServer(server);
-        controller.initServerAddress(InetAddress.getByName("localhost"));
+        controller.initServerAddress(InetAddress.getLocalHost());
         controller.initHost(true);
 
         packetHandler.addObserver(controller);
@@ -240,7 +240,7 @@ public class FXMLLobbyController implements Initializable, Observer {
 
         new Thread(server).start();
         new Thread(client).start();
-        server.setIp(InetAddress.getByName("localhost"));
+        server.setIp(InetAddress.getLocalHost());
 
         Scene scene = new Scene(root1);
         stage.setOnCloseRequest((e) -> {

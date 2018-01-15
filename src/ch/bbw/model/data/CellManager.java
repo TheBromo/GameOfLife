@@ -15,8 +15,8 @@ public class CellManager {
     public CellManager() {
         blue = rgb(52, 152, 219);
         red = rgb(231, 76, 60);
-        fill();
-        generate();
+        //generate();
+        mirror();
     }
 
     private void fill() {
@@ -82,16 +82,35 @@ public class CellManager {
                 }
         }
 
+
+    }
+
+
+    private void placeCells(Color color) {
+        Random random = new Random();
+        for (int i = 0; i < 15; i++) {
+            int x, y;
+            do {
+                x = (random.nextInt() & 0x7fffffff) % cells.length;
+                y = (random.nextInt() & 0x7fffffff) % (cells[x].length >> 1);
+            } while (cells[x][y] != null);
+            cells[x][y] = new Cell(true, color);
+            cells[cells.length - x - 1][cells[x].length - y - 1] = new Cell(true, color);
+        }
+    }
+
+    private void mirror() {
+        placeCells(blue);
+        placeCells(red);
+
         for (int x = 0; x < cells.length; x++) {
             for (int y = 0; y < cells[x].length; y++) {
-                if (cells[x][y].getColor().equals(blue)) {
-                    cells[cells.length - 1 - x][cells[cells.length - 1 - x].length - 1 - y].setColor(red);
-                } else {
-                    cells[cells.length - 1 - x][cells[cells.length - 1 - x].length - 1 - y].setColor(blue);
+                if (cells[x][y] == null) {
+                    cells[x][y] = new Cell(false, null);
                 }
-                cells[cells.length - 1 - x][cells[cells.length - 1 - x].length - 1 - y].setAlive(cells[x][y].isAlive());
             }
         }
+
         setNextIteration();
     }
 

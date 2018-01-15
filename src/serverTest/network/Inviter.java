@@ -44,12 +44,10 @@ public class Inviter {
         Packet.compilePacket(packet, writeBuffer);
         writeBuffer.flip();
 
-        for (InetAddress address : packet.getTargets()) {
+        for (InetSocketAddress address : packet.getTargets()) {
 
-            //creates a socket address
-            InetSocketAddress socketAddress = new InetSocketAddress(address, port);
             //sends the data
-            socket.send(writeBuffer, socketAddress);
+            socket.send(writeBuffer, address);
         }
     }
 

@@ -19,7 +19,6 @@ public class Server implements Runnable {
     public static final int port = 6666;
     private boolean running;
 
-    private PacketHandler packetHandler;
     private ServerSocketChannel channel;
     private ArrayList<Packet> queue;
 

@@ -178,6 +178,11 @@ public class FXMLGameController implements Initializable, Observer {
 
     public void initClient(Client network) {
         this.client = network;
+
+        Packet packet = new NamePacket(username);
+        client.queuePacket(packet);
+
+
     }
 
     public void setName(String name) {
@@ -215,10 +220,7 @@ public class FXMLGameController implements Initializable, Observer {
         updateCellCount();
         draw();
 
-        Packet packet = new NamePacket(username);
-        client.queuePacket(packet);
-        
-    }
+       }
 
     @Override
     public void update(Observable o, Object arg) {

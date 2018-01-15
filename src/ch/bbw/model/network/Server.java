@@ -1,10 +1,9 @@
 package ch.bbw.model.network;
 
-import ch.bbw.model.network.packets.Packet;
-import ch.bbw.model.network.packets.PacketHandler;
-import ch.bbw.model.network.packets.TextPacket;
+import serverTest.network.packets.Packet;
+import serverTest.network.packets.PacketHandler;
+import serverTest.network.packets.TextPacket;
 
-import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
@@ -13,23 +12,24 @@ import java.nio.channels.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Set;
 
 public class Server implements Runnable {
 
-    private int port;
+    public static final int port = 6666;
     private boolean running;
 
     private PacketHandler packetHandler;
     private ServerSocketChannel channel;
     private ArrayList<Packet> queue;
 
-    private HashMap<InetAddress, SocketChannel> clients;
+    private HashMap<InetSocketAddress, SocketChannel> clients;
 
     private InetAddress ip;
 
-    public Server(int port) {
+    public Server() {
 
-        this.port = port;
+
         running = true;
 
         packetHandler = new PacketHandler();
@@ -37,18 +37,14 @@ public class Server implements Runnable {
         clients = new HashMap<>();
         queue = new ArrayList<>();
 
-        try {
-            channel = ServerSocketChannel.open();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+
     }
 
     public void setIp(InetAddress ip) {
         this.ip = ip;
     }
 
-    public HashMap<InetAddress, SocketChannel> getClients() {
+    public HashMap<InetSocketAddress, SocketChannel> getClients() {
         return clients;
     }
 
@@ -63,8 +59,12 @@ public class Server implements Runnable {
     @Override
     public void run() {
         try {
-            channel.bind(new InetSocketAddress(ip, port));
+
+            channel = ServerSocketChannel.open();
             channel.configureBlocking(false);
+            channel.bind(new InetSocketAddress(InetAddress.getLocalHost(), port));
+
+            System.out.println("Server starting on: " + channel.getLocalAddress().toString());
 
             Selector selector = Selector.open();
             channel.register(selector, SelectionKey.OP_ACCEPT);
@@ -74,47 +74,45 @@ public class Server implements Runnable {
 
             while (running) {
                 if (selector.selectNow() > 0) {
-                    Iterator<SelectionKey> iterator = selector.selectedKeys().iterator();
-                    while (iterator.hasNext()) {
-                        SelectionKey key = iterator.next();
+                    Set<SelectionKey> keys = selector.selectedKeys();
+
+                    for (SelectionKey key : keys) {
                         if (key.isAcceptable()) {
                             try {
+
                                 SocketChannel sChannel = channel.accept();
+                                sChannel.configureBlocking(false);
                                 SocketAddress sender = sChannel.getRemoteAddress();
 
                                 sChannel.configureBlocking(false);
-                                sChannel.register(selector, SelectionKey.OP_READ);
+                                sChannel.register(selector, SelectionKey.OP_READ | SelectionKey.OP_WRITE);
 
-                                System.out.println("Server: User found: " + sender);
-                                sendHello(((InetSocketAddress) sChannel.getRemoteAddress()).getAddress());
-                                clients.put(((InetSocketAddress) sChannel.getRemoteAddress()).getAddress(), sChannel);
+                                System.out.println("Server: Client connected: " + sender);
+                                clients.put(((InetSocketAddress) sChannel.getRemoteAddress()), sChannel);
 
-                            }catch (ClosedChannelException ex){
+                            } catch (ClosedChannelException ex) {
                                 System.out.println("Server: User Disconnected");
                             }
-                        }
-                        if (key.isReadable()){
+                        } else if (key.isReadable()) {
 
                             SocketChannel sChannel = (SocketChannel) key.channel();
 
-                            readBuffer.position(0);
-                            readBuffer.limit(readBuffer.capacity());
-
+                            readBuffer.position(0).limit(readBuffer.capacity());
                             sChannel.read(readBuffer);
                             readBuffer.flip();
 
-                            Packet packet  = Packet.decompilePacket(readBuffer);
+                            Packet packet = Packet.decompilePacket(readBuffer);
                             packet.clearTargets();
 
-                            for(InetAddress a : clients.keySet()){
-                                if(!a.equals(clients.get(sChannel))){
+                            for (InetSocketAddress a : clients.keySet()) {
+                                if (!a.equals(clients.get(sChannel))) {
                                     packet.addTarget(a);
                                 }
                             }
                             queuePacket(packet);
                         }
-                        iterator.remove();
                     }
+                    keys.clear();
                 }
                 if (!queue.isEmpty()) {
                     Iterator<Packet> packetIterator = queue.iterator();
@@ -128,16 +126,14 @@ public class Server implements Runnable {
 
                         writeBuffer.flip();
 
-                        Iterator<InetAddress> targetIterator = packet.getTargets().iterator();
+                        Iterator<InetSocketAddress> targetIterator = packet.getTargets().iterator();
 
                         while (targetIterator.hasNext()) {
 
-                            SocketAddress target = new InetSocketAddress(targetIterator.next(),port);
+                            SocketAddress target = targetIterator.next();
                             System.out.println(target);
-
                             clients.get(target).write(writeBuffer);
                             System.out.println("Server: Sending Packet to: " + target);
-
                             writeBuffer.flip();
                         }
 
@@ -145,13 +141,15 @@ public class Server implements Runnable {
                     }
                 }
             }
+            channel.close();
         } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     private void sendHello(InetAddress address) {
         Packet packet = new TextPacket("Hello");
-        packet.addTarget(address);
+        packet.addTarget(new InetSocketAddress(address, port));
         queuePacket(packet);
 
     }

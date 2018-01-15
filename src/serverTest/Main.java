@@ -1,7 +1,5 @@
 package serverTest;
 
-import serverTest.network.Client;
-import serverTest.network.Server;
 import serverTest.network.packets.Packet;
 import serverTest.network.packets.PacketHandler;
 import serverTest.network.packets.TextPacket;

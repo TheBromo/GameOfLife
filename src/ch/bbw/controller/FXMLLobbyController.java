@@ -10,7 +10,7 @@ import ch.bbw.model.data.InviteManager;
 import ch.bbw.model.data.User;
 import ch.bbw.model.data.UserManager;
 import ch.bbw.model.network.Client;
-import ch.bbw.model.network.Inviter;
+import ch.bbw.model.network.InviteSender;
 import ch.bbw.model.network.NetToolsSearch;
 import ch.bbw.model.network.Server;
 import ch.bbw.model.network.packets.AcceptPacket;
@@ -60,7 +60,7 @@ public class FXMLLobbyController implements Initializable, Observer {
     private TimeConverter timeConverter;
     private UserManager userManager;
     private InviteManager inviteManager;
-    private Inviter inviter;
+    private InviteSender inviteSender;
     private Timeline fiveSeconds;
     private NetToolsSearch search;
 
@@ -132,7 +132,7 @@ public class FXMLLobbyController implements Initializable, Observer {
 
             try {
 
-                inviter.sendPacket(packet);
+                inviteSender.sendPacket(packet);
                 inviteSent = true;
 
             } catch (IOException e) {
@@ -170,7 +170,7 @@ public class FXMLLobbyController implements Initializable, Observer {
         try {
             System.out.println(invite.getRecallAddress());
             packet.addTarget(InetAddress.getByName(invite.getRecallAddress()));
-            inviter.sendPacket(packet);
+            inviteSender.sendPacket(packet);
             gameUserCountDown(invite.getDeprecationTime(), InetAddress.getByName(invite.getRecallAddress()));
 
         } catch (UnknownHostException e) {
@@ -216,9 +216,6 @@ public class FXMLLobbyController implements Initializable, Observer {
         Stage stage1 = (Stage) username.getScene().getWindow();
         stage1.close();
 
-
-        System.out.println("Server: Clients:" + InetAddress.getLocalHost() + ", " + secondPlayer);
-
         Stage stage = new Stage();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../view/FXMLGame.fxml"));
         Parent root1 = (Parent) fxmlLoader.load();
@@ -228,8 +225,8 @@ public class FXMLLobbyController implements Initializable, Observer {
 
         PacketHandler packetHandler = new PacketHandler();
 
-        Server server = new Server(6666);
-        Client client = new Client(new InetSocketAddress(InetAddress.getByName("localhost"), 6666), packetHandler);
+        Server server = new Server();
+        Client client = new Client(new InetSocketAddress(InetAddress.getLocalHost(), Client.port), packetHandler);
         controller.initClient(client);
         controller.initServer(server);
         controller.initServerAddress(InetAddress.getLocalHost());
@@ -240,7 +237,6 @@ public class FXMLLobbyController implements Initializable, Observer {
 
         new Thread(server).start();
         new Thread(client).start();
-        server.setIp(InetAddress.getLocalHost());
 
         Scene scene = new Scene(root1);
         stage.setOnCloseRequest((e) -> {
@@ -266,8 +262,6 @@ public class FXMLLobbyController implements Initializable, Observer {
         Stage stage1 = (Stage) username.getScene().getWindow();
         stage1.close();
 
-        System.out.println(startTime + "Connecting to: " + secondPlayer + "as a User");
-
         Stage stage = new Stage();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../view/FXMLGame.fxml"));
         Parent root1 = (Parent) fxmlLoader.load();
@@ -276,7 +270,7 @@ public class FXMLLobbyController implements Initializable, Observer {
 
 
         PacketHandler packetHandler = new PacketHandler();
-        Client client = new Client(new InetSocketAddress(secondPlayer, 6666), packetHandler);
+        Client client = new Client(new InetSocketAddress(secondPlayer, Client.port), packetHandler);
         controller.initClient(client);
         controller.initServerAddress(secondPlayer);
         controller.initHost(false);
@@ -314,16 +308,16 @@ public class FXMLLobbyController implements Initializable, Observer {
         timeConverter = new TimeConverter();
 
         try {
-            inviter = new Inviter(8888);
+            inviteSender = new InviteSender(8888);
         } catch (IOException e) {
-            System.err.print("Failed to initialize Inviter");
+            System.err.print("Failed to initialize InviteSender");
             e.printStackTrace();
         }
 
         fiveSeconds = new Timeline(new KeyFrame(Duration.millis(50), (e) -> {
             try {
 
-                ArrayList<Packet> packets = inviter.readReceivedPacket();
+                ArrayList<Packet> packets = inviteSender.readReceivedPacket();
                 if (packets.size() != 0) {
                     for (Packet packet : packets) {
                         if (packet instanceof InvitePacket) {

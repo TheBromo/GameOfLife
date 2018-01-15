@@ -13,7 +13,7 @@ import java.nio.channels.Selector;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class Inviter {
+public class InviteSender {
 
 
     private ArrayList<Packet> sentPackets = new ArrayList<>();
@@ -22,7 +22,7 @@ public class Inviter {
     private Selector selector;
     private int port;
 
-    public Inviter(int port) throws IOException {
+    public InviteSender(int port) throws IOException {
         this.port=port;
 
         //prepares the socket

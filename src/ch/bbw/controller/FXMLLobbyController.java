@@ -94,7 +94,7 @@ public class FXMLLobbyController implements Initializable, Observer {
     @FXML
     private void handleInviteButton(ActionEvent event) {
         try {
-            gameUserCountDown(InetAddress.getLocalHost());
+            gameUserCountDown(InetAddress.getLocalHost(), "TestGame");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -158,12 +158,12 @@ public class FXMLLobbyController implements Initializable, Observer {
 
     private void sendAccept(Invite invite) {
 
-        Packet packet = new AcceptPacket(invite.getId(), true);
+        Packet packet = new AcceptPacket(invite.getId(), true, username.getText());
         try {
             System.out.println(invite.getRecallAddress());
             packet.addTarget(new InetSocketAddress(InetAddress.getByName(invite.getRecallAddress()), InviteSender.port));
             inviteSender.sendPacket(packet);
-            gameUserCountDown(InetAddress.getByName(invite.getRecallAddress()));
+            gameUserCountDown(InetAddress.getByName(invite.getRecallAddress()), invite.getName());
 
         } catch (UnknownHostException e) {
             e.printStackTrace();
@@ -178,7 +178,7 @@ public class FXMLLobbyController implements Initializable, Observer {
             Invite invite = inviteManager.getInviteById(packet.getId());
             if (invite != null) {
                 try {
-                    gameServerCountDown();
+                    gameServerCountDown(packet.getName());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -200,7 +200,7 @@ public class FXMLLobbyController implements Initializable, Observer {
         }
     }
 
-    private void gameServerCountDown() throws IOException {
+    private void gameServerCountDown(String secondUserName) throws IOException {
         String username = this.username.getText();
         Stage stage1 = (Stage) this.username.getScene().getWindow();
         stage1.close();
@@ -219,7 +219,7 @@ public class FXMLLobbyController implements Initializable, Observer {
         controller.initClient(client);
         controller.initServerAddress(InetAddress.getLocalHost());
         controller.initHost(true);
-
+        controller.initNames(username, secondUserName);
 
         client.addObserver(controller);
 
@@ -240,7 +240,7 @@ public class FXMLLobbyController implements Initializable, Observer {
         search.setRunning(false);
     }
 
-    private void gameUserCountDown(InetAddress secondPlayer) throws IOException {
+    private void gameUserCountDown(InetAddress secondPlayer, String secondUserName) throws IOException {
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {
@@ -263,6 +263,7 @@ public class FXMLLobbyController implements Initializable, Observer {
         controller.initServerAddress(secondPlayer);
         controller.initHost(false);
         controller.initName(username);
+        controller.initNames(secondUserName, username);
 
         client.addObserver(controller);
 

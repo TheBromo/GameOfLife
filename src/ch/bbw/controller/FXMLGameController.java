@@ -17,7 +17,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 
 import java.net.InetAddress;
-import java.net.InetSocketAddress;
 import java.net.URL;
 import java.util.Observable;
 import java.util.Observer;
@@ -42,12 +41,6 @@ public class FXMLGameController implements Initializable, Observer {
     @FXML
     private void handleTurnEnd(ActionEvent event) {
         if (actionHandler.canEndTurn()) {
-            if (!nameSent) {
-                Packet packet = new NamePacket(username);
-                packet.addTarget(new InetSocketAddress(serverAddress, Client.port));
-                client.queuePacket(packet);
-                nameSent = true;
-            }
             cellManager.iterate();
             actionHandler.newTurn();
             updateCellCount();
@@ -206,6 +199,11 @@ public class FXMLGameController implements Initializable, Observer {
             blueName.setText(name);
         }
 
+    }
+
+    public void initNames(String host, String client) {
+        redName.setText(host);
+        blueName.setText(client);
     }
 
     public void initServerAddress(InetAddress serverAdress) {

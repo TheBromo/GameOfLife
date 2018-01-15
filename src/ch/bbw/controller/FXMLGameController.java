@@ -42,7 +42,7 @@ public class FXMLGameController implements Initializable, Observer {
     @FXML
     private void handleTurnEnd(ActionEvent event) {
         if (actionHandler.canEndTurn()) {
-            Packet packet = new NamePacket("Hello");
+            Packet packet = new NamePacket(username);
             packet.addTarget(new InetSocketAddress(serverAddress, Client.port));
             client.queuePacket(packet);
             cellManager.iterate();
@@ -199,6 +199,12 @@ public class FXMLGameController implements Initializable, Observer {
 
     public void initName(String name) {
         username = name;
+        if (host) {
+            redName.setText(name);
+        } else {
+            blueName.setText(name);
+        }
+
     }
 
     public void initServerAddress(InetAddress serverAdress) {

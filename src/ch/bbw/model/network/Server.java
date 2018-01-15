@@ -102,9 +102,10 @@ public class Server implements Runnable {
 
                             Packet packet = Packet.decompilePacket(readBuffer);
                             packet.clearTargets();
+                            packet.setSender((InetSocketAddress) sChannel.getRemoteAddress());
 
                             for (InetSocketAddress a : clients.keySet()) {
-                                if (!a.equals(clients.get(sChannel))) {
+                                if (!a.equals(packet.getSender())) {
                                     System.out.println("Server: added target: " + sChannel.getRemoteAddress());
                                     packet.addTarget(a);
                                 }

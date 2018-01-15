@@ -6,6 +6,7 @@ public class TurnHandler {
 
     public TurnHandler(boolean isHost) {
         this.isHost = isHost;
+        hostsTurn = true;
     }
 
 

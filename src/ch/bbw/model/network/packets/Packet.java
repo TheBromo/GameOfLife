@@ -10,6 +10,15 @@ import java.util.ArrayList;
 public abstract class Packet {
 
     private ArrayList<InetSocketAddress> targets = new ArrayList<>();
+    private InetSocketAddress sender;
+
+    public InetSocketAddress getSender() {
+        return sender;
+    }
+
+    public void setSender(InetSocketAddress sender) {
+        this.sender = sender;
+    }
 
     public static void writeString(String val, ByteBuffer buffer) {
         byte[] data = val.getBytes();

@@ -1,5 +1,6 @@
 package ch.bbw.model.data;
 
+import ch.bbw.model.network.packets.ActionPacket;
 import javafx.scene.paint.Color;
 
 import java.util.Random;
@@ -64,6 +65,9 @@ public class CellManager {
         selected = cell;
     }
 
+    public void processEnemyAction(ActionPacket packet) {
+        //TODO add process interpretation
+    }
 
     public Cell getCellByCoordinates(double x, double y, double canvasWidth) {
         int newX = (int) (x / (canvasWidth / cells.length));

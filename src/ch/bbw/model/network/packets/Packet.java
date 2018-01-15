@@ -1,5 +1,7 @@
 package ch.bbw.model.network.packets;
 
+import ch.bbw.model.utils.CellCoordinates;
+
 import java.lang.reflect.InvocationTargetException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
@@ -19,6 +21,16 @@ public abstract class Packet {
         byte[] data = new byte[buffer.getInt()];
         buffer.get(data);
         return new String(data);
+    }
+
+    public static CellCoordinates readCoor(ByteBuffer buffer) {
+        return new CellCoordinates(Packet.readBoolean(buffer), buffer.getInt(), buffer.getInt());
+    }
+
+    public static void writeCoor(CellCoordinates coordinates, ByteBuffer byteBuffer) {
+        Packet.writeBoolean(coordinates.isAlive(), byteBuffer);
+        byteBuffer.putInt(coordinates.getX());
+        byteBuffer.putInt(coordinates.getY());
     }
 
     public static void writeBoolean(boolean bool, ByteBuffer buffer) {

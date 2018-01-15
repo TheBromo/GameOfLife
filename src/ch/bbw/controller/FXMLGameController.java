@@ -3,10 +3,12 @@ package ch.bbw.controller;
 import ch.bbw.model.data.Cell;
 import ch.bbw.model.data.CellManager;
 import ch.bbw.model.network.Client;
+import ch.bbw.model.network.packets.ActionPacket;
 import ch.bbw.model.network.packets.NamePacket;
 import ch.bbw.model.network.packets.Packet;
 import ch.bbw.model.network.packets.SeedPacket;
 import ch.bbw.model.utils.ActionHandler;
+import ch.bbw.model.utils.TurnHandler;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -18,6 +20,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.URL;
 import java.util.Observable;
 import java.util.Observer;
@@ -32,6 +35,7 @@ public class FXMLGameController implements Initializable, Observer {
     private Canvas canvas;
     private GraphicsContext gc;
     private Client client;
+    private TurnHandler turnHandler;
     private InetAddress serverAddress;
     private CellManager cellManager;
     private ActionHandler actionHandler;
@@ -41,12 +45,15 @@ public class FXMLGameController implements Initializable, Observer {
 
     @FXML
     private void handleTurnEnd(ActionEvent event) {
-        if (actionHandler.canEndTurn()) {
+        NamePacket packet = new NamePacket("This is a test");
+        packet.addTarget(new InetSocketAddress(serverAddress, Client.port));
+        client.queuePacket(packet);
+        if (actionHandler.canEndTurn() && turnHandler.canPlay()) {
             cellManager.iterate();
             actionHandler.newTurn();
             updateCellCount();
             draw();
-
+            turnHandler.newTurn();
         }
     }
 
@@ -64,8 +71,10 @@ public class FXMLGameController implements Initializable, Observer {
             if (y > 0 && y < 400 && x > 0 && x < 400) {
                 Cell cell = cellManager.getCellByCoordinates(x, y, canvas.getWidth());
                 cellManager.select(cell);
-                actionHandler.handleAction(cell);
-                cellManager.setNextIteration();
+                if (turnHandler.canPlay()) {
+                    actionHandler.handleAction(cell);
+                    cellManager.setNextIteration();
+                }
                 draw();
 
             }
@@ -75,9 +84,11 @@ public class FXMLGameController implements Initializable, Observer {
 
     @FXML
     private void handleActionUndo(ActionEvent event) {
-        actionHandler.undoAction();
-        cellManager.setNextIteration();
-        draw();
+        if (turnHandler.canPlay()) {
+            actionHandler.undoAction();
+            cellManager.setNextIteration();
+            draw();
+        }
     }
 
     @FXML
@@ -190,6 +201,7 @@ public class FXMLGameController implements Initializable, Observer {
 
     public void initHost(boolean host) {
         this.host = host;
+        turnHandler = new TurnHandler(host);
     }
 
     public void initName(String name) {
@@ -231,7 +243,7 @@ public class FXMLGameController implements Initializable, Observer {
             Packet packet = (Packet) arg;
             if (packet instanceof NamePacket) {
                 NamePacket pm = (NamePacket) packet;
-                setName(pm.getText());
+                System.out.println(pm.getText());
             } else if (packet instanceof SeedPacket) {
                 SeedPacket pm = (SeedPacket) packet;
                 System.out.println(pm.getSeed());
@@ -239,6 +251,11 @@ public class FXMLGameController implements Initializable, Observer {
                 System.out.println("updating cell count");
                 updateCellCount();
                 System.out.println("starting drawing");
+                draw();
+            } else if (packet instanceof ActionPacket) {
+                ActionPacket pm = (ActionPacket) packet;
+                cellManager.processEnemyAction(pm);
+                updateCellCount();
                 draw();
             }
         });

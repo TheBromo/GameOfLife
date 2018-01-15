@@ -36,15 +36,18 @@ public class FXMLGameController implements Initializable, Observer {
     private CellManager cellManager;
     private ActionHandler actionHandler;
     private double xOffset, yOffset, zoom, recZoom, lastDragY, lastDragX;
-    private boolean dragInProgress, zoomed, host;
+    private boolean dragInProgress, zoomed, host, nameSent;
     private String username;
 
     @FXML
     private void handleTurnEnd(ActionEvent event) {
         if (actionHandler.canEndTurn()) {
-            Packet packet = new NamePacket(username);
-            packet.addTarget(new InetSocketAddress(serverAddress, Client.port));
-            client.queuePacket(packet);
+            if (!nameSent) {
+                Packet packet = new NamePacket(username);
+                packet.addTarget(new InetSocketAddress(serverAddress, Client.port));
+                client.queuePacket(packet);
+                nameSent = true;
+            }
             cellManager.iterate();
             actionHandler.newTurn();
             updateCellCount();
@@ -211,6 +214,7 @@ public class FXMLGameController implements Initializable, Observer {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        nameSent = false;
         zoomed = false;
         zoom = 1;
         recZoom = 1;
@@ -220,7 +224,7 @@ public class FXMLGameController implements Initializable, Observer {
         updateCellCount();
         draw();
 
-       }
+    }
 
     @Override
     public void update(Observable o, Object arg) {

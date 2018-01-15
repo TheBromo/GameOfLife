@@ -15,6 +15,7 @@ public class CellManager {
 
 
     public CellManager() {
+        random = new Random();
         blue = rgb(52, 152, 219);
         red = rgb(231, 76, 60);
         //generate();
@@ -65,7 +66,7 @@ public class CellManager {
     }
 
     private void placeCells(Color color) {
-        Random random = new Random();
+        random = new Random();
         for (int i = 0; i < cellCount; i++) {
             int x, y;
             do {

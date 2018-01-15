@@ -234,6 +234,7 @@ public class FXMLGameController implements Initializable, Observer {
                 setName(pm.getText());
             } else if (packet instanceof SeedPacket) {
                 SeedPacket pm = (SeedPacket) packet;
+                System.out.println(pm.getSeed());
                 cellManager.setSeed(pm.getSeed());
                 updateCellCount();
                 draw();

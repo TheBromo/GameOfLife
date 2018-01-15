@@ -182,7 +182,7 @@ public class FXMLGameController implements Initializable, Observer {
     }
 
     public void setName(String name) {
-        if (host) {
+        if (!host) {
             this.blueName.setText(name);
         } else {
             this.redName.setText(name);

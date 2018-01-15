@@ -214,7 +214,7 @@ public class FXMLLobbyController implements Initializable, Observer {
 
         controller.initName(username);
         Server server = new Server();
-        Client client = new Client(new InetSocketAddress(InetAddress.getLocalHost(), Client.port));
+        Client client = new Client(new InetSocketAddress(InetAddress.getLocalHost(), Client.port), username);
 
         controller.initClient(client);
         controller.initServerAddress(InetAddress.getLocalHost());
@@ -257,7 +257,7 @@ public class FXMLLobbyController implements Initializable, Observer {
 
         FXMLGameController controller = fxmlLoader.<FXMLGameController>getController();
 
-        Client client = new Client(new InetSocketAddress(secondPlayer, Client.port));
+        Client client = new Client(new InetSocketAddress(secondPlayer, Client.port), username);
 
         controller.initClient(client);
         controller.initServerAddress(secondPlayer);

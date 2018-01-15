@@ -1,5 +1,6 @@
 package ch.bbw.model.network;
 
+import ch.bbw.model.network.packets.NamePacket;
 import ch.bbw.model.network.packets.Packet;
 
 import java.io.IOException;
@@ -20,12 +21,12 @@ public class Client extends Observable implements Runnable {
     private InetSocketAddress serverAddress;
     private ArrayList<Packet> queue;
     private SocketChannel channel;
-
+    private String username;
     private boolean running;
 
-    public Client(InetSocketAddress serverAddress) {
+    public Client(InetSocketAddress serverAddress, String username) {
         this.serverAddress = serverAddress;
-
+        this.username = username;
         queue = new ArrayList<>();
         running = true;
     }
@@ -62,6 +63,10 @@ public class Client extends Observable implements Runnable {
                         if (key.isConnectable()) {
                             channel.finishConnect();
                             System.out.println("Client: Connected");
+
+                            Packet packet = new NamePacket(username);
+                            queuePacket(packet);
+
                         } else if (key.isReadable()) {
                             SocketChannel sChannel = (SocketChannel) key.channel();
 

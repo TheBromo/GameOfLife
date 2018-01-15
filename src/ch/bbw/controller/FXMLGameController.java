@@ -179,10 +179,6 @@ public class FXMLGameController implements Initializable, Observer {
     public void initClient(Client network) {
         this.client = network;
 
-        Packet packet = new NamePacket(username);
-        client.queuePacket(packet);
-
-
     }
 
     public void setName(String name) {

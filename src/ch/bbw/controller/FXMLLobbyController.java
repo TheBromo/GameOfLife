@@ -201,8 +201,10 @@ public class FXMLLobbyController implements Initializable, Observer {
     }
 
     private void gameServerCountDown() throws IOException {
-        Stage stage1 = (Stage) username.getScene().getWindow();
+        String username = this.username.getText();
+        Stage stage1 = (Stage) this.username.getScene().getWindow();
         stage1.close();
+
 
         Stage stage = new Stage();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../view/FXMLGame.fxml"));
@@ -217,7 +219,7 @@ public class FXMLLobbyController implements Initializable, Observer {
         controller.initClient(client);
         controller.initServerAddress(InetAddress.getLocalHost());
         controller.initHost(true);
-        controller.initName(username.getText());
+        controller.initName(username);
 
         client.addObserver(controller);
 
@@ -244,7 +246,8 @@ public class FXMLLobbyController implements Initializable, Observer {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        Stage stage1 = (Stage) username.getScene().getWindow();
+        String username = this.username.getText();
+        Stage stage1 = (Stage) this.username.getScene().getWindow();
         stage1.close();
 
         Stage stage = new Stage();
@@ -258,7 +261,7 @@ public class FXMLLobbyController implements Initializable, Observer {
         controller.initClient(client);
         controller.initServerAddress(secondPlayer);
         controller.initHost(false);
-        controller.initName(username.getText());
+        controller.initName(username);
 
         client.addObserver(controller);
 

@@ -3,10 +3,10 @@ package ch.bbw.controller;
 import ch.bbw.model.data.Cell;
 import ch.bbw.model.data.CellManager;
 import ch.bbw.model.network.Client;
-import ch.bbw.model.network.Server;
+import ch.bbw.model.network.packets.NamePacket;
 import ch.bbw.model.network.packets.Packet;
-import ch.bbw.model.network.packets.TextPacket;
 import ch.bbw.model.utils.ActionHandler;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -31,21 +31,20 @@ public class FXMLGameController implements Initializable, Observer {
     @FXML
     private Canvas canvas;
     private GraphicsContext gc;
-    private Client network;
-    private Server server;
+    private Client client;
     private InetAddress serverAddress;
     private CellManager cellManager;
     private ActionHandler actionHandler;
     private double xOffset, yOffset, zoom, recZoom, lastDragY, lastDragX;
-    private boolean dragInProgress, zoomed,host;
-
+    private boolean dragInProgress, zoomed, host;
+    private String username;
 
     @FXML
     private void handleTurnEnd(ActionEvent event) {
         if (actionHandler.canEndTurn()) {
-            Packet packet = new TextPacket("Hello");
+            Packet packet = new NamePacket("Hello");
             packet.addTarget(new InetSocketAddress(serverAddress, Client.port));
-            network.queuePacket(packet);
+            client.queuePacket(packet);
             cellManager.iterate();
             actionHandler.newTurn();
             updateCellCount();
@@ -76,13 +75,13 @@ public class FXMLGameController implements Initializable, Observer {
         }
 
     }
+
     @FXML
-    private  void handleActionUndo(ActionEvent event){
+    private void handleActionUndo(ActionEvent event) {
         actionHandler.undoAction();
         cellManager.setNextIteration();
         draw();
     }
-
 
     @FXML
     private void handleMouseDrag(MouseEvent event) {
@@ -161,8 +160,8 @@ public class FXMLGameController implements Initializable, Observer {
                     gc.setFill(rgb(52, 73, 94));
                     gc.fillRect(x + 15 + xOffset, y + 15 + yOffset, 10, 10);
                 }
-                if (cell.isSelected()){
-                    gc.setStroke(rgb(236, 240, 241,1.0));
+                if (cell.isSelected()) {
+                    gc.setStroke(rgb(236, 240, 241, 1.0));
                     gc.strokeRect(x + 4 + xOffset, y + 4 + yOffset, 32, 32);
                 }
                 gc.setFill(rgb(52, 73, 94));
@@ -171,27 +170,34 @@ public class FXMLGameController implements Initializable, Observer {
         }
 
     }
-    private void updateCellCount(){
-        redBlocks.setText("x "+cellManager.getRedCount());
-        blueBlocks.setText("x "+cellManager.getBlueCount());
+
+    private void updateCellCount() {
+        redBlocks.setText("x " + cellManager.getRedCount());
+        blueBlocks.setText("x " + cellManager.getBlueCount());
     }
 
     public void initClient(Client network) {
-        this.network = network;
+        this.client = network;
     }
 
-    public void initServer(Server server) {
-        this.server = server;
+    public void setName(String name) {
+        if (host) {
+            this.redName.setText(username);
+            this.blueName.setText(name);
+        } else {
+            this.blueName.setText(username);
+            this.redName.setText(name);
+        }
+
+
     }
 
-    public void initName(String redName, String blueName) {
-        this.redName.setText(redName);
-        this.blueName.setText(blueName);
+    public void initHost(boolean host) {
+        this.host = host;
     }
 
-
-    public void initHost(boolean host){
-        this.host=host;
+    public void initName(String name) {
+        username = name;
     }
 
     public void initServerAddress(InetAddress serverAdress) {
@@ -208,10 +214,20 @@ public class FXMLGameController implements Initializable, Observer {
         gc = canvas.getGraphicsContext2D();
         updateCellCount();
         draw();
+
+        Packet packet = new NamePacket(username);
+        client.queuePacket(packet);
+        
     }
 
     @Override
     public void update(Observable o, Object arg) {
-
+        Platform.runLater(() -> {
+            Packet packet = (Packet) arg;
+            if (packet instanceof NamePacket) {
+                NamePacket pm = (NamePacket) packet;
+                setName(pm.getText());
+            }
+        });
     }
 }

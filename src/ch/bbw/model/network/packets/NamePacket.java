@@ -2,15 +2,19 @@ package ch.bbw.model.network.packets;
 
 import java.nio.ByteBuffer;
 
-public class TextPacket extends Packet {
+public class NamePacket extends Packet {
     String text;
 
-    public TextPacket() {
+    public NamePacket() {
 
     }
 
-    public TextPacket(String text) {
+    public NamePacket(String text) {
         this.text = text;
+    }
+
+    public String getText() {
+        return text;
     }
 
     @Override

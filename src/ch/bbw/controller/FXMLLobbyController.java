@@ -16,7 +16,6 @@ import ch.bbw.model.network.Server;
 import ch.bbw.model.network.packets.AcceptPacket;
 import ch.bbw.model.network.packets.InvitePacket;
 import ch.bbw.model.network.packets.Packet;
-import ch.bbw.model.network.packets.PacketHandler;
 import ch.bbw.model.utils.TimeConverter;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -50,7 +49,7 @@ import java.util.*;
 public class FXMLLobbyController implements Initializable, Observer {
 
     long inviteTime = 30000;
-    boolean inviteSent, inviteAccepted;
+    boolean inviteSent;
     @FXML
     private Label username;
     @FXML
@@ -68,15 +67,14 @@ public class FXMLLobbyController implements Initializable, Observer {
 
         Button button = new Button(address.getHostAddress());
         button.setOnAction(this::handleUser);
-
         users.getChildren().add(button);
         userManager.addUser(new User(address, button));
     }
 
     @FXML
     private void handleUser(ActionEvent event) {
-        Button button = (Button) event.getSource();
 
+        Button button = (Button) event.getSource();
         for (User user : userManager.getUsers()) {
             if (user.getButton().equals(button)) {
                 System.out.println("Sending invite...");
@@ -87,6 +85,7 @@ public class FXMLLobbyController implements Initializable, Observer {
 
     @FXML
     private void handleAccept(ActionEvent event) {
+
         Button button = (Button) event.getSource();
         Invite invite = inviteManager.getInviteByButton(button);
         sendAccept(invite);
@@ -95,19 +94,17 @@ public class FXMLLobbyController implements Initializable, Observer {
     @FXML
     private void handleInviteButton(ActionEvent event) {
         try {
-            gameUserCountDown(0, InetAddress.getLocalHost());
+            gameUserCountDown(InetAddress.getLocalHost());
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
 
-
     private void sendInvite(InetAddress address) {
 
         Random random = new Random();
         Invite invite = new Invite(System.currentTimeMillis(), System.currentTimeMillis() + inviteTime, address.toString(), random.nextInt(), address);
-
 
         if (!inviteManager.inviteExists(invite)) {
 
@@ -122,19 +119,14 @@ public class FXMLLobbyController implements Initializable, Observer {
             packet.addTarget(new InetSocketAddress(address, InviteSender.port));
 
             HBox field = new HBox();
-
-
             Label name = new Label(invite.getRecallAddress());
             field.getChildren().add(name);
             invite.setContainer(field);
 
             sentInvites.getChildren().add(field);
-
             try {
-
                 inviteSender.sendPacket(packet);
                 inviteSent = true;
-
             } catch (IOException e) {
                 e.printStackTrace();
                 System.err.println("Failed to send Packet");
@@ -171,7 +163,7 @@ public class FXMLLobbyController implements Initializable, Observer {
             System.out.println(invite.getRecallAddress());
             packet.addTarget(new InetSocketAddress(InetAddress.getByName(invite.getRecallAddress()), InviteSender.port));
             inviteSender.sendPacket(packet);
-            gameUserCountDown(invite.getDeprecationTime(), InetAddress.getByName(invite.getRecallAddress()));
+            gameUserCountDown(InetAddress.getByName(invite.getRecallAddress()));
 
         } catch (UnknownHostException e) {
             e.printStackTrace();
@@ -183,12 +175,10 @@ public class FXMLLobbyController implements Initializable, Observer {
     private void receiveAccept(AcceptPacket packet) {
 
         if (packet.isAcceptence()) {
-
             Invite invite = inviteManager.getInviteById(packet.getId());
             if (invite != null) {
-
                 try {
-                    gameServerCountDown(invite.getDeprecationTime(), invite.getTarget());
+                    gameServerCountDown();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -201,18 +191,16 @@ public class FXMLLobbyController implements Initializable, Observer {
     private void updateTimeSentInvites(VBox container) {
 
         ObservableList<Node> hBoxes = container.getChildren();
-
         for (Node hBox : hBoxes) {
 
             HBox box = (HBox) hBox;
             Label label = (Label) box.getChildren().get(1);
             Invite invite = inviteManager.getInviteByContainer(box);
             label.setText(timeConverter.longToString(timeConverter.getSecDif(invite.getDeprecationTime(), invite.getTimeSent())));
-
         }
     }
 
-    private void gameServerCountDown(long startTime, InetAddress secondPlayer) throws IOException {
+    private void gameServerCountDown() throws IOException {
         Stage stage1 = (Stage) username.getScene().getWindow();
         stage1.close();
 
@@ -220,20 +208,18 @@ public class FXMLLobbyController implements Initializable, Observer {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../view/FXMLGame.fxml"));
         Parent root1 = (Parent) fxmlLoader.load();
 
-
         FXMLGameController controller = fxmlLoader.<FXMLGameController>getController();
 
-        PacketHandler packetHandler = new PacketHandler();
 
         Server server = new Server();
-        Client client = new Client(new InetSocketAddress(InetAddress.getLocalHost(), Client.port), packetHandler);
+        Client client = new Client(new InetSocketAddress(InetAddress.getLocalHost(), Client.port));
+
         controller.initClient(client);
-        controller.initServer(server);
         controller.initServerAddress(InetAddress.getLocalHost());
         controller.initHost(true);
+        controller.initName(username.getText());
 
-        packetHandler.addObserver(controller);
-
+        client.addObserver(controller);
 
         new Thread(server).start();
         new Thread(client).start();
@@ -250,10 +236,9 @@ public class FXMLLobbyController implements Initializable, Observer {
         stage.setScene(scene);
         stage.show();
         search.setRunning(false);
-
     }
 
-    private void gameUserCountDown(long startTime, InetAddress secondPlayer) throws IOException {
+    private void gameUserCountDown(InetAddress secondPlayer) throws IOException {
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {
@@ -268,13 +253,14 @@ public class FXMLLobbyController implements Initializable, Observer {
 
         FXMLGameController controller = fxmlLoader.<FXMLGameController>getController();
 
+        Client client = new Client(new InetSocketAddress(secondPlayer, Client.port));
 
-        PacketHandler packetHandler = new PacketHandler();
-        Client client = new Client(new InetSocketAddress(secondPlayer, Client.port), packetHandler);
         controller.initClient(client);
         controller.initServerAddress(secondPlayer);
         controller.initHost(false);
-        packetHandler.addObserver(controller);
+        controller.initName(username.getText());
+
+        client.addObserver(controller);
 
         new Thread(client).start();
 
@@ -289,7 +275,6 @@ public class FXMLLobbyController implements Initializable, Observer {
         stage.setScene(scene);
         stage.show();
         search.setRunning(false);
-
     }
 
     public void initUserName(String username) {
@@ -316,7 +301,6 @@ public class FXMLLobbyController implements Initializable, Observer {
 
         fiveSeconds = new Timeline(new KeyFrame(Duration.millis(50), (e) -> {
             try {
-
                 ArrayList<Packet> packets = inviteSender.readReceivedPacket();
                 if (packets.size() != 0) {
                     for (Packet packet : packets) {
@@ -324,22 +308,17 @@ public class FXMLLobbyController implements Initializable, Observer {
 
                             InvitePacket invitePacket = (InvitePacket) packet;
                             receivedInvite(invitePacket);
-
                         } else if (packet instanceof AcceptPacket) {
 
                             AcceptPacket acceptPacket = (AcceptPacket) packet;
                             receiveAccept(acceptPacket);
-
                         }
                     }
                 }
 
-
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
-
-
         }));
 
         fiveSeconds.setCycleCount(Timeline.INDEFINITE);

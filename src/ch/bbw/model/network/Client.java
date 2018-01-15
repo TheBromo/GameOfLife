@@ -1,20 +1,19 @@
 package ch.bbw.model.network;
 
 import ch.bbw.model.network.packets.Packet;
-import ch.bbw.model.network.packets.PacketHandler;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Observable;
 import java.util.Set;
 
-public class Client implements Runnable {
+public class Client extends Observable implements Runnable {
 
 
     public static final int port = 6666;
@@ -22,14 +21,12 @@ public class Client implements Runnable {
     private ArrayList<Packet> queue;
     private SocketChannel channel;
 
-    private PacketHandler packetHandler;
     private boolean running;
 
-    public Client(InetSocketAddress serverAddress, PacketHandler packetHandler) {
+    public Client(InetSocketAddress serverAddress) {
         this.serverAddress = serverAddress;
 
         queue = new ArrayList<>();
-        this.packetHandler = packetHandler;
         running = true;
     }
 
@@ -37,9 +34,6 @@ public class Client implements Runnable {
         queue.add(packet);
     }
 
-    public SocketAddress getServerAddress() {
-        return serverAddress;
-    }
 
     public void setRunning(boolean running) {
         this.running = running;
@@ -67,7 +61,7 @@ public class Client implements Runnable {
                     for (SelectionKey key : keys) {
                         if (key.isConnectable()) {
                             channel.finishConnect();
-                            System.out.println("Connected");
+                            System.out.println("Client: Connected");
                         } else if (key.isReadable()) {
                             SocketChannel sChannel = (SocketChannel) key.channel();
 
@@ -76,8 +70,9 @@ public class Client implements Runnable {
                             readBuffer.flip();
 
                             Packet packet = Packet.decompilePacket(readBuffer);
-                            packetHandler.handlePacket(packet);
-                            System.out.println("Packet received");
+                            setChanged();
+                            notifyObservers(packet);
+                            System.out.println("Client: Packet received");
                         }
                     }
                     keys.clear();
@@ -86,7 +81,7 @@ public class Client implements Runnable {
 
                     Iterator<Packet> packetIterator = queue.iterator();
                     while (packetIterator.hasNext()) {
-                        System.out.println("Sending Packet...");
+                        System.out.println("Client: Sending Packet...");
                         Packet packet = packetIterator.next();
                         writeBuffer.position(0).limit(writeBuffer.capacity());
                         Packet.compilePacket(packet, writeBuffer);

@@ -1,9 +1,8 @@
 package ch.bbw.model.network;
 
 
+import ch.bbw.model.network.packets.NamePacket;
 import ch.bbw.model.network.packets.Packet;
-import ch.bbw.model.network.packets.PacketHandler;
-import ch.bbw.model.network.packets.TextPacket;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -30,15 +29,9 @@ public class Server implements Runnable {
 
     public Server() {
 
-
         running = true;
-
-        packetHandler = new PacketHandler();
-
         clients = new HashMap<>();
         queue = new ArrayList<>();
-
-
     }
 
     public void setIp(InetAddress ip) {
@@ -65,7 +58,7 @@ public class Server implements Runnable {
             channel.configureBlocking(false);
             channel.bind(new InetSocketAddress(InetAddress.getLocalHost(), port));
 
-            System.out.println("Server starting on: " + channel.getLocalAddress().toString());
+            System.out.println("Server: starting on: " + channel.getLocalAddress().toString());
 
             Selector selector = Selector.open();
             channel.register(selector, SelectionKey.OP_ACCEPT);
@@ -107,6 +100,7 @@ public class Server implements Runnable {
 
                             for (InetSocketAddress a : clients.keySet()) {
                                 if (!a.equals(clients.get(sChannel))) {
+                                    System.out.println("Server: added target: " + sChannel.getRemoteAddress());
                                     packet.addTarget(a);
                                 }
                             }
@@ -132,9 +126,8 @@ public class Server implements Runnable {
                         while (targetIterator.hasNext()) {
 
                             SocketAddress target = targetIterator.next();
-                            System.out.println(target);
                             clients.get(target).write(writeBuffer);
-                            System.out.println("Server: Sending Packet to: " + target);
+                            System.out.println("Server: Sending " + packet.getClass().getName() + " to: " + target);
                             writeBuffer.flip();
                         }
 
@@ -149,7 +142,7 @@ public class Server implements Runnable {
     }
 
     private void sendHello(InetSocketAddress address) {
-        Packet packet = new TextPacket("Hello");
+        Packet packet = new NamePacket("Hello");
         packet.addTarget(address);
         queuePacket(packet);
 

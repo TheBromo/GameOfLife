@@ -17,6 +17,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.URL;
 import java.util.Observable;
 import java.util.Observer;
@@ -43,7 +44,7 @@ public class FXMLGameController implements Initializable, Observer {
     private void handleTurnEnd(ActionEvent event) {
         if (actionHandler.canEndTurn()) {
             Packet packet = new TextPacket("Hello");
-            packet.addTarget(serverAddress);
+            packet.addTarget(new InetSocketAddress(serverAddress, Client.port));
             network.queuePacket(packet);
             cellManager.iterate();
             actionHandler.newTurn();

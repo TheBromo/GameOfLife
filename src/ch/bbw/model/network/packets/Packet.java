@@ -1,14 +1,13 @@
 package ch.bbw.model.network.packets;
 
 import java.lang.reflect.InvocationTargetException;
-import java.net.InetAddress;
-import java.net.SocketAddress;
+import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
 public abstract class Packet {
 
-    private ArrayList<InetAddress> targets = new ArrayList<>();
+    private ArrayList<InetSocketAddress> targets = new ArrayList<>();
 
     public static void writeString(String val, ByteBuffer buffer) {
         byte[] data = val.getBytes();
@@ -60,7 +59,7 @@ public abstract class Packet {
         return packet;
     }
 
-    public ArrayList<InetAddress> getTargets() {
+    public ArrayList<InetSocketAddress> getTargets() {
         return targets;
     }
 
@@ -68,7 +67,7 @@ public abstract class Packet {
         targets.clear();
     }
 
-    public void addTarget(InetAddress target) {
+    public void addTarget(InetSocketAddress target) {
         targets.add(target);
     }
 

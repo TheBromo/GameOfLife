@@ -1,8 +1,9 @@
 package ch.bbw.model.network;
 
-import serverTest.network.packets.Packet;
-import serverTest.network.packets.PacketHandler;
-import serverTest.network.packets.TextPacket;
+
+import ch.bbw.model.network.packets.Packet;
+import ch.bbw.model.network.packets.PacketHandler;
+import ch.bbw.model.network.packets.TextPacket;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -147,9 +148,9 @@ public class Server implements Runnable {
         }
     }
 
-    private void sendHello(InetAddress address) {
+    private void sendHello(InetSocketAddress address) {
         Packet packet = new TextPacket("Hello");
-        packet.addTarget(new InetSocketAddress(address, port));
+        packet.addTarget(address);
         queuePacket(packet);
 
     }

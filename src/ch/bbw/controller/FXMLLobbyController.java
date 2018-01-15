@@ -119,7 +119,7 @@ public class FXMLLobbyController implements Initializable, Observer {
             } catch (UnknownHostException e) {
                 e.printStackTrace();
             }
-            packet.addTarget(address);
+            packet.addTarget(new InetSocketAddress(address, InviteSender.port));
 
             HBox field = new HBox();
 
@@ -169,7 +169,7 @@ public class FXMLLobbyController implements Initializable, Observer {
         Packet packet = new AcceptPacket(invite.getId(), true);
         try {
             System.out.println(invite.getRecallAddress());
-            packet.addTarget(InetAddress.getByName(invite.getRecallAddress()));
+            packet.addTarget(new InetSocketAddress(InetAddress.getByName(invite.getRecallAddress()), InviteSender.port));
             inviteSender.sendPacket(packet);
             gameUserCountDown(invite.getDeprecationTime(), InetAddress.getByName(invite.getRecallAddress()));
 
@@ -308,7 +308,7 @@ public class FXMLLobbyController implements Initializable, Observer {
         timeConverter = new TimeConverter();
 
         try {
-            inviteSender = new InviteSender(8888);
+            inviteSender = new InviteSender();
         } catch (IOException e) {
             System.err.print("Failed to initialize InviteSender");
             e.printStackTrace();

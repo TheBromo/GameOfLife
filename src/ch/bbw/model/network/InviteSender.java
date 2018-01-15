@@ -20,10 +20,9 @@ public class InviteSender {
     private ByteBuffer readBuffer, writeBuffer;
     private DatagramChannel socket;
     private Selector selector;
-    private int port;
+    public static final int port = 8888;
 
-    public InviteSender(int port) throws IOException {
-        this.port=port;
+    public InviteSender() throws IOException {
 
         //prepares the socket
         socket = DatagramChannel.open();
@@ -44,12 +43,11 @@ public class InviteSender {
         Packet.compilePacket(packet,writeBuffer);
         writeBuffer.flip();
 
-        for (InetAddress address:packet.getTargets()) {
+        for (InetSocketAddress address : packet.getTargets()) {
 
-            //creates a socket address
-            InetSocketAddress socketAddress = new InetSocketAddress( address, port);
+
             //sends the data
-            socket.send(writeBuffer, socketAddress);
+            socket.send(writeBuffer, address);
         }
     }
 

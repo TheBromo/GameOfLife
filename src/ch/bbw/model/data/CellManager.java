@@ -75,7 +75,7 @@ public class CellManager {
     }
 
     private void placeCells(Color color) {
-        random = new Random();
+
         for (int i = 0; i < cellCount; i++) {
             int x, y;
             do {
@@ -83,7 +83,11 @@ public class CellManager {
                 y = (random.nextInt() & 0x7fffffff) % (cells[x].length >> 1);
             } while (cells[x][y] != null);
             cells[x][y] = new Cell(true, color);
-            cells[cells.length - x - 1][cells[x].length - y - 1] = new Cell(true, color);
+            if (color == red) {
+                cells[cells.length - x - 1][cells[x].length - y - 1] = new Cell(true, blue);
+            } else {
+                cells[cells.length - x - 1][cells[x].length - y - 1] = new Cell(true, red);
+            }
         }
     }
 

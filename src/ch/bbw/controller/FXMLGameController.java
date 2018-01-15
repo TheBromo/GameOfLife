@@ -49,6 +49,9 @@ public class FXMLGameController implements Initializable, Observer {
         packet.addTarget(new InetSocketAddress(serverAddress, Client.port));
         client.queuePacket(packet);
         if (actionHandler.canEndTurn() && turnHandler.canPlay()) {
+            ActionPacket actionPacket = new ActionPacket();
+            actionPacket.addTarget(new InetSocketAddress(serverAddress, Client.port));
+            client.queuePacket(actionPacket);
             cellManager.iterate();
             actionHandler.newTurn();
             updateCellCount();
@@ -255,6 +258,7 @@ public class FXMLGameController implements Initializable, Observer {
             } else if (packet instanceof ActionPacket) {
                 ActionPacket pm = (ActionPacket) packet;
                 cellManager.processEnemyAction(pm);
+                turnHandler.newTurn();
                 updateCellCount();
                 draw();
             }

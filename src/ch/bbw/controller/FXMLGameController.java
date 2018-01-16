@@ -334,6 +334,7 @@ public class FXMLGameController implements Initializable, Observer {
                 turnHandler.newTurn();
                 paintActivePlayer();
                 checkWinner();
+                index.setText("" + cellManager.getHumanIndex());
             }
         });
     }

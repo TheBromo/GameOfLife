@@ -1,7 +1,11 @@
 package ch.bbw.model.utils;
 
 import ch.bbw.model.data.Cell;
+import ch.bbw.model.data.CellManager;
+import ch.bbw.model.network.packets.ActionPacket;
 import javafx.scene.paint.Color;
+
+import java.util.ArrayList;
 
 import static javafx.scene.paint.Color.rgb;
 
@@ -9,8 +13,10 @@ public class ActionHandler {
     private Color color;
     private boolean cellKilled, canEndTurn;
     private Action lastAction;
+    private CellManager cellManager;
 
-    public ActionHandler(boolean isHost) {
+    public ActionHandler(boolean isHost, CellManager cellManager) {
+        this.cellManager = cellManager;
         cellKilled = false;
         canEndTurn = false;
         if (isHost) {
@@ -60,14 +66,14 @@ public class ActionHandler {
                 clickedCell.setBornNextTurn(false);
                 lastAction = null;
                 System.out.println("Cell deborn");
-                for (Cell parent:clickedCell.getParents()){
+                for (Cell parent : clickedCell.getParents()) {
                     parent.setAlive(true);
                     parent.setColor(color);
                 }
                 canEndTurn = false;
                 clickedCell.clearParents();
-            }else {
-                if (lastAction.getCell().getParents().size()<2) {
+            } else {
+                if (lastAction.getCell().getParents().size() < 2) {
                     clickedCell.setAlive(false);
                     lastAction.getCell().addParent(clickedCell);
                     System.out.println("Cell sacrificed");
@@ -75,7 +81,7 @@ public class ActionHandler {
                         canEndTurn = true;
                         System.out.println("Can end turn");
                     }
-                }else {
+                } else {
                     System.out.println("Already has 2 Parents");
                 }
             }
@@ -86,6 +92,19 @@ public class ActionHandler {
 
     public boolean canEndTurn() {
         return canEndTurn;
+    }
+
+
+    public ActionPacket getAction() {
+        if (lastAction == Action.CREATE_NEW_CELL) {
+            ArrayList<CellCoordinates> parents = new ArrayList<>();
+            for (Cell cell : lastAction.getCell().getParents()) {
+                parents.add(cellManager.getCellCoor(cell));
+            }
+            return new ActionPacket(lastAction.getCell().hasParents(), cellManager.getCellCoor(lastAction.getCell()), parents);
+        } else {
+            return new ActionPacket(false, cellManager.getCellCoor(lastAction.getCell()), null);
+        }
     }
 
     public void newTurn() {
@@ -111,22 +130,20 @@ public class ActionHandler {
         private Cell cell;
         private Color oldColor;
 
+        public Cell getCell() {
+            return cell;
+        }
 
         public void setCell(Cell cell) {
             this.cell = cell;
         }
 
-        public Cell getCell() {
-            return cell;
+        public Color getOldColor() {
+            return oldColor;
         }
-
 
         public void setOldColor(Color oldColor) {
             this.oldColor = oldColor;
-        }
-
-        public Color getOldColor() {
-            return oldColor;
         }
 
 

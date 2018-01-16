@@ -1,6 +1,7 @@
 package ch.bbw.model.data;
 
 import ch.bbw.model.network.packets.ActionPacket;
+import ch.bbw.model.utils.CellCoordinates;
 import javafx.scene.paint.Color;
 
 import java.util.Random;
@@ -65,8 +66,41 @@ public class CellManager {
         selected = cell;
     }
 
-    public void processEnemyAction(ActionPacket packet) {
-        //TODO add process interpretation
+    public CellCoordinates getCellCoor(Cell cell) {
+        for (int x = 0; x < cells.length; x++) {
+            for (int y = 0; y < cells[x].length; y++) {
+                if (cells[x][y].equals(cell)) {
+                    return new CellCoordinates(cell.isAlive(), x, y);
+                }
+
+            }
+        }
+        return null;
+    }
+
+    public void processEnemyAction(ActionPacket packet, boolean isHost) {
+        if (packet.hasParents()) {
+            Color color;
+            if (isHost) {
+                color = blue;
+            } else {
+                color = red;
+            }
+            Cell mainCell = cells[packet.getMainCell().getX()][packet.getMainCell().getY()];
+            mainCell.setAlive(packet.getMainCell().isAlive());
+            mainCell.setColor(color);
+            System.out.println("Cell born: " + packet.getMainCell().getX() + " " + packet.getMainCell().getY());
+
+            for (CellCoordinates coordinates : packet.getParents()) {
+                Cell parent = cells[coordinates.getX()][coordinates.getY()];
+                parent.setAlive(coordinates.isAlive());
+                System.out.println("Parent set alive: " + coordinates.isAlive());
+            }
+        } else {
+            Cell cell = cells[packet.getMainCell().getX()][packet.getMainCell().getY()];
+            cell.setAlive(packet.getMainCell().isAlive());
+            System.out.println("Cell killed: " + packet.getMainCell().getX() + " " + packet.getMainCell().getY());
+        }
     }
 
     public Cell getCellByCoordinates(double x, double y, double canvasWidth) {

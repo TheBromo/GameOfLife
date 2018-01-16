@@ -8,7 +8,6 @@ import ch.bbw.model.network.packets.NamePacket;
 import ch.bbw.model.network.packets.Packet;
 import ch.bbw.model.network.packets.SeedPacket;
 import ch.bbw.model.utils.ActionHandler;
-import ch.bbw.model.utils.CellCoordinates;
 import ch.bbw.model.utils.TurnHandler;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -48,7 +47,7 @@ public class FXMLGameController implements Initializable, Observer {
     private void handleTurnEnd(ActionEvent event) {
         if (actionHandler.canEndTurn() && turnHandler.canPlay()) {
 
-            ActionPacket actionPacket = new ActionPacket(false, new CellCoordinates(true, 1, 1), null);
+            ActionPacket actionPacket = actionHandler.getAction();
             actionPacket.addTarget(new InetSocketAddress(serverAddress, Client.port));
             client.queuePacket(actionPacket);
 
@@ -184,10 +183,10 @@ public class FXMLGameController implements Initializable, Observer {
     }
 
     private void paintActivePlayer() {
-        if ((turnHandler.canPlay() && host)||(!turnHandler.canPlay()&&!host)) {
+        if ((turnHandler.canPlay() && host) || (!turnHandler.canPlay() && !host)) {
             colorGc.setFill(rgb(231, 76, 60));
-        }else {
-            colorGc.setFill( rgb(52, 152, 219));
+        } else {
+            colorGc.setFill(rgb(52, 152, 219));
         }
         colorGc.fillRect(0, 0, color.getWidth(), color.getHeight());
     }
@@ -213,7 +212,7 @@ public class FXMLGameController implements Initializable, Observer {
     public void initHost(boolean host) {
         this.host = host;
         turnHandler = new TurnHandler(host);
-        actionHandler = new ActionHandler(host);
+        actionHandler = new ActionHandler(host, cellManager);
         paintActivePlayer();
 
     }
@@ -268,10 +267,14 @@ public class FXMLGameController implements Initializable, Observer {
                 draw();
             } else if (packet instanceof ActionPacket) {
                 ActionPacket pm = (ActionPacket) packet;
-                cellManager.processEnemyAction(pm);
-                turnHandler.newTurn();
+                cellManager.processEnemyAction(pm, host);
+
+                cellManager.iterate();
+                actionHandler.newTurn();
                 updateCellCount();
                 draw();
+                turnHandler.newTurn();
+                paintActivePlayer();
             }
         });
     }

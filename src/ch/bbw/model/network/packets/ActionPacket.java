@@ -20,6 +20,19 @@ public class ActionPacket extends Packet {
     public ActionPacket() {
     }
 
+
+    public boolean hasParents() {
+        return hasParents;
+    }
+
+    public CellCoordinates getMainCell() {
+        return mainCell;
+    }
+
+    public ArrayList<CellCoordinates> getParents() {
+        return parents;
+    }
+
     @Override
     public void serialize(ByteBuffer byteBuffer) {
         Packet.writeBoolean(hasParents, byteBuffer);

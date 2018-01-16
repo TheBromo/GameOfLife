@@ -95,6 +95,8 @@
                    <Button mnemonicParsing="false" onAction="#handleSkipForwards" style="-fx-background-color: #1F2D3F;"
                            text="&gt;" textFill="WHITE" GridPane.columnIndex="1" GridPane.halignment="CENTER"
                            GridPane.rowIndex="3"/>
+                   <Label fx:id="index" style="-fx-background-color: #1F2D3F;" textFill="WHITE" GridPane.columnSpan="2"
+                          GridPane.halignment="CENTER" GridPane.rowIndex="3"/>
                </children>
             </GridPane>
          </children>

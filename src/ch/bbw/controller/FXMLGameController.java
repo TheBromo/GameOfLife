@@ -32,7 +32,7 @@ import static javafx.scene.paint.Color.rgb;
 
 public class FXMLGameController implements Initializable, Observer {
     @FXML
-    private Label blueName, redName, blueBlocks, redBlocks;
+    private Label blueName, redName, blueBlocks, redBlocks, index;
     @FXML
     private Canvas canvas, color;
     private GraphicsContext gc, colorGc;
@@ -65,12 +65,14 @@ public class FXMLGameController implements Initializable, Observer {
     @FXML
     public void handleSkipBack(ActionEvent event) {
         cellManager.goBackward();
+        index.setText("" + cellManager.getHumanIndex());
         draw();
     }
 
     @FXML
     public void handleSkipForwards(ActionEvent event) {
         cellManager.goForward();
+        index.setText("" + cellManager.getHumanIndex());
         draw();
     }
 
@@ -150,7 +152,7 @@ public class FXMLGameController implements Initializable, Observer {
                 gc.fillRect(x + 4 + xOffset, y + 4 + yOffset, 32, 32);
                 Cell cell = cells[(int) (x / (canvas.getWidth() / cellManager.getCells().length))][(int) (y / (canvas.getWidth() / cellManager.getCells().length))];
 
-                if (cell.isBornNextTurn()) {
+                if (cell.isBornNextTurn() && cellManager.isViewingNewestField()) {
                     System.out.println("Born cell: " + cell.getParents().size() + " alive?" + cell.isAliveNextTurn());
                     gc.setFill(cell.getColor());
                     gc.setStroke(cell.getColor());

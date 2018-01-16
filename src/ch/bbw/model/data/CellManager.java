@@ -35,6 +35,13 @@ public class CellManager {
         return fields.get(index).getCells();
     }
 
+
+    public int getHumanIndex() {
+        System.out.println(index + 1);
+        System.out.println(index);
+        return index + 1;
+    }
+
     public boolean isViewingNewestField() {
         return index == fields.size() - 1;
     }

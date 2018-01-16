@@ -33,6 +33,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -53,7 +54,7 @@ public class FXMLLobbyController implements Initializable, Observer {
     @FXML
     private Label username;
     @FXML
-    private VBox users, sentInvites, receivedInvites;
+    private VBox users, receivedInvites;
     @FXML
     private TextField ipadress;
     private TimeConverter timeConverter;
@@ -67,6 +68,8 @@ public class FXMLLobbyController implements Initializable, Observer {
 
         Button button = new Button(address.getHostAddress());
         button.setOnAction(this::handleUser);
+        button.setStyle("-fx-background-color: #1F2D3F");
+        button.setTextFill(Color.WHITE);
         users.getChildren().add(button);
         userManager.addUser(new User(address, button));
     }
@@ -123,7 +126,6 @@ public class FXMLLobbyController implements Initializable, Observer {
             field.getChildren().add(name);
             invite.setContainer(field);
 
-            sentInvites.getChildren().add(field);
             try {
                 inviteSender.sendPacket(packet);
                 inviteSent = true;
@@ -149,7 +151,8 @@ public class FXMLLobbyController implements Initializable, Observer {
 
         if (!inviteManager.inviteExists(invite)) {
             inviteManager.addReceivedInvite(invite);
-
+            button.setStyle("-fx-background-color: #1F2D3F");
+            button.setTextFill(Color.WHITE);
             box.getChildren().add(button);
             box.getChildren().add(label);
             receivedInvites.getChildren().add(box);

@@ -33,8 +33,8 @@ public class FXMLGameController implements Initializable, Observer {
     @FXML
     private Label blueName, redName, blueBlocks, redBlocks;
     @FXML
-    private Canvas canvas;
-    private GraphicsContext gc;
+    private Canvas canvas, color;
+    private GraphicsContext gc, colorGc;
     private Client client;
     private TurnHandler turnHandler;
     private InetAddress serverAddress;
@@ -57,6 +57,7 @@ public class FXMLGameController implements Initializable, Observer {
             updateCellCount();
             draw();
             turnHandler.newTurn();
+            paintActivePlayer();
         }
     }
 
@@ -182,6 +183,15 @@ public class FXMLGameController implements Initializable, Observer {
 
     }
 
+    private void paintActivePlayer() {
+        if ((turnHandler.canPlay() && host)||(!turnHandler.canPlay()&&!host)) {
+            colorGc.setFill(rgb(231, 76, 60));
+        }else {
+            colorGc.setFill( rgb(52, 152, 219));
+        }
+        colorGc.fillRect(0, 0, color.getWidth(), color.getHeight());
+    }
+
     private void updateCellCount() {
         redBlocks.setText("x " + cellManager.getRedCount());
         blueBlocks.setText("x " + cellManager.getBlueCount());
@@ -213,6 +223,7 @@ public class FXMLGameController implements Initializable, Observer {
         } else {
             blueName.setText(name);
         }
+        paintActivePlayer();
 
     }
 
@@ -233,6 +244,7 @@ public class FXMLGameController implements Initializable, Observer {
         recZoom = 1;
         cellManager = new CellManager();
         gc = canvas.getGraphicsContext2D();
+        colorGc = color.getGraphicsContext2D();
         updateCellCount();
         draw();
 

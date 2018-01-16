@@ -10,6 +10,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
 <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="586.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ch.bbw.controller.FXMLGameController">
    <children>
@@ -54,15 +55,34 @@
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
               </columnConstraints>
               <rowConstraints>
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" />
+                <RowConstraints />
+                  <RowConstraints maxHeight="60.0" minHeight="5.600006103515625" prefHeight="56.79998779296875" />
+                <RowConstraints maxHeight="79.79999389648438" minHeight="10.0" prefHeight="28.600012207031256" vgrow="SOMETIMES" />
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <Button mnemonicParsing="false" onAction="#handleTurnEnd" prefHeight="26.0" prefWidth="185.0" style="-fx-background-color: #1F2D3F;" text="End Turn" textFill="WHITE" GridPane.columnSpan="2" GridPane.rowIndex="4" />
-                  <Button mnemonicParsing="false" onAction="#handleActionUndo" prefHeight="26.0" prefWidth="185.0" style="-fx-background-color: #1F2D3F;" text="Undo Action" textFill="WHITE" GridPane.columnSpan="2" GridPane.rowIndex="3" />
+                  <Button mnemonicParsing="false" onAction="#handleTurnEnd" prefHeight="26.0" prefWidth="185.0" style="-fx-background-color: #1F2D3F;" text="End Turn" textFill="WHITE" GridPane.columnSpan="2" GridPane.rowIndex="5" />
+                  <Button mnemonicParsing="false" onAction="#handleActionUndo" prefHeight="26.0" prefWidth="185.0" style="-fx-background-color: #1F2D3F;" text="Undo Action" textFill="WHITE" GridPane.columnSpan="2" GridPane.rowIndex="4" />
+                  <HBox prefHeight="45.0" prefWidth="182.0" style="-fx-background-color: #1F2D3F;" GridPane.columnSpan="2" GridPane.rowIndex="1">
+                     <children>
+                        <Label prefHeight="34.0" prefWidth="56.0" text="  It's " textFill="WHITE">
+                           <font>
+                              <Font size="23.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets left="1.0" />
+                           </HBox.margin>
+                        </Label>
+                        <Canvas fx:id="color" height="33.0" width="33.0" />
+                        <Label prefHeight="18.0" prefWidth="61.0" text=" turn" textFill="WHITE">
+                           <font>
+                              <Font size="23.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </HBox>
                </children>
             </GridPane>
          </children>

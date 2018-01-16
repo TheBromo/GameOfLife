@@ -4,24 +4,48 @@ import ch.bbw.model.network.packets.ActionPacket;
 import ch.bbw.model.utils.CellCoordinates;
 import javafx.scene.paint.Color;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import static javafx.scene.paint.Color.rgb;
 
 public class CellManager {
-    private Cell[][] cells = new Cell[10][10];
+    private ArrayList<Field> fields = new ArrayList<>();
+    private Cell[][] cells;
     private Color blue, red;
     private Cell selected;
-    private int cellCount = 10;
+    private int cellCount = 10, index;
     private Random random;
 
 
     public CellManager() {
+        index = 0;
+        cells = new Cell[10][10];
         random = new Random();
         blue = rgb(52, 152, 219);
         red = rgb(231, 76, 60);
         //generate();
         mirror();
+    }
+
+    public Cell[][] getView() {
+        return fields.get(index).getCells();
+    }
+
+    public boolean isViewingNewestField() {
+        return index == fields.size() - 1;
+    }
+
+    public void goForward() {
+        if (index + 1 != fields.size()) {
+            index++;
+        }
+    }
+
+    public void goBackward() {
+        if (index - 1 != -1) {
+            index--;
+        }
     }
 
     public void setSeed(long seed) {
@@ -31,6 +55,7 @@ public class CellManager {
     }
 
     private void reset() {
+
         for (int x = 0; x < cells.length; x++) {
             for (int y = 0; y < cells[x].length; y++) {
                 cells[x][y] = null;
@@ -133,16 +158,24 @@ public class CellManager {
         }
 
         setNextIteration();
+        addNewField();
+    }
+
+    private void addNewField() {
+        Field field = new Field();
+        field.setCells(cells);
+        fields.add(field);
+        index = fields.size() - 1;
     }
 
     public void iterate() {
-
         for (Cell[] cell : cells) {
             for (Cell aCell : cell) {
                 aCell.setAlive(aCell.isAliveNextTurn());
             }
         }
         setNextIteration();
+        addNewField();
     }
 
     public void setNextIteration() {

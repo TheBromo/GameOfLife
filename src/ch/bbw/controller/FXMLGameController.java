@@ -64,10 +64,14 @@ public class FXMLGameController implements Initializable, Observer {
 
     @FXML
     public void handleSkipBack(ActionEvent event) {
+        cellManager.goBackward();
+        draw();
     }
 
     @FXML
     public void handleSkipForwards(ActionEvent event) {
+        cellManager.goForward();
+        draw();
     }
 
     @FXML
@@ -82,8 +86,7 @@ public class FXMLGameController implements Initializable, Observer {
             System.out.println("x = " + x);
             if (y > 0 && y < 400 && x > 0 && x < 400) {
                 Cell cell = cellManager.getCellByCoordinates(x, y, canvas.getWidth());
-                cellManager.select(cell);
-                if (turnHandler.canPlay() && !finished) {
+                if (turnHandler.canPlay() && !finished && cellManager.isViewingNewestField()) {
                     actionHandler.handleAction(cell);
                     cellManager.setNextIteration();
                 }
@@ -140,7 +143,7 @@ public class FXMLGameController implements Initializable, Observer {
             gc.scale(zoom, zoom);
             zoomed = false;
         }
-        Cell[][] cells = cellManager.getCells();
+        Cell[][] cells = cellManager.getView();
         for (double x = 0; x < canvas.getWidth(); x = x + (canvas.getWidth() / cellManager.getCells().length)) {
             for (double y = 0; y < canvas.getHeight(); y = y + (canvas.getWidth() / cellManager.getCells().length)) {
                 gc.fillRect(x + 4 + xOffset, y + 4 + yOffset, 32, 32);

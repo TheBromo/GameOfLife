@@ -17,6 +17,15 @@ public class Cell {
         this.color = color;
     }
 
+    public Cell(boolean alive, boolean aliveNextTurn, boolean selected, boolean bornNextTurn, Color color, ArrayList<Cell> parents) {
+        this.alive = alive;
+        this.aliveNextTurn = aliveNextTurn;
+        this.selected = selected;
+        this.bornNextTurn = bornNextTurn;
+        this.color = color;
+        this.parents = parents;
+    }
+
     public Cell(boolean alive, Color color) {
         this.alive = alive;
         this.color = color;
@@ -30,7 +39,7 @@ public class Cell {
     }
 
     public Cell copy() {
-        return new Cell(alive, aliveNextTurn, selected, color);
+        return new Cell(alive, aliveNextTurn, selected, bornNextTurn, color, parents);
     }
 
     public boolean isBornNextTurn() {

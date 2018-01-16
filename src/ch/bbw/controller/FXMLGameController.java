@@ -14,6 +14,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
@@ -195,11 +196,37 @@ public class FXMLGameController implements Initializable, Observer {
     }
 
     private void checkWinner() {
-        if (cellManager.getRedCount() == 0) {
+
+        if (cellManager.getRedCount() == 0 && cellManager.getBlueCount() == 0) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Tie");
+            alert.setHeaderText("You both lost!");
+            alert.setContentText("All cells of " + redName.getText() + " & " + blueName.getText() + "  have been eliminated");
+            alert.showAndWait();
+            finished = true;
+        } else if (cellManager.getRedCount() == 0) {
             JOptionPane.showMessageDialog(null, blueName.getText() + " won!", "Game won", JOptionPane.INFORMATION_MESSAGE);
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("The Game has been won");
+            if (host) {
+                alert.setHeaderText("You lost!");
+            } else {
+                alert.setHeaderText("You won!");
+            }
+            alert.setContentText("All cells of " + redName.getText() + "  have been eliminated");
+            alert.showAndWait();
             finished = true;
         } else if (cellManager.getBlueCount() == 0) {
             JOptionPane.showMessageDialog(null, redName.getText() + " won!", "Game won", JOptionPane.INFORMATION_MESSAGE);
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("The Game has been won");
+            if (host) {
+                alert.setHeaderText("You won!");
+            } else {
+                alert.setHeaderText("You lost!");
+            }
+            alert.setContentText("All cells of " + blueName.getText() + "  have been eliminated");
+            alert.showAndWait();
             finished = true;
         }
     }

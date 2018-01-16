@@ -3,9 +3,7 @@ package ch.bbw.model.network;
 import ch.bbw.model.network.packets.Packet;
 
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 import java.nio.channels.SelectionKey;
@@ -16,7 +14,6 @@ import java.util.Iterator;
 public class InviteSender {
 
 
-    private ArrayList<Packet> sentPackets = new ArrayList<>();
     private ByteBuffer readBuffer, writeBuffer;
     private DatagramChannel socket;
     private Selector selector;
@@ -65,16 +62,11 @@ public class InviteSender {
                     //prepares buffer for reading
                     readBuffer.position(0).limit(readBuffer.capacity());
                     //gets the address of the sender
-                    SocketAddress sender = socket.receive(readBuffer);
+                    socket.receive(readBuffer);
                     readBuffer.flip();
-
-                    //the senders InetAddress
-                    InetAddress address = ((InetSocketAddress) sender).getAddress();
 
                     Packet packet = Packet.decompilePacket(readBuffer);
                     packets.add(packet);
-
-
                 }
                 keys.remove();
             }

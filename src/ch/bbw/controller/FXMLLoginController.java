@@ -6,7 +6,6 @@ package ch.bbw.controller;
  */
 
 import ch.bbw.model.network.NetToolsSearch;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -31,7 +30,7 @@ public class FXMLLoginController implements Initializable {
     private Button login;
 
     @FXML
-    private void handleButtonLogin(ActionEvent event) {
+    private void handleButtonLogin() {
         if (!name.getText().equals("")) {
             openLobbyWindow(name.getText());
             Stage stage = (Stage) login.getScene().getWindow();
@@ -43,9 +42,9 @@ public class FXMLLoginController implements Initializable {
         try {
             Stage stage = new Stage();
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../view/FXMLLobby.fxml"));
-            Parent root1 = (Parent) fxmlLoader.load();
+            Parent root1 = fxmlLoader.load();
 
-            FXMLLobbyController controller = fxmlLoader.<FXMLLobbyController>getController();
+            FXMLLobbyController controller = fxmlLoader.getController();
             controller.initUserName(username);
 
             NetToolsSearch search = new NetToolsSearch();
@@ -56,9 +55,7 @@ public class FXMLLoginController implements Initializable {
 
 
             Scene scene = new Scene(root1);
-            stage.setOnCloseRequest((e) -> {
-                search.setRunning(false);
-            });
+            stage.setOnCloseRequest((e) -> search.setRunning(false));
 
             stage.setTitle("Lobby");
             stage.setResizable(false);

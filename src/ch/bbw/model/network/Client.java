@@ -19,7 +19,6 @@ public class Client extends Observable implements Runnable {
     public static final int port = 6666;
     private InetSocketAddress serverAddress;
     private ArrayList<Packet> queue;
-    private SocketChannel channel;
     private boolean running;
 
     public Client(InetSocketAddress serverAddress) {
@@ -40,6 +39,7 @@ public class Client extends Observable implements Runnable {
     @Override
     public void run() {
         try {
+            SocketChannel channel;
             channel = SocketChannel.open();
             channel.configureBlocking(false);
             channel.connect(serverAddress);

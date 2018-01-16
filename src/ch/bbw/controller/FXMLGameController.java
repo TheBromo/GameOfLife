@@ -10,7 +10,6 @@ import ch.bbw.model.network.packets.SeedPacket;
 import ch.bbw.model.utils.ActionHandler;
 import ch.bbw.model.utils.TurnHandler;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
@@ -42,10 +41,9 @@ public class FXMLGameController implements Initializable, Observer {
     private ActionHandler actionHandler;
     private double xOffset, yOffset, zoom, recZoom, lastDragY, lastDragX;
     private boolean dragInProgress, zoomed, host, finished;
-    private String username;
 
     @FXML
-    private void handleTurnEnd(ActionEvent event) {
+    private void handleTurnEnd() {
         if (actionHandler.canEndTurn() && turnHandler.canPlay() && !finished) {
 
             ActionPacket actionPacket = actionHandler.getAction();
@@ -67,7 +65,6 @@ public class FXMLGameController implements Initializable, Observer {
         System.out.println("Click...");
         if (dragInProgress) {
             dragInProgress = false;
-            return;
         } else {
             double x = event.getX() / recZoom - xOffset;
             double y = event.getY() / recZoom - yOffset;
@@ -81,14 +78,13 @@ public class FXMLGameController implements Initializable, Observer {
                     cellManager.setNextIteration();
                 }
                 draw();
-
             }
         }
 
     }
 
     @FXML
-    private void handleActionUndo(ActionEvent event) {
+    private void handleActionUndo() {
         if (turnHandler.canPlay()) {
             actionHandler.undoAction();
             cellManager.setNextIteration();
@@ -151,13 +147,13 @@ public class FXMLGameController implements Initializable, Observer {
                     } else if (cell.getParents().size() == 2) {
                         gc.fillRect(x + 4 + xOffset, y + 4 + yOffset, 32, 32);
                         System.out.println(cell.isAliveNextTurn());
-                        if (!cell.isAliveNextTurn()) {
-                            gc.setFill(rgb(52, 73, 94));
-                            gc.fillRect(x + 15 + xOffset, y + 15 + yOffset, 10, 10);
-                            System.out.println("hey");
-                        }
-                    }
 
+                    }
+                    if (!cell.isAliveNextTurn()) {
+                        gc.setFill(rgb(52, 73, 94));
+                        gc.fillRect(x + 15 + xOffset, y + 15 + yOffset, 10, 10);
+                        System.out.println("hey");
+                    }
                     gc.setFill(rgb(52, 73, 94));
                     continue;
                 }
@@ -203,7 +199,7 @@ public class FXMLGameController implements Initializable, Observer {
             JOptionPane.showMessageDialog(null, blueName.getText() + " won!", "Game won", JOptionPane.INFORMATION_MESSAGE);
             finished = true;
         } else if (cellManager.getBlueCount() == 0) {
-            JOptionPane.showMessageDialog(null, blueName.getText() + " won!", "Game won", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, redName.getText() + " won!", "Game won", JOptionPane.INFORMATION_MESSAGE);
             finished = true;
         }
     }
@@ -230,7 +226,6 @@ public class FXMLGameController implements Initializable, Observer {
     }
 
     public void initName(String name) {
-        username = name;
         if (host) {
             redName.setText(name);
         } else {
@@ -267,9 +262,12 @@ public class FXMLGameController implements Initializable, Observer {
         Platform.runLater(() -> {
             Packet packet = (Packet) arg;
             if (packet instanceof NamePacket) {
+
                 NamePacket pm = (NamePacket) packet;
                 System.out.println(pm.getText());
+
             } else if (packet instanceof SeedPacket) {
+
                 SeedPacket pm = (SeedPacket) packet;
                 System.out.println(pm.getSeed());
                 cellManager.setSeed(pm.getSeed());
@@ -277,7 +275,9 @@ public class FXMLGameController implements Initializable, Observer {
                 updateCellCount();
                 System.out.println("starting drawing");
                 draw();
+
             } else if (packet instanceof ActionPacket) {
+
                 ActionPacket pm = (ActionPacket) packet;
                 cellManager.processEnemyAction(pm, host);
                 cellManager.setNextIteration();

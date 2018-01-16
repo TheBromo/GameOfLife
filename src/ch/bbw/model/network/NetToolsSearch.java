@@ -7,19 +7,16 @@ import ch.thecodinglab.nettools.WinNative;
 import java.io.File;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
 import java.util.Observable;
 
 public class NetToolsSearch extends Observable implements Runnable,Discovery.Callback {
 
-    private ArrayList<InetAddress> addresses = new ArrayList<>();
     private boolean running = true;
-
 
     /**
      * Gets all the addresses of other players searching over the same Port
      *
-     * @return all found Addresses
+     *
      */
     @Override
     public void run() {
@@ -40,9 +37,6 @@ public class NetToolsSearch extends Observable implements Runnable,Discovery.Cal
 
     }
 
-    public ArrayList<InetAddress> getAddresses() {
-        return addresses;
-    }
 
     public void setRunning(boolean running) {
         this.running = running;
@@ -57,7 +51,6 @@ public class NetToolsSearch extends Observable implements Runnable,Discovery.Cal
     public void discoveryClientFound(SocketAddress socketAddress) {
         try {
             InetAddress addr = InetAddress.getByAddress(socketAddress.getAddress());
-            addresses.add(addr);
             setChanged();
             notifyObservers(addr);
         } catch (UnknownHostException e) {

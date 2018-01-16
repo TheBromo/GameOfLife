@@ -4,9 +4,9 @@ import java.nio.ByteBuffer;
 
 public class InvitePacket extends Packet {
 
-    String name, recallAdress;
-    long deprecationTime;
-    int id;
+    private String name, recallAdress;
+    private long deprecationTime;
+    private int id;
 
     public InvitePacket(String name, long deprecationTime, int id, String recallAdress) {
         this.name = name;

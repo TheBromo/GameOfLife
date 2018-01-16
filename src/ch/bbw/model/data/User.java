@@ -3,7 +3,6 @@ package ch.bbw.model.data;
 import javafx.scene.control.Button;
 
 import java.net.InetAddress;
-import java.net.SocketAddress;
 
 public class User {
     private InetAddress address;
@@ -29,9 +28,5 @@ public class User {
 
     public Button getButton() {
         return button;
-    }
-
-    public void setButton(Button button) {
-        this.button = button;
     }
 }

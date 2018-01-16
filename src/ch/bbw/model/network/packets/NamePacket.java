@@ -3,10 +3,9 @@ package ch.bbw.model.network.packets;
 import java.nio.ByteBuffer;
 
 public class NamePacket extends Packet {
-    String text;
+    private String text;
 
     public NamePacket() {
-
     }
 
     public NamePacket(String text) {

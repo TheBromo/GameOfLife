@@ -1,7 +1,6 @@
 package ch.bbw.model.network;
 
 
-import ch.bbw.model.network.packets.NamePacket;
 import ch.bbw.model.network.packets.Packet;
 import ch.bbw.model.network.packets.SeedPacket;
 
@@ -14,16 +13,13 @@ import java.util.*;
 
 public class Server implements Runnable {
 
-    public static final int port = 6666;
+    private static final int port = 6666;
     private boolean running;
 
-    private ServerSocketChannel channel;
     private ArrayList<Packet> queue;
     private long seed;
 
     private HashMap<InetSocketAddress, SocketChannel> clients;
-
-    private InetAddress ip;
 
     public Server() {
 
@@ -34,15 +30,7 @@ public class Server implements Runnable {
         seed = random.nextLong();
     }
 
-    public void setIp(InetAddress ip) {
-        this.ip = ip;
-    }
-
-    public HashMap<InetSocketAddress, SocketChannel> getClients() {
-        return clients;
-    }
-
-    public void queuePacket(Packet packet) {
+    private void queuePacket(Packet packet) {
         queue.add(packet);
     }
 
@@ -53,7 +41,7 @@ public class Server implements Runnable {
     @Override
     public void run() {
         try {
-
+            ServerSocketChannel channel;
             channel = ServerSocketChannel.open();
             channel.configureBlocking(false);
             channel.bind(new InetSocketAddress(InetAddress.getLocalHost(), port));
@@ -127,11 +115,8 @@ public class Server implements Runnable {
 
                         writeBuffer.flip();
 
-                        Iterator<InetSocketAddress> targetIterator = packet.getTargets().iterator();
+                        for (InetSocketAddress target : packet.getTargets()) {
 
-                        while (targetIterator.hasNext()) {
-
-                            SocketAddress target = targetIterator.next();
                             clients.get(target).write(writeBuffer);
                             System.out.println("Server: Sending " + packet.getClass().getName() + " to: " + target);
                             writeBuffer.flip();
@@ -145,12 +130,5 @@ public class Server implements Runnable {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    private void sendHello(InetSocketAddress address) {
-        Packet packet = new NamePacket("Hello");
-        packet.addTarget(address);
-        queuePacket(packet);
-
     }
 }

@@ -16,9 +16,6 @@ public class TurnHandler {
 
 
     public boolean canPlay() {
-
-        if (hostsTurn && isHost) {
-            return true;
-        } else return !hostsTurn && !isHost;
+        return hostsTurn && isHost || !hostsTurn && !isHost;
     }
 }

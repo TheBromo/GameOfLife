@@ -1,7 +1,6 @@
 package ch.bbw.model.data;
 
 import javafx.scene.control.Button;
-import javafx.scene.layout.HBox;
 
 import java.util.ArrayList;
 
@@ -17,23 +16,6 @@ public class InviteManager {
         receivedInvites.add(invite);
     }
 
-    public ArrayList<Invite> getReceivedInvites() {
-        return receivedInvites;
-    }
-
-    public ArrayList<Invite> getSentInvites() {
-        return sentInvites;
-    }
-
-    public Invite getInviteByContainer(HBox container) {
-        for (Invite invite : sentInvites) {
-            if (container.equals(invite.getContainer())) return invite;
-        }
-        for (Invite invite : receivedInvites) {
-            if (container.equals(invite.getContainer())) return invite;
-        }
-        return null;
-    }
 
     public boolean inviteExists(Invite invite) {
         for (Invite secInvite : sentInvites) {

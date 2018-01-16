@@ -68,10 +68,9 @@ public abstract class Packet {
         return null;
     }
 
-    public static ByteBuffer compilePacket(Packet packet, ByteBuffer byteBuffer) {
+    public static void compilePacket(Packet packet, ByteBuffer byteBuffer) {
         writeString(packet.getClass().getName(), byteBuffer);
         packet.serialize(byteBuffer);
-        return byteBuffer;
     }
 
     public static Packet decompilePacket(ByteBuffer byteBuffer) {

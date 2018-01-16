@@ -49,9 +49,6 @@ public class Cell {
         parents.add(cell);
     }
 
-    public void removeParent(Cell cell) {
-        parents.remove(cell);
-    }
 
     public void clearParents() {
         parents.clear();

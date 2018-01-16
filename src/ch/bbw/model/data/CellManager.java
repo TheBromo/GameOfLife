@@ -38,15 +38,6 @@ public class CellManager {
         }
     }
 
-    private void fill() {
-        for (int x = 0; x < cells.length; x++) {
-            for (int y = 0; y < cells[x].length; y++) {
-                Cell cell = new Cell(false, Color.WHITE);
-                cells[x][y] = cell;
-            }
-        }
-    }
-
     public Cell[][] getCells() {
         return cells;
     }

@@ -12,9 +12,9 @@ public class AcceptPacket extends Packet {
     public AcceptPacket() {
     }
 
-    public AcceptPacket(int id, boolean accptence, String name) {
+    public AcceptPacket(int id, boolean acceptence, String name) {
         this.id = id;
-        this.acceptence = accptence;
+        this.acceptence = acceptence;
         this.name = name;
     }
 

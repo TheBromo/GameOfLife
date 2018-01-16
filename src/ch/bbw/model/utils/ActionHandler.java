@@ -15,6 +15,7 @@ public class ActionHandler {
         canEndTurn = false;
         if (isHost) {
             color = rgb(231, 76, 60);
+            System.out.println("Is host, has color: " + color);
         } else {
             color = rgb(52, 152, 219);
         }
@@ -48,6 +49,7 @@ public class ActionHandler {
             lastAction.setCell(clickedCell);
             lastAction.setOldColor(clickedCell.getColor());
             clickedCell.setColor(color);
+            System.out.println("Color:" + color);
             clickedCell.setBornNextTurn(true);
             System.out.println("Cell born");
 

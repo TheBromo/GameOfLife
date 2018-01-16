@@ -153,6 +153,7 @@ public class FXMLLobbyController implements Initializable, Observer {
             inviteManager.addReceivedInvite(invite);
             button.setStyle("-fx-background-color: #1F2D3F");
             button.setTextFill(Color.WHITE);
+            label.setTextFill(Color.WHITE);
             box.getChildren().add(button);
             box.getChildren().add(label);
             receivedInvites.getChildren().add(box);

@@ -214,6 +214,8 @@ public class FXMLGameController implements Initializable, Observer {
         this.host = host;
         turnHandler = new TurnHandler(host);
         actionHandler = new ActionHandler(host);
+        paintActivePlayer();
+
     }
 
     public void initName(String name) {
@@ -223,7 +225,6 @@ public class FXMLGameController implements Initializable, Observer {
         } else {
             blueName.setText(name);
         }
-        paintActivePlayer();
 
     }
 

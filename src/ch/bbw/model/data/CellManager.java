@@ -29,6 +29,9 @@ public class CellManager {
     }
 
     public Cell[][] getView() {
+        if (index == fields.size() - 1) {
+            return cells;
+        }
         return fields.get(index).getCells();
     }
 

@@ -53,7 +53,7 @@
                      <children>
                         <Label prefHeight="25.0" prefWidth="66.0" text="Ip-Adresse:" textFill="WHITE" />
                         <TextField fx:id="ipadress" />
-                        <Button mnemonicParsing="false" onAction="#handleInviteButton" style="-fx-background-color: #1F2D3F;" text="Invite" textFill="WHITE">
+                        <Button minWidth="100.0" mnemonicParsing="false" onAction="#handleInviteButton" style="-fx-background-color: #1F2D3F;" text="Invite" textFill="WHITE">
                            <HBox.margin>
                               <Insets left="10.0" />
                            </HBox.margin>

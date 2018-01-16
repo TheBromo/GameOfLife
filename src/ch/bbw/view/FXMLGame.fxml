@@ -1,22 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.canvas.Canvas?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-
-<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="586.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ch.bbw.controller.FXMLGameController">
+<HBox xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+      minWidth="-Infinity" prefHeight="400.0" prefWidth="586.0" xmlns="http://javafx.com/javafx/8"
+      fx:controller="ch.bbw.controller.FXMLGameController">
    <children>
        <Canvas fx:id="canvas" height="400.0" onMouseClicked="#handleCanvasClick" onMouseDragged="#handleMouseDrag" onScroll="#handleScroll" width="400.0" />
-       <Pane prefHeight="400.0" prefWidth="10.0" style="-fx-background-color: #1F2D3F;" />
-       <Pane prefHeight="400.0" prefWidth="10.0" style="-fx-background-color: #2c3e50;" />
       <VBox prefHeight="400.0" prefWidth="189.0" style="-fx-background-color: #2c3e50;">
          <children>
             <HBox prefHeight="72.0" prefWidth="190.0" style="-fx-background-color: #3498db;">
@@ -63,11 +56,24 @@
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <Button mnemonicParsing="false" onAction="#handleTurnEnd" prefHeight="26.0" prefWidth="185.0" style="-fx-background-color: #1F2D3F;" text="End Turn" textFill="WHITE" GridPane.columnSpan="2" GridPane.rowIndex="5" />
-                  <Button mnemonicParsing="false" onAction="#handleActionUndo" prefHeight="26.0" prefWidth="185.0" style="-fx-background-color: #1F2D3F;" text="Undo Action" textFill="WHITE" GridPane.columnSpan="2" GridPane.rowIndex="4" />
-                  <HBox prefHeight="45.0" prefWidth="182.0" style="-fx-background-color: #1F2D3F;" GridPane.columnSpan="2" GridPane.rowIndex="1">
+                   <Button mnemonicParsing="false" onAction="#handleTurnEnd" prefHeight="26.0" prefWidth="185.0"
+                           style="-fx-background-color: #1F2D3F;" text="End Turn" textFill="WHITE"
+                           GridPane.columnSpan="2" GridPane.rowIndex="5">
+                       <GridPane.margin>
+                           <Insets left="10.0" right="10.0"/>
+                       </GridPane.margin>
+                   </Button>
+                   <Button mnemonicParsing="false" onAction="#handleActionUndo" prefHeight="26.0" prefWidth="185.0"
+                           style="-fx-background-color: #1F2D3F;" text="Undo Action" textFill="WHITE"
+                           GridPane.columnSpan="2" GridPane.rowIndex="4">
+                       <GridPane.margin>
+                           <Insets left="10.0" right="10.0"/>
+                       </GridPane.margin>
+                   </Button>
+                   <HBox prefHeight="45.0" prefWidth="182.0" GridPane.columnSpan="2" GridPane.halignment="CENTER"
+                         GridPane.rowIndex="1">
                      <children>
-                        <Label prefHeight="34.0" prefWidth="56.0" text="  It's " textFill="WHITE">
+                         <Label prefHeight="34.0" prefWidth="78.0" text="     It's " textFill="WHITE">
                            <font>
                               <Font size="23.0" />
                            </font>
@@ -83,6 +89,12 @@
                         </Label>
                      </children>
                   </HBox>
+                   <Button mnemonicParsing="false" onAction="#handleSkipBack" style="-fx-background-color: #1F2D3F;"
+                           text="&lt;" textFill="WHITE" GridPane.halignment="CENTER" GridPane.rowIndex="3"
+                           GridPane.valignment="CENTER"/>
+                   <Button mnemonicParsing="false" onAction="#handleSkipForwards" style="-fx-background-color: #1F2D3F;"
+                           text="&gt;" textFill="WHITE" GridPane.columnIndex="1" GridPane.halignment="CENTER"
+                           GridPane.rowIndex="3"/>
                </children>
             </GridPane>
          </children>

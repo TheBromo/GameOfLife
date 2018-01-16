@@ -10,6 +10,7 @@ import ch.bbw.model.network.packets.SeedPacket;
 import ch.bbw.model.utils.ActionHandler;
 import ch.bbw.model.utils.TurnHandler;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
@@ -59,6 +60,14 @@ public class FXMLGameController implements Initializable, Observer {
             paintActivePlayer();
             checkWinner();
         }
+    }
+
+    @FXML
+    public void handleSkipBack(ActionEvent event) {
+    }
+
+    @FXML
+    public void handleSkipForwards(ActionEvent event) {
     }
 
     @FXML
@@ -320,4 +329,5 @@ public class FXMLGameController implements Initializable, Observer {
             }
         });
     }
+
 }

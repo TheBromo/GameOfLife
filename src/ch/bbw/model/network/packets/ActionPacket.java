@@ -18,6 +18,7 @@ public class ActionPacket extends Packet {
     }
 
     public ActionPacket() {
+        parents = new ArrayList<>();
     }
 
 
@@ -38,6 +39,7 @@ public class ActionPacket extends Packet {
         Packet.writeBoolean(hasParents, byteBuffer);
         Packet.writeCoor(mainCell, byteBuffer);
         if (hasParents) {
+            System.out.println("Packet has parents");
             Packet.writeCoor(parents.get(0), byteBuffer);
             Packet.writeCoor(parents.get(1), byteBuffer);
         }
@@ -49,6 +51,7 @@ public class ActionPacket extends Packet {
         hasParents = Packet.readBoolean(byteBuffer);
         mainCell = Packet.readCoor(byteBuffer);
         if (hasParents) {
+            System.out.println("Packet has parents");
             parents.add(Packet.readCoor(byteBuffer));
             parents.add(Packet.readCoor(byteBuffer));
         }

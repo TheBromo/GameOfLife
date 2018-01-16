@@ -46,13 +46,12 @@ public class FXMLGameController implements Initializable, Observer {
 
     @FXML
     private void handleTurnEnd(ActionEvent event) {
-        NamePacket packet = new NamePacket("This is a test");
-        packet.addTarget(new InetSocketAddress(serverAddress, Client.port));
-        client.queuePacket(packet);
         if (actionHandler.canEndTurn() && turnHandler.canPlay()) {
+
             ActionPacket actionPacket = new ActionPacket(false, new CellCoordinates(true, 1, 1), null);
             actionPacket.addTarget(new InetSocketAddress(serverAddress, Client.port));
             client.queuePacket(actionPacket);
+
             cellManager.iterate();
             actionHandler.newTurn();
             updateCellCount();
@@ -199,8 +198,6 @@ public class FXMLGameController implements Initializable, Observer {
         } else {
             this.redName.setText(name);
         }
-
-
     }
 
     public void initHost(boolean host) {

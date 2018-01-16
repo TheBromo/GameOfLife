@@ -268,10 +268,12 @@ public class FXMLGameController implements Initializable, Observer {
             } else if (packet instanceof ActionPacket) {
                 ActionPacket pm = (ActionPacket) packet;
                 cellManager.processEnemyAction(pm, host);
+                cellManager.setNextIteration();
 
                 cellManager.iterate();
                 actionHandler.newTurn();
                 updateCellCount();
+                cellManager.setNextIteration();
                 draw();
                 turnHandler.newTurn();
                 paintActivePlayer();

@@ -1,6 +1,7 @@
 package ch.bbw.model.data;
 
 public class Field {
+    //TODO make older turns visible
     private Cell[][] cells = new Cell[20][20];
 
     public Cell[][] getCells() {

@@ -14,9 +14,9 @@ public class ActionHandler {
         cellKilled = false;
         canEndTurn = false;
         if (isHost) {
-            color = rgb(52, 152, 219);
-        } else {
             color = rgb(231, 76, 60);
+        } else {
+            color = rgb(52, 152, 219);
         }
     }
 

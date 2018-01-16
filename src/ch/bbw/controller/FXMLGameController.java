@@ -287,6 +287,7 @@ public class FXMLGameController implements Initializable, Observer {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        index.setText("1");
         finished = false;
         zoomed = false;
         zoom = 1;

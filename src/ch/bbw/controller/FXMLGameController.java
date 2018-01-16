@@ -86,6 +86,7 @@ public class FXMLGameController implements Initializable, Observer {
             System.out.println("x = " + x);
             if (y > 0 && y < 400 && x > 0 && x < 400) {
                 Cell cell = cellManager.getCellByCoordinates(x, y, canvas.getWidth());
+                System.out.println("Viewing newset field?" + cellManager.isViewingNewestField());
                 if (turnHandler.canPlay() && !finished && cellManager.isViewingNewestField()) {
                     actionHandler.handleAction(cell);
                     cellManager.setNextIteration();

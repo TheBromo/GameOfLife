@@ -203,6 +203,7 @@ public class FXMLGameController implements Initializable, Observer {
     public void initHost(boolean host) {
         this.host = host;
         turnHandler = new TurnHandler(host);
+        actionHandler = new ActionHandler(host);
     }
 
     public void initName(String name) {
@@ -231,7 +232,6 @@ public class FXMLGameController implements Initializable, Observer {
         zoom = 1;
         recZoom = 1;
         cellManager = new CellManager();
-        actionHandler = new ActionHandler(host);
         gc = canvas.getGraphicsContext2D();
         updateCellCount();
         draw();

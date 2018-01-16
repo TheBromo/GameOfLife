@@ -19,6 +19,7 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 
+import javax.swing.*;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.URL;
@@ -40,12 +41,12 @@ public class FXMLGameController implements Initializable, Observer {
     private CellManager cellManager;
     private ActionHandler actionHandler;
     private double xOffset, yOffset, zoom, recZoom, lastDragY, lastDragX;
-    private boolean dragInProgress, zoomed, host, nameSent;
+    private boolean dragInProgress, zoomed, host, finished;
     private String username;
 
     @FXML
     private void handleTurnEnd(ActionEvent event) {
-        if (actionHandler.canEndTurn() && turnHandler.canPlay()) {
+        if (actionHandler.canEndTurn() && turnHandler.canPlay() && !finished) {
 
             ActionPacket actionPacket = actionHandler.getAction();
             actionPacket.addTarget(new InetSocketAddress(serverAddress, Client.port));
@@ -57,6 +58,7 @@ public class FXMLGameController implements Initializable, Observer {
             draw();
             turnHandler.newTurn();
             paintActivePlayer();
+            checkWinner();
         }
     }
 
@@ -74,7 +76,7 @@ public class FXMLGameController implements Initializable, Observer {
             if (y > 0 && y < 400 && x > 0 && x < 400) {
                 Cell cell = cellManager.getCellByCoordinates(x, y, canvas.getWidth());
                 cellManager.select(cell);
-                if (turnHandler.canPlay()) {
+                if (turnHandler.canPlay() && !finished) {
                     actionHandler.handleAction(cell);
                     cellManager.setNextIteration();
                 }
@@ -196,6 +198,16 @@ public class FXMLGameController implements Initializable, Observer {
         blueBlocks.setText("x " + cellManager.getBlueCount());
     }
 
+    private void checkWinner() {
+        if (cellManager.getRedCount() == 0) {
+            JOptionPane.showMessageDialog(null, blueName.getText() + " won!", "Game won", JOptionPane.INFORMATION_MESSAGE);
+            finished = true;
+        } else if (cellManager.getBlueCount() == 0) {
+            JOptionPane.showMessageDialog(null, blueName.getText() + " won!", "Game won", JOptionPane.INFORMATION_MESSAGE);
+            finished = true;
+        }
+    }
+
     public void initClient(Client network) {
         this.client = network;
 
@@ -238,7 +250,7 @@ public class FXMLGameController implements Initializable, Observer {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        nameSent = false;
+        finished = false;
         zoomed = false;
         zoom = 1;
         recZoom = 1;
@@ -277,6 +289,7 @@ public class FXMLGameController implements Initializable, Observer {
                 draw();
                 turnHandler.newTurn();
                 paintActivePlayer();
+                checkWinner();
             }
         });
     }

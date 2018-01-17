@@ -19,6 +19,7 @@ public class CellManager {
 
 
     public CellManager(int width, int height) {
+
         this.width = width;
         this.height = height;
         index = 0;
@@ -27,7 +28,6 @@ public class CellManager {
         random = new Random();
         blue = rgb(52, 152, 219);
         red = rgb(231, 76, 60);
-        //generate();
         mirror();
     }
 
@@ -40,14 +40,7 @@ public class CellManager {
 
 
     public String getHumanIndex() {
-        String turnType;
-        if (index % 2 == 0) {
-            turnType = "B";
-        } else {
-            turnType = "A";
-        }
-        System.out.println(index / 2 + 1 + turnType);
-        return index + 1 + turnType;
+        return index / 2 + 1 + fields.get(index).getTurnType();
     }
 
     public boolean isViewingNewestField() {
@@ -68,6 +61,7 @@ public class CellManager {
 
     public void setSeed(long seed) {
         fields.clear();
+        index = 0;
         random.setSeed(seed);
         reset();
         mirror();
@@ -177,25 +171,27 @@ public class CellManager {
         }
 
         setNextIteration();
-        addNewField();
+        addNewField("A");
     }
 
-    private void addNewField() {
-        Field field = new Field(width, height);
+    private void addNewField(String turnType) {
+
+        Field field = new Field(width, height, turnType);
         field.setCells(cells);
         fields.add(field);
         index = fields.size() - 1;
     }
 
+
     public void iterate() {
-        addNewField();
+        addNewField("B");
         for (Cell[] cell : cells) {
             for (Cell aCell : cell) {
                 aCell.setAlive(aCell.isAliveNextTurn());
             }
         }
         setNextIteration();
-        addNewField();
+        addNewField("A");
     }
 
     public void setNextIteration() {

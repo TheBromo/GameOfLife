@@ -176,7 +176,7 @@ public class FXMLLobbyController implements Initializable, Observer {
 
 
         Stage stage = new Stage();
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../view/FXMLGame.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/ch/bbw/view/FXMLGame.fxml"));
         Parent root1 = fxmlLoader.load();
 
         FXMLGameController controller = fxmlLoader.getController();
@@ -291,6 +291,7 @@ public class FXMLLobbyController implements Initializable, Observer {
 
             } catch (IOException e1) {
                 e1.printStackTrace();
+                System.out.println();
             }
         }));
 

@@ -13,7 +13,7 @@ import java.util.*;
 
 public class Server implements Runnable {
 
-    private static final int port = 6666;
+    private static final int port = 7563;
     private boolean running;
 
     private ArrayList<Packet> queue;

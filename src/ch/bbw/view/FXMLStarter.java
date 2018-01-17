@@ -11,6 +11,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.io.*;
+
 /**
  *
  * @author TheBromo
@@ -33,6 +35,17 @@ public class FXMLStarter extends Application {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        try {
+            File file = new File("log_" + System.currentTimeMillis() + ".log");
+            System.out.println(file.getAbsolutePath());
+            if (!file.exists()) file.createNewFile();
+            PrintStream writer = new PrintStream(file);
+            System.setOut(writer);
+            System.setErr(writer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         launch(args);
     }
     

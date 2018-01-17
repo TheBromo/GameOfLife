@@ -17,7 +17,7 @@ public class InviteSender {
     private ByteBuffer readBuffer, writeBuffer;
     private DatagramChannel socket;
     private Selector selector;
-    public static final int port = 8888;
+    public static final int port = 7929;
 
     public InviteSender() throws IOException {
 
@@ -58,7 +58,7 @@ public class InviteSender {
 
                 //checks if any packets were received
                 if (key.isReadable()) {
-
+                    System.out.println("invite received");
                     //prepares buffer for reading
                     readBuffer.position(0).limit(readBuffer.capacity());
                     //gets the address of the sender
@@ -73,6 +73,7 @@ public class InviteSender {
         }
         return packets;
     }
+
 
 
 }

@@ -16,7 +16,7 @@ import java.util.Set;
 public class Client extends Observable implements Runnable {
 
 
-    public static final int port = 6666;
+    public static final int port = 7563;
     private InetSocketAddress serverAddress;
     private ArrayList<Packet> queue;
     private boolean running;

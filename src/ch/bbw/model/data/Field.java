@@ -1,8 +1,11 @@
 package ch.bbw.model.data;
-
 public class Field {
     //TODO make older turns visible with turn 1a(before action) and 1b(after action)
-    private Cell[][] cells = new Cell[20][20];
+    private Cell[][] cells ;
+
+    public Field(int width,int height) {
+        cells =new Cell[width][height];
+    }
 
     public Cell[][] getCells() {
         return cells;

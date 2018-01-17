@@ -272,7 +272,12 @@ public class FXMLGameController implements Initializable, Observer {
         } else {
             blueName.setText(name);
         }
+    }
 
+    public void initCellManager(int w,int h){
+        cellManager = new CellManager(w,h);
+        updateCellCount();
+        draw();
     }
 
     public void initNames(String host, String client) {
@@ -291,11 +296,9 @@ public class FXMLGameController implements Initializable, Observer {
         zoomed = false;
         zoom = 1;
         recZoom = 1;
-        cellManager = new CellManager();
         gc = canvas.getGraphicsContext2D();
         colorGc = color.getGraphicsContext2D();
-        updateCellCount();
-        draw();
+
 
     }
 

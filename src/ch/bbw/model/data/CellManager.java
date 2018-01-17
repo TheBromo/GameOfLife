@@ -14,13 +14,15 @@ public class CellManager {
     private Cell[][] cells;
     private Color blue, red;
     private Cell selected;
-    private int cellCount = 10, index;
+    private int width, height, cellCount = 10, index;
     private Random random;
 
 
-    public CellManager() {
+    public CellManager(int width, int height) {
+        this.width = width;
+        this.height = height;
         index = 0;
-        cells = new Cell[10][10];
+        cells = new Cell[width][height];
         random = new Random();
         blue = rgb(52, 152, 219);
         red = rgb(231, 76, 60);
@@ -43,8 +45,8 @@ public class CellManager {
         } else {
             turnType = "A";
         }
-        System.out.println(index + 1+turnType);
-        return index + 1+turnType;
+        System.out.println(index + 1 + turnType);
+        return index + 1 + turnType;
     }
 
     public boolean isViewingNewestField() {
@@ -178,7 +180,7 @@ public class CellManager {
     }
 
     private void addNewField() {
-        Field field = new Field();
+        Field field = new Field(width, height);
         field.setCells(cells);
         fields.add(field);
         index = fields.size() - 1;

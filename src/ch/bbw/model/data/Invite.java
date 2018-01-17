@@ -7,21 +7,27 @@ import java.net.InetAddress;
 public class Invite {
     private long timeSent, deprecationTime;
     private String recallAddress, name;
-    private int id;
+    private int id,fieldSize;
     private Button acceptButton;
 
-    public Invite(long timeSent, long deprecationTime, int id, String recallAddress) {
+    public Invite(long timeSent, long deprecationTime, int id,int fieldSize, String recallAddress) {
         this.timeSent = timeSent;
         this.id = id;
         this.recallAddress = recallAddress;
         this.deprecationTime = deprecationTime;
+        this.fieldSize=fieldSize;
     }
 
-    public Invite(long timeSent, long deprecationTime, String recallAddress, int id, InetAddress target) {
+    public Invite(long timeSent, long deprecationTime, String recallAddress, int id,int fieldSize) {
         this.timeSent = timeSent;
         this.deprecationTime = deprecationTime;
         this.recallAddress = recallAddress;
         this.id = id;
+        this.fieldSize=fieldSize;
+    }
+
+    public int getFieldSize() {
+        return fieldSize;
     }
 
     public Button getAcceptButton() {

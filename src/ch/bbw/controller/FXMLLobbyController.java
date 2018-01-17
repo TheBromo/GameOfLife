@@ -27,6 +27,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -50,12 +51,36 @@ public class FXMLLobbyController implements Initializable, Observer {
     private Label username;
     @FXML
     private VBox users, receivedInvites;
+    @FXML
+    private TextField fieldCount;
 
     private UserManager userManager;
     private InviteManager inviteManager;
     private InviteSender inviteSender;
 
     private NetToolsSearch search;
+
+    private boolean isFieldCountSet() {
+        if (fieldCount.getText().equals("")) {
+            return false;
+        }
+        String number = fieldCount.getText();
+        for (int index = 0; index < number.length(); index++) {
+            char c = number.charAt(index);
+            if (!(c >= 48 && c <= 57)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private int getDimension() {
+        if (isFieldCountSet()) {
+            return Integer.parseInt(fieldCount.getText());
+        } else {
+            return 10;
+        }
+    }
 
     private void addUser(InetAddress address) {
 
@@ -89,7 +114,7 @@ public class FXMLLobbyController implements Initializable, Observer {
     private void sendInvite(InetAddress address) {
 
         Random random = new Random();
-        Invite invite = new Invite(System.currentTimeMillis(), System.currentTimeMillis() + inviteTime, address.toString(), random.nextInt(), address);
+        Invite invite = new Invite(System.currentTimeMillis(), System.currentTimeMillis() + inviteTime, address.toString(), random.nextInt(), getDimension());
 
         if (!inviteManager.inviteExists(invite)) {
 
@@ -97,7 +122,7 @@ public class FXMLLobbyController implements Initializable, Observer {
 
             Packet packet = null;
             try {
-                packet = new InvitePacket(username.getText(), invite.getDeprecationTime(), invite.getId(), InetAddress.getLocalHost().getHostAddress().toString());
+                packet = new InvitePacket(username.getText(), invite.getDeprecationTime(), invite.getId(), getDimension(),InetAddress.getLocalHost().getHostAddress().toString());
             } catch (UnknownHostException e) {
                 e.printStackTrace();
             }
@@ -125,7 +150,7 @@ public class FXMLLobbyController implements Initializable, Observer {
         Label label = new Label(packet.getName());
         System.out.println("Invite received from: " + packet.getName() + " :" + packet.getRecallAdress());
 
-        Invite invite = new Invite(packet.getDeprecationTime() - inviteTime, packet.getDeprecationTime(), packet.getId(), packet.getRecallAdress());
+        Invite invite = new Invite(packet.getDeprecationTime() - inviteTime, packet.getDeprecationTime(), packet.getId(), packet.getFieldSize(),packet.getRecallAdress());
         invite.setName(packet.getName());
         invite.setAcceptButton(button);
 
@@ -147,7 +172,7 @@ public class FXMLLobbyController implements Initializable, Observer {
             System.out.println(invite.getRecallAddress());
             packet.addTarget(new InetSocketAddress(InetAddress.getByName(invite.getRecallAddress()), InviteSender.port));
             inviteSender.sendPacket(packet);
-            gameUserCountDown(InetAddress.getByName(invite.getRecallAddress()), invite.getName());
+            gameUserCountDown(InetAddress.getByName(invite.getRecallAddress()), invite.getName(),invite);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -160,7 +185,7 @@ public class FXMLLobbyController implements Initializable, Observer {
             Invite invite = inviteManager.getInviteById(packet.getId());
             if (invite != null) {
                 try {
-                    gameServerCountDown(packet.getName());
+                    gameServerCountDown(packet.getName(),invite);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -169,7 +194,7 @@ public class FXMLLobbyController implements Initializable, Observer {
     }
 
 
-    private void gameServerCountDown(String secondUserName) throws IOException {
+    private void gameServerCountDown(String secondUserName,Invite invite) throws IOException {
         String username = this.username.getText();
         Stage stage1 = (Stage) this.username.getScene().getWindow();
         stage1.close();
@@ -188,7 +213,9 @@ public class FXMLLobbyController implements Initializable, Observer {
         controller.initClient(client);
         controller.initServerAddress(InetAddress.getLocalHost());
         controller.initHost(true);
+        controller.initCellManager(getDimension(),getDimension());
         controller.initNames(username, secondUserName);
+        controller.initCellManager(invite.getFieldSize(),invite.getFieldSize());
 
         client.addObserver(controller);
 
@@ -209,7 +236,7 @@ public class FXMLLobbyController implements Initializable, Observer {
         search.setRunning(false);
     }
 
-    private void gameUserCountDown(InetAddress secondPlayer, String secondUserName) throws IOException {
+    private void gameUserCountDown(InetAddress secondPlayer, String secondUserName,Invite invite) throws IOException {
         try {
             Thread.sleep(50);
         } catch (InterruptedException e) {
@@ -233,6 +260,7 @@ public class FXMLLobbyController implements Initializable, Observer {
         controller.initHost(false);
         controller.initName(username);
         controller.initNames(secondUserName, username);
+        controller.initCellManager(invite.getFieldSize(),invite.getFieldSize());
 
         client.addObserver(controller);
 

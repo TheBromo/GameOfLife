@@ -41,7 +41,7 @@ public class FXMLLoginController implements Initializable {
     private void openLobbyWindow(String username) {
         try {
             Stage stage = new Stage();
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../view/FXMLLobby.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/ch/bbw/view/FXMLLobby.fxml"));
             Parent root1 = fxmlLoader.load();
 
             FXMLLobbyController controller = fxmlLoader.getController();

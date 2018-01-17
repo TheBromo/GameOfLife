@@ -211,7 +211,7 @@ public class FXMLLobbyController implements Initializable, Observer {
 
     private void gameUserCountDown(InetAddress secondPlayer, String secondUserName) throws IOException {
         try {
-            Thread.sleep(500);
+            Thread.sleep(50);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -221,7 +221,7 @@ public class FXMLLobbyController implements Initializable, Observer {
         stage1.close();
 
         Stage stage = new Stage();
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../view/FXMLGame.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/ch/bbw/view/FXMLGame.fxml"));
         Parent root1 = fxmlLoader.load();
 
         FXMLGameController controller = fxmlLoader.getController();

@@ -20,7 +20,6 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 
-import javax.swing.*;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.URL;
@@ -41,13 +40,13 @@ public class FXMLGameController implements Initializable, Observer {
     private InetAddress serverAddress;
     private CellManager cellManager;
     private ActionHandler actionHandler;
-    private double xOffset, yOffset, zoom, recZoom, lastDragY, lastDragX;
+    private double xOffset, yOffset, zoom, recZoom, lastDragY, lastDragX, size;
     private boolean dragInProgress, zoomed, host, finished;
 
     @FXML
     private void handleTurnEnd() {
         if (actionHandler.canEndTurn() && turnHandler.canPlay() && !finished) {
-
+            System.out.println("Ending turn");
             ActionPacket actionPacket = actionHandler.getAction();
             actionPacket.addTarget(new InetSocketAddress(serverAddress, Client.port));
             client.queuePacket(actionPacket);
@@ -87,8 +86,8 @@ public class FXMLGameController implements Initializable, Observer {
             double y = event.getY() / recZoom - yOffset;
             System.out.println("y = " + y);
             System.out.println("x = " + x);
-            if (y > 0 && y < 40 * cellManager.getCells().length && x > 0 && x < 40 * cellManager.getCells().length) {
-                Cell cell = cellManager.getCellByCoordinates(x, y, 40 * cellManager.getCells().length);
+            if (y > 0 && y < size && x > 0 && x < size) {
+                Cell cell = cellManager.getCellByCoordinates(x, y, size);
                 System.out.println("Viewing newset field?" + cellManager.isViewingNewestField());
                 if (turnHandler.canPlay() && !finished && cellManager.isViewingNewestField()) {
                     actionHandler.handleAction(cell);
@@ -111,9 +110,8 @@ public class FXMLGameController implements Initializable, Observer {
 
     @FXML
     private void handleMouseDrag(MouseEvent event) {
-        System.out.println("Draging...");
         if (dragInProgress) {
-            if (xOffset + event.getX() - lastDragX <= 40 * cellManager.getCells().length && xOffset + event.getX() - lastDragX >= -40 * cellManager.getCells().length && yOffset + event.getY() - lastDragY <= 40 * cellManager.getCells().length&& yOffset + event.getY() - lastDragY >= -40 * cellManager.getCells().length) {
+            if (xOffset + event.getX() - lastDragX <= size && xOffset + event.getX() - lastDragX >= -size && yOffset + event.getY() - lastDragY <= size && yOffset + event.getY() - lastDragY >= -size) {
                 xOffset += event.getX() - lastDragX;
                 yOffset += event.getY() - lastDragY;
             }
@@ -127,7 +125,6 @@ public class FXMLGameController implements Initializable, Observer {
 
     @FXML
     private void handleScroll(ScrollEvent event) {
-        System.out.println("Scrolling..");
         double zoomFactor = 1.05;
         double deltaY = event.getDeltaY();
         if (deltaY < 0) {
@@ -148,10 +145,11 @@ public class FXMLGameController implements Initializable, Observer {
             zoomed = false;
         }
         Cell[][] cells = cellManager.getView();
-        for (double x = 0; x < 40 * cells.length; x = x + (40 * cells.length / cellManager.getCells().length)) {
-            for (double y = 0; y < 40 * cells.length; y = y + (40 * cells.length / cellManager.getCells().length)) {
+        System.out.println("Width: " + size);
+        for (double x = 0; x < size; x = x + (size / cellManager.getCells().length)) {
+            for (double y = 0; y < 40 * cells.length; y = y + (size / cellManager.getCells().length)) {
                 gc.fillRect(x + 4 + xOffset, y + 4 + yOffset, 32, 32);
-                Cell cell = cells[(int) (x / (40 * cells.length / cellManager.getCells().length))][(int) (y / (40 * cells.length / cellManager.getCells().length))];
+                Cell cell = cells[(int) (x / (size / cellManager.getCells().length))][(int) (y / (size / cellManager.getCells().length))];
 
                 if (cell.isBornNextTurn() && cellManager.isViewingNewestField()) {
                     System.out.println("Born cell: " + cell.getParents().size() + " alive?" + cell.isAliveNextTurn());
@@ -169,7 +167,6 @@ public class FXMLGameController implements Initializable, Observer {
                     if (!cell.isAliveNextTurn()) {
                         gc.setFill(rgb(52, 73, 94));
                         gc.fillRect(x + 15 + xOffset, y + 15 + yOffset, 10, 10);
-                        System.out.println("hey");
                     }
                     gc.setFill(rgb(52, 73, 94));
                     continue;
@@ -260,9 +257,7 @@ public class FXMLGameController implements Initializable, Observer {
 
     public void initHost(boolean host) {
         this.host = host;
-        turnHandler = new TurnHandler(host);
-        actionHandler = new ActionHandler(host, cellManager);
-        paintActivePlayer();
+
 
     }
 
@@ -276,6 +271,10 @@ public class FXMLGameController implements Initializable, Observer {
 
     public void initCellManager(int w, int h) {
         cellManager = new CellManager(w, h);
+        size = cellManager.getCells().length * 40;
+        turnHandler = new TurnHandler(host);
+        actionHandler = new ActionHandler(host, cellManager);
+        paintActivePlayer();
         updateCellCount();
         draw();
     }

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.ImageView?>
@@ -41,12 +40,15 @@
                         <VBox fx:id="receivedInvites" prefHeight="114.0" prefWidth="240.0" style="-fx-border-color: #1F2D3F;" />
                   <HBox prefHeight="53.0" prefWidth="240.0">
                      <children>
-                        <TextField fx:id="fieldCount" prefHeight="26.0" prefWidth="30.0" text="10" />
-                        <Button mnemonicParsing="false" style="-fx-background-color: #1F2D3F;" text="Change Field width" textFill="WHITE">
+                        <Label text="Field size:" textFill="WHITE">
+                           <HBox.margin>
+                              <Insets top="5.0" />
+                           </HBox.margin>
+                        </Label>
+                        <TextField fx:id="fieldCount" prefHeight="26.0" prefWidth="30.0" text="10">
                            <HBox.margin>
                               <Insets left="10.0" />
-                           </HBox.margin>
-                        </Button>
+                           </HBox.margin></TextField>
                      </children>
                      <padding>
                         <Insets top="10.0" />

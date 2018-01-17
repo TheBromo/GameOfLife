@@ -88,7 +88,7 @@ public class FXMLGameController implements Initializable, Observer {
             System.out.println("y = " + y);
             System.out.println("x = " + x);
             if (y > 0 && y < 400 && x > 0 && x < 400) {
-                Cell cell = cellManager.getCellByCoordinates(x, y, canvas.getWidth());
+                Cell cell = cellManager.getCellByCoordinates(x, y, 40 * cellManager.getCells().length);
                 System.out.println("Viewing newset field?" + cellManager.isViewingNewestField());
                 if (turnHandler.canPlay() && !finished && cellManager.isViewingNewestField()) {
                     actionHandler.handleAction(cell);
@@ -148,10 +148,10 @@ public class FXMLGameController implements Initializable, Observer {
             zoomed = false;
         }
         Cell[][] cells = cellManager.getView();
-        for (double x = 0; x < canvas.getWidth(); x = x + (canvas.getWidth() / cellManager.getCells().length)) {
-            for (double y = 0; y < canvas.getHeight(); y = y + (canvas.getWidth() / cellManager.getCells().length)) {
+        for (double x = 0; x < 40 * cells.length; x = x + (40 * cells.length / cellManager.getCells().length)) {
+            for (double y = 0; y < 40 * cells.length; y = y + (40 * cells.length / cellManager.getCells().length)) {
                 gc.fillRect(x + 4 + xOffset, y + 4 + yOffset, 32, 32);
-                Cell cell = cells[(int) (x / (canvas.getWidth() / cellManager.getCells().length))][(int) (y / (canvas.getWidth() / cellManager.getCells().length))];
+                Cell cell = cells[(int) (x / (40 * cells.length / cellManager.getCells().length))][(int) (y / (40 * cells.length / cellManager.getCells().length))];
 
                 if (cell.isBornNextTurn() && cellManager.isViewingNewestField()) {
                     System.out.println("Born cell: " + cell.getParents().size() + " alive?" + cell.isAliveNextTurn());
@@ -274,8 +274,8 @@ public class FXMLGameController implements Initializable, Observer {
         }
     }
 
-    public void initCellManager(int w,int h){
-        cellManager = new CellManager(w,h);
+    public void initCellManager(int w, int h) {
+        cellManager = new CellManager(w, h);
         updateCellCount();
         draw();
     }

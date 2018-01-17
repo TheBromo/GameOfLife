@@ -1,6 +1,5 @@
 package ch.bbw.model.data;
 public class Field {
-    //TODO make older turns visible with turn 1a(before action) and 1b(after action)
     private Cell[][] cells ;
 
     public Field(int width,int height) {

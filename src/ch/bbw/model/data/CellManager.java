@@ -14,7 +14,7 @@ public class CellManager {
     private Cell[][] cells;
     private Color blue, red;
     private Cell selected;
-    private int width, height, cellCount = 10, index;
+    private int width, height, cellCount, index;
     private Random random;
 
 
@@ -23,6 +23,7 @@ public class CellManager {
         this.height = height;
         index = 0;
         cells = new Cell[width][height];
+        cellCount = width;
         random = new Random();
         blue = rgb(52, 152, 219);
         red = rgb(231, 76, 60);

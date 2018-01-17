@@ -36,8 +36,15 @@ public class CellManager {
     }
 
 
-    public int getHumanIndex() {
-        return index + 1;
+    public String getHumanIndex() {
+        String turnType;
+        if (index % 2 == 1) {
+            turnType = "B";
+        } else {
+            turnType = "A";
+        }
+        System.out.println(index + 1+turnType);
+        return index + 1+turnType;
     }
 
     public boolean isViewingNewestField() {
@@ -178,6 +185,7 @@ public class CellManager {
     }
 
     public void iterate() {
+        addNewField();
         for (Cell[] cell : cells) {
             for (Cell aCell : cell) {
                 aCell.setAlive(aCell.isAliveNextTurn());

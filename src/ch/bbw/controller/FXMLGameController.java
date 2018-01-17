@@ -221,7 +221,6 @@ public class FXMLGameController implements Initializable, Observer {
             alert.showAndWait();
             finished = true;
         } else if (cellManager.getRedCount() == 0) {
-            JOptionPane.showMessageDialog(null, blueName.getText() + " won!", "Game won", JOptionPane.INFORMATION_MESSAGE);
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("The Game has been won");
             if (host) {
@@ -233,7 +232,6 @@ public class FXMLGameController implements Initializable, Observer {
             alert.showAndWait();
             finished = true;
         } else if (cellManager.getBlueCount() == 0) {
-            JOptionPane.showMessageDialog(null, redName.getText() + " won!", "Game won", JOptionPane.INFORMATION_MESSAGE);
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("The Game has been won");
             if (host) {

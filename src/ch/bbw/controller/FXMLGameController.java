@@ -87,7 +87,7 @@ public class FXMLGameController implements Initializable, Observer {
             double y = event.getY() / recZoom - yOffset;
             System.out.println("y = " + y);
             System.out.println("x = " + x);
-            if (y > 0 && y < 400 && x > 0 && x < 400) {
+            if (y > 0 && y < 40 * cellManager.getCells().length && x > 0 && x < 40 * cellManager.getCells().length) {
                 Cell cell = cellManager.getCellByCoordinates(x, y, 40 * cellManager.getCells().length);
                 System.out.println("Viewing newset field?" + cellManager.isViewingNewestField());
                 if (turnHandler.canPlay() && !finished && cellManager.isViewingNewestField()) {
@@ -113,7 +113,7 @@ public class FXMLGameController implements Initializable, Observer {
     private void handleMouseDrag(MouseEvent event) {
         System.out.println("Draging...");
         if (dragInProgress) {
-            if (xOffset + event.getX() - lastDragX <= 380 && xOffset + event.getX() - lastDragX >= -380 && yOffset + event.getY() - lastDragY <= 380 && yOffset + event.getY() - lastDragY >= -380) {
+            if (xOffset + event.getX() - lastDragX <= 40 * cellManager.getCells().length && xOffset + event.getX() - lastDragX >= -40 * cellManager.getCells().length && yOffset + event.getY() - lastDragY <= 40 * cellManager.getCells().length&& yOffset + event.getY() - lastDragY >= -40 * cellManager.getCells().length) {
                 xOffset += event.getX() - lastDragX;
                 yOffset += event.getY() - lastDragY;
             }

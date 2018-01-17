@@ -28,6 +28,7 @@ public class ActionHandler {
     }
 
     public void handleAction(Cell clickedCell) {
+
         if (clickedCell.isAlive() && lastAction != Action.CREATE_NEW_CELL && !cellKilled) {
 
             clickedCell.setAlive(false);

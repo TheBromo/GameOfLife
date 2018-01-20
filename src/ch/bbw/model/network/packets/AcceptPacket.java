@@ -5,16 +5,16 @@ import java.nio.ByteBuffer;
 public class AcceptPacket extends Packet {
 
     private int id;
-    private boolean acceptence;
+    private boolean accepted;
     private String name;
 
 
     public AcceptPacket() {
     }
 
-    public AcceptPacket(int id, boolean acceptence, String name) {
+    public AcceptPacket(int id, boolean accepted, String name) {
         this.id = id;
-        this.acceptence = acceptence;
+        this.accepted = accepted;
         this.name = name;
     }
 
@@ -26,21 +26,21 @@ public class AcceptPacket extends Packet {
         return name;
     }
 
-    public boolean isAcceptence() {
-        return acceptence;
+    public boolean hasAccepted() {
+        return accepted;
     }
 
     @Override
     public void serialize(ByteBuffer byteBuffer) {
         byteBuffer.putInt(id);
-        Packet.writeBoolean(acceptence, byteBuffer);
+        Packet.writeBoolean(accepted, byteBuffer);
         Packet.writeString(name, byteBuffer);
     }
 
     @Override
     public void deserialize(ByteBuffer byteBuffer) {
         id = byteBuffer.getInt();
-        acceptence = Packet.readBoolean(byteBuffer);
+        accepted = Packet.readBoolean(byteBuffer);
         name = Packet.readString(byteBuffer);
     }
 }

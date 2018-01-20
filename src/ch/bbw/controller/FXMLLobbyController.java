@@ -149,6 +149,7 @@ public class FXMLLobbyController implements Initializable, Observer {
         button.setOnAction(this::handleAccept);
         Label label = new Label(packet.getName());
         System.out.println("Invite received from: " + packet.getName() + " :" + packet.getRecallAdress());
+
         //Invite is created to use if the invite gets accepted
         Invite invite = new Invite(packet.getDeprecationTime() - inviteTime, packet.getDeprecationTime(), packet.getId(), packet.getFieldSize(), packet.getRecallAdress());
         invite.setName(packet.getName());
@@ -160,6 +161,7 @@ public class FXMLLobbyController implements Initializable, Observer {
             button.setStyle("-fx-background-color: #1F2D3F");
             button.setTextFill(Color.WHITE);
             label.setTextFill(Color.WHITE);
+
             //adds the parts together and into the received invites box
             box.getChildren().add(button);
             box.getChildren().add(label);
@@ -168,12 +170,15 @@ public class FXMLLobbyController implements Initializable, Observer {
     }
 
     private void sendAccept(Invite invite) {
-
+        //creates a Packet to answer an invite
         Packet packet = new AcceptPacket(invite.getId(), true, username.getText());
         try {
+            //Sends Packet
             System.out.println(invite.getRecallAddress());
             packet.addTarget(new InetSocketAddress(InetAddress.getByName(invite.getRecallAddress()), InviteSender.port));
             inviteSender.sendPacket(packet);
+
+            //starts Game
             gameUserCountDown(InetAddress.getByName(invite.getRecallAddress()), invite.getName(), invite);
 
         } catch (IOException e) {
@@ -182,8 +187,8 @@ public class FXMLLobbyController implements Initializable, Observer {
     }
 
     private void receiveAccept(AcceptPacket packet) {
-
-        if (packet.isAcceptence()) {
+        //Starts game if invite has been accepted
+        if (packet.hasAccepted()) {
             Invite invite = inviteManager.getInviteById(packet.getId());
             if (invite != null) {
                 try {
@@ -197,35 +202,44 @@ public class FXMLLobbyController implements Initializable, Observer {
 
 
     private void gameServerCountDown(String secondUserName, Invite invite) throws IOException {
+        //gets own username
         String username = this.username.getText();
+        //closes current window
         Stage stage1 = (Stage) this.username.getScene().getWindow();
         stage1.close();
 
-
+        //creates new window
         Stage stage = new Stage();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/ch/bbw/view/FXMLGame.fxml"));
         Parent root1 = fxmlLoader.load();
 
+        //gets controller
         FXMLGameController controller = fxmlLoader.getController();
-
+        //inits own name
         controller.initName(username);
+        //creates server and client
         Server server = new Server();
         Client client = new Client(new InetSocketAddress(InetAddress.getLocalHost(), Client.port));
 
+        //init all other variables
         controller.initClient(client);
+        //Server address
         controller.initServerAddress(InetAddress.getLocalHost());
+        //if it's the host
         controller.initHost(true);
-        controller.initCellManager(getDimension(), getDimension());
+        //inits names
         controller.initNames(username, secondUserName);
+        //init the cellmanger with width and height
         controller.initCellManager(invite.getFieldSize(), invite.getFieldSize());
-
+        //Adds the controller as an observer
         client.addObserver(controller);
-
+        //starts server and client
         new Thread(server).start();
         new Thread(client).start();
 
         Scene scene = new Scene(root1);
         stage.setOnCloseRequest((e) -> {
+            //closes all other threads
             System.out.println("Shutting down");
             server.setRunning(false);
             client.setRunning(false);
@@ -235,6 +249,7 @@ public class FXMLLobbyController implements Initializable, Observer {
         stage.setResizable(false);
         stage.setScene(scene);
         stage.show();
+        //Stops nettools search
         search.setRunning(false);
     }
 

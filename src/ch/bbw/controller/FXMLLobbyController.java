@@ -57,62 +57,65 @@ public class FXMLLobbyController implements Initializable, Observer {
     private UserManager userManager;
     private InviteManager inviteManager;
     private InviteSender inviteSender;
-
     private NetToolsSearch search;
 
     private boolean isFieldCountSet() {
+        //checks if text was entered
         if (fieldCount.getText().equals("")) {
             return false;
         }
         String number = fieldCount.getText();
         for (int index = 0; index < number.length(); index++) {
             char c = number.charAt(index);
+            //if the char is not a number
             if (!(c >= 48 && c <= 57)) {
                 return false;
             }
         }
+        //if the string just consists of numbers
         return true;
     }
 
     private int getDimension() {
+        //Dimension = Field height/width
         if (isFieldCountSet()) {
             return Integer.parseInt(fieldCount.getText());
         } else {
+            //if the dimensions haven't been set correctly returns the standard value
             return 10;
         }
     }
 
     private void addUser(InetAddress address) {
-
+        //adds a button with the users address
         Button button = new Button(address.getHostAddress());
+        //handleUser will be called if the button is pressed
         button.setOnAction(this::handleUser);
         button.setStyle("-fx-background-color: #1F2D3F");
         button.setTextFill(Color.WHITE);
         users.getChildren().add(button);
+        //adds the user, that if the button is clicked the according data can be called
         userManager.addUser(new User(address, button));
     }
 
     @FXML
     private void handleUser(ActionEvent event) {
-
+        //sends an invite to the according user
         Button button = (Button) event.getSource();
-        for (User user : userManager.getUsers()) {
-            if (user.getButton().equals(button)) {
-                System.out.println("Sending invite...");
-                sendInvite(user.getAddress());
-            }
-        }
+        System.out.println("Sending invite...");
+        sendInvite(userManager.getUserByButton(button).getAddress());
     }
 
     @FXML
     private void handleAccept(ActionEvent event) {
+        //send an acceptPacket to the according user
         Button button = (Button) event.getSource();
         Invite invite = inviteManager.getInviteByButton(button);
         sendAccept(invite);
     }
 
     private void sendInvite(InetAddress address) {
-
+        //sends an UDP invite to the address
         Random random = new Random();
         Invite invite = new Invite(System.currentTimeMillis(), System.currentTimeMillis() + inviteTime, address.toString(), random.nextInt(), getDimension());
 
@@ -122,43 +125,42 @@ public class FXMLLobbyController implements Initializable, Observer {
 
             Packet packet = null;
             try {
-                packet = new InvitePacket(username.getText(), invite.getDeprecationTime(), invite.getId(), getDimension(),InetAddress.getLocalHost().getHostAddress().toString());
+                //packet is built
+                packet = new InvitePacket(username.getText(), invite.getDeprecationTime(), invite.getId(), getDimension(), InetAddress.getLocalHost().getHostAddress().toString());
             } catch (UnknownHostException e) {
                 e.printStackTrace();
             }
             packet.addTarget(new InetSocketAddress(address, InviteSender.port));
 
-            HBox field = new HBox();
-            Label name = new Label(invite.getRecallAddress());
-            field.getChildren().add(name);
-
             try {
+                //sends packet
                 inviteSender.sendPacket(packet);
             } catch (IOException e) {
                 e.printStackTrace();
-                System.err.println("Failed to send Packet");
             }
         }
 
     }
 
     private void receivedInvite(InvitePacket packet) {
-
+        //creates a HBox with a button to accept the invite and the name of the sender
         HBox box = new HBox();
         Button button = new Button("Accept");
         button.setOnAction(this::handleAccept);
         Label label = new Label(packet.getName());
         System.out.println("Invite received from: " + packet.getName() + " :" + packet.getRecallAdress());
-
-        Invite invite = new Invite(packet.getDeprecationTime() - inviteTime, packet.getDeprecationTime(), packet.getId(), packet.getFieldSize(),packet.getRecallAdress());
+        //Invite is created to use if the invite gets accepted
+        Invite invite = new Invite(packet.getDeprecationTime() - inviteTime, packet.getDeprecationTime(), packet.getId(), packet.getFieldSize(), packet.getRecallAdress());
         invite.setName(packet.getName());
         invite.setAcceptButton(button);
 
         if (!inviteManager.inviteExists(invite)) {
             inviteManager.addReceivedInvite(invite);
+
             button.setStyle("-fx-background-color: #1F2D3F");
             button.setTextFill(Color.WHITE);
             label.setTextFill(Color.WHITE);
+            //adds the parts together and into the received invites box
             box.getChildren().add(button);
             box.getChildren().add(label);
             receivedInvites.getChildren().add(box);
@@ -172,7 +174,7 @@ public class FXMLLobbyController implements Initializable, Observer {
             System.out.println(invite.getRecallAddress());
             packet.addTarget(new InetSocketAddress(InetAddress.getByName(invite.getRecallAddress()), InviteSender.port));
             inviteSender.sendPacket(packet);
-            gameUserCountDown(InetAddress.getByName(invite.getRecallAddress()), invite.getName(),invite);
+            gameUserCountDown(InetAddress.getByName(invite.getRecallAddress()), invite.getName(), invite);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -185,7 +187,7 @@ public class FXMLLobbyController implements Initializable, Observer {
             Invite invite = inviteManager.getInviteById(packet.getId());
             if (invite != null) {
                 try {
-                    gameServerCountDown(packet.getName(),invite);
+                    gameServerCountDown(packet.getName(), invite);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -194,7 +196,7 @@ public class FXMLLobbyController implements Initializable, Observer {
     }
 
 
-    private void gameServerCountDown(String secondUserName,Invite invite) throws IOException {
+    private void gameServerCountDown(String secondUserName, Invite invite) throws IOException {
         String username = this.username.getText();
         Stage stage1 = (Stage) this.username.getScene().getWindow();
         stage1.close();
@@ -213,9 +215,9 @@ public class FXMLLobbyController implements Initializable, Observer {
         controller.initClient(client);
         controller.initServerAddress(InetAddress.getLocalHost());
         controller.initHost(true);
-        controller.initCellManager(getDimension(),getDimension());
+        controller.initCellManager(getDimension(), getDimension());
         controller.initNames(username, secondUserName);
-        controller.initCellManager(invite.getFieldSize(),invite.getFieldSize());
+        controller.initCellManager(invite.getFieldSize(), invite.getFieldSize());
 
         client.addObserver(controller);
 
@@ -236,7 +238,7 @@ public class FXMLLobbyController implements Initializable, Observer {
         search.setRunning(false);
     }
 
-    private void gameUserCountDown(InetAddress secondPlayer, String secondUserName,Invite invite) throws IOException {
+    private void gameUserCountDown(InetAddress secondPlayer, String secondUserName, Invite invite) throws IOException {
         try {
             Thread.sleep(50);
         } catch (InterruptedException e) {
@@ -260,7 +262,7 @@ public class FXMLLobbyController implements Initializable, Observer {
         controller.initHost(false);
         controller.initName(username);
         controller.initNames(secondUserName, username);
-        controller.initCellManager(invite.getFieldSize(),invite.getFieldSize());
+        controller.initCellManager(invite.getFieldSize(), invite.getFieldSize());
 
         client.addObserver(controller);
 

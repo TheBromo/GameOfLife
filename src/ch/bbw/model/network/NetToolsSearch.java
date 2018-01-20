@@ -27,14 +27,12 @@ public class NetToolsSearch extends Observable implements Runnable,Discovery.Cal
         Discovery.search((short) 12345, true);
 
         while (running) {
+            //sends requests to everyone in the network
             Discovery.update();
         }
 
         System.out.println("Discovery Close");
-
         Discovery.close();
-
-
     }
 
 
@@ -44,12 +42,14 @@ public class NetToolsSearch extends Observable implements Runnable,Discovery.Cal
 
     @Override
     public boolean discoveryRequestReceived(SocketAddress socketAddress) {
+        //if a user request is received, answer
         return true;
     }
 
     @Override
     public void discoveryClientFound(SocketAddress socketAddress) {
         try {
+            //send InetAddress to Lobby Controller
             InetAddress addr = InetAddress.getByAddress(socketAddress.getAddress());
             setChanged();
             notifyObservers(addr);

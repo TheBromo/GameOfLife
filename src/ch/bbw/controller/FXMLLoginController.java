@@ -32,7 +32,10 @@ public class FXMLLoginController implements Initializable {
     @FXML
     private void handleButtonLogin() {
         if (!name.getText().equals("")) {
+            //Opens Lobby Window
             openLobbyWindow(name.getText());
+
+            //Closes login Window
             Stage stage = (Stage) login.getScene().getWindow();
             stage.close();
         }
@@ -44,17 +47,22 @@ public class FXMLLoginController implements Initializable {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/ch/bbw/view/FXMLLobby.fxml"));
             Parent root1 = fxmlLoader.load();
 
+            //initializes name in Lobby controller
             FXMLLobbyController controller = fxmlLoader.getController();
             controller.initUserName(username);
 
             NetToolsSearch search = new NetToolsSearch();
+            //is added so if a new user is found a new button will be added
             search.addObserver(controller);
 
+            //starts the search for other users
             new Thread(search).start();
+            //is set so that it can be closed when a game is started
             controller.initNetThread(search);
 
 
             Scene scene = new Scene(root1);
+            //if the users closes the lobby all threads will stop
             stage.setOnCloseRequest((e) -> search.setRunning(false));
 
             stage.setTitle("Lobby");

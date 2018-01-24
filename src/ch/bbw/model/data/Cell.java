@@ -4,10 +4,15 @@ import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 
+/**
+ * Is the object which is used to manage a single cell and it's attributes
+ */
 public class Cell {
-
+    //used for managing the
     private boolean alive, aliveNextTurn, selected, bornNextTurn;
+    //used for managing
     private Color color;
+    //used if it gets born
     private ArrayList<Cell> parents = new ArrayList<>();
 
     public Cell(boolean alive, boolean aliveNextTurn, boolean selected, Color color) {
@@ -38,6 +43,10 @@ public class Cell {
         return false;
     }
 
+    /**
+     * is used for copying an object
+     * @return is an new instance of the cell
+     */
     public Cell copy() {
         return new Cell(alive, aliveNextTurn, selected, bornNextTurn, color, parents);
     }

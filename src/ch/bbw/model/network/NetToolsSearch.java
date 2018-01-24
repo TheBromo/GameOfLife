@@ -15,8 +15,6 @@ public class NetToolsSearch extends Observable implements Runnable,Discovery.Cal
 
     /**
      * Gets all the addresses of other players searching over the same Port
-     *
-     *
      */
     @Override
     public void run() {
@@ -46,6 +44,10 @@ public class NetToolsSearch extends Observable implements Runnable,Discovery.Cal
         return true;
     }
 
+    /**
+     * Notifies the observers with the InetAddress
+     * @param socketAddress is the found address
+     */
     @Override
     public void discoveryClientFound(SocketAddress socketAddress) {
         try {

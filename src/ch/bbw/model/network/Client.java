@@ -27,6 +27,10 @@ public class Client extends Observable implements Runnable {
         running = true;
     }
 
+    /**
+     * adds a packet that needs to be sent
+     * @param packet
+     */
     public void queuePacket(Packet packet) {
         queue.add(packet);
     }
@@ -36,12 +40,17 @@ public class Client extends Observable implements Runnable {
         this.running = running;
     }
 
+    /**
+     *
+     */
     @Override
     public void run() {
         try {
+            //preparing the client
             SocketChannel channel;
             channel = SocketChannel.open();
             channel.configureBlocking(false);
+            //connects to the server
             channel.connect(serverAddress);
 
             System.out.println("Connecting to " + channel.getRemoteAddress().toString());
@@ -58,17 +67,19 @@ public class Client extends Observable implements Runnable {
 
                     for (SelectionKey key : keys) {
                         if (key.isConnectable()) {
+                            //connected to the server
                             channel.finishConnect();
                             System.out.println("Client: Connected");
 
 
                         } else if (key.isReadable()) {
+                            //gets channel
                             SocketChannel sChannel = (SocketChannel) key.channel();
-
+                            //reads buffer
                             readBuffer.position(0).limit(readBuffer.capacity());
                             sChannel.read(readBuffer);
                             readBuffer.flip();
-
+                            //decompiles the packet
                             Packet packet = Packet.decompilePacket(readBuffer);
                             setChanged();
                             notifyObservers(packet);
@@ -78,7 +89,7 @@ public class Client extends Observable implements Runnable {
                     keys.clear();
                 }
                 if (!queue.isEmpty()) {
-
+                    //Sends all packets
                     Iterator<Packet> packetIterator = queue.iterator();
                     while (packetIterator.hasNext()) {
                         System.out.println("Client: Sending Packet...");

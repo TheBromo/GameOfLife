@@ -4,6 +4,9 @@ import javafx.scene.control.Button;
 
 import java.util.ArrayList;
 
+/**
+ * This class manages all found users
+ */
 public class UserManager {
     private ArrayList<User> users = new ArrayList<>();
 

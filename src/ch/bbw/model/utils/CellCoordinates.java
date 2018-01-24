@@ -1,5 +1,8 @@
 package ch.bbw.model.utils;
 
+/**
+ * is used for saving coordinates and state of a cell
+ */
 public class CellCoordinates {
     private boolean alive;
     private int x, y;

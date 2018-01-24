@@ -4,6 +4,9 @@ import javafx.scene.control.Button;
 
 import java.util.ArrayList;
 
+/**
+ * this class is used to manage this invites
+ */
 public class InviteManager {
     private ArrayList<Invite> sentInvites = new ArrayList<>();
     private ArrayList<Invite> receivedInvites = new ArrayList<>();
@@ -16,7 +19,11 @@ public class InviteManager {
         receivedInvites.add(invite);
     }
 
-
+    /**
+     * looks if an invite exists
+     * @param invite
+     * @return if the invite exists
+     */
     public boolean inviteExists(Invite invite) {
         //checks if an invite exists
         for (Invite secInvite : sentInvites) {
@@ -32,9 +39,12 @@ public class InviteManager {
         return false;
     }
 
-
+    /**
+     * gives back an invite with the according button
+     * @param button the button
+     * @return the according invite
+     */
     public Invite getInviteByButton(Button button){
-        //gives back an invite with the according button
         for (Invite invite:receivedInvites){
             if (invite.getAcceptButton().equals(button)){
                 return invite;
@@ -43,6 +53,11 @@ public class InviteManager {
         return null;
     }
 
+    /**
+     * gets an invite with it's id
+     * @param id
+     * @return
+     */
     public Invite getInviteById(int id){
         //gives back an invite with the according id
         for (Invite invite:sentInvites){

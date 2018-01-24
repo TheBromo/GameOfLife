@@ -304,6 +304,7 @@ public class FXMLGameController implements Initializable, Observer {
     @Override
     public void update(Observable o, Object arg) {
         Platform.runLater(() -> {
+            //interprets Packets
             Packet packet = (Packet) arg;
             if (packet instanceof NamePacket) {
 
@@ -315,9 +316,8 @@ public class FXMLGameController implements Initializable, Observer {
                 SeedPacket pm = (SeedPacket) packet;
                 System.out.println(pm.getSeed());
                 cellManager.setSeed(pm.getSeed());
-                System.out.println("updating cell count");
+                System.out.println("User: updating cell count");
                 updateCellCount();
-                System.out.println("starting drawing");
                 draw();
 
             } else if (packet instanceof ActionPacket) {

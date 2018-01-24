@@ -4,6 +4,9 @@ import javafx.scene.control.Button;
 
 import java.net.InetAddress;
 
+/**
+ * This class is used to save a sent or received invite
+ */
 public class Invite {
     private long timeSent, deprecationTime;
     private String recallAddress, name;

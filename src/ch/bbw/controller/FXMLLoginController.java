@@ -29,6 +29,10 @@ public class FXMLLoginController implements Initializable {
     @FXML
     private Button login;
 
+    /**
+     * checks is the name has been set
+     * and closes the old window
+     */
     @FXML
     private void handleButtonLogin() {
         if (!name.getText().equals("")) {
@@ -41,6 +45,10 @@ public class FXMLLoginController implements Initializable {
         }
     }
 
+    /**
+     * Opens the Lobby window
+     * @param username is the name the user will have
+     */
     private void openLobbyWindow(String username) {
         try {
             Stage stage = new Stage();

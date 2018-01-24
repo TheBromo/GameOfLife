@@ -43,6 +43,11 @@ public class FXMLGameController implements Initializable, Observer {
     private double xOffset, yOffset, zoom, recZoom, lastDragY, lastDragX, size;
     private boolean dragInProgress, zoomed, host, finished;
 
+    /**
+     * handles the click of the end turn button
+     * sends the turn
+     *
+     */
     @FXML
     private void handleTurnEnd() {
         if (actionHandler.canEndTurn() && turnHandler.canPlay() && !finished) {
@@ -51,6 +56,7 @@ public class FXMLGameController implements Initializable, Observer {
             actionPacket.addTarget(new InetSocketAddress(serverAddress, Client.port));
             client.queuePacket(actionPacket);
 
+            //updates the data
             cellManager.iterate();
             actionHandler.newTurn();
             updateCellCount();
@@ -62,6 +68,10 @@ public class FXMLGameController implements Initializable, Observer {
         }
     }
 
+    /**
+     * changes the view to an older state
+     * @param event
+     */
     @FXML
     public void handleSkipBack(ActionEvent event) {
         cellManager.goBackward();
@@ -69,6 +79,10 @@ public class FXMLGameController implements Initializable, Observer {
         draw();
     }
 
+    /**
+     * changes the view to a newer view
+     * @param event
+     */
     @FXML
     public void handleSkipForwards(ActionEvent event) {
         cellManager.goForward();
@@ -76,6 +90,10 @@ public class FXMLGameController implements Initializable, Observer {
         draw();
     }
 
+    /**
+     * interprets the click onto the canvas
+     * @param event
+     */
     @FXML
     private void handleCanvasClick(MouseEvent event) {
         System.out.println("Click...");
@@ -99,6 +117,9 @@ public class FXMLGameController implements Initializable, Observer {
 
     }
 
+    /**
+     * undoes the last action
+     */
     @FXML
     private void handleActionUndo() {
         if (turnHandler.canPlay()) {
@@ -108,6 +129,10 @@ public class FXMLGameController implements Initializable, Observer {
         }
     }
 
+    /**
+     * shifts the displayed field
+     * @param event
+     */
     @FXML
     private void handleMouseDrag(MouseEvent event) {
         if (dragInProgress) {
@@ -123,6 +148,10 @@ public class FXMLGameController implements Initializable, Observer {
         draw();
     }
 
+    /**
+     * zooms in and out
+     * @param event
+     */
     @FXML
     private void handleScroll(ScrollEvent event) {
         double zoomFactor = 1.05;
@@ -136,6 +165,9 @@ public class FXMLGameController implements Initializable, Observer {
         zoomed = true;
     }
 
+    /**
+     * draw all the cells and background
+     */
     private void draw() {
         gc.setFill(rgb(44, 62, 80));
         gc.fillRect(0, 0, 100000, 10000);
@@ -194,6 +226,9 @@ public class FXMLGameController implements Initializable, Observer {
 
     }
 
+    /**
+     * shows the active players color
+     */
     private void paintActivePlayer() {
         if ((turnHandler.canPlay() && host) || (!turnHandler.canPlay() && !host)) {
             colorGc.setFill(rgb(231, 76, 60));
@@ -203,11 +238,17 @@ public class FXMLGameController implements Initializable, Observer {
         colorGc.fillRect(0, 0, color.getWidth(), color.getHeight());
     }
 
+    /**
+     * updates the cell count of each player
+     */
     private void updateCellCount() {
         redBlocks.setText("x " + cellManager.getRedCount());
         blueBlocks.setText("x " + cellManager.getBlueCount());
     }
 
+    /**
+     * checks if somebody won
+     */
     private void checkWinner() {
 
         if (cellManager.getRedCount() == 0 && cellManager.getBlueCount() == 0) {
@@ -301,9 +342,15 @@ public class FXMLGameController implements Initializable, Observer {
 
     }
 
+    /**
+     * interprets received packets
+     * @param o
+     * @param arg
+     */
     @Override
     public void update(Observable o, Object arg) {
         Platform.runLater(() -> {
+            //interprets Packets
             Packet packet = (Packet) arg;
             if (packet instanceof NamePacket) {
 
@@ -315,9 +362,8 @@ public class FXMLGameController implements Initializable, Observer {
                 SeedPacket pm = (SeedPacket) packet;
                 System.out.println(pm.getSeed());
                 cellManager.setSeed(pm.getSeed());
-                System.out.println("updating cell count");
+                System.out.println("User: updating cell count");
                 updateCellCount();
-                System.out.println("starting drawing");
                 draw();
 
             } else if (packet instanceof ActionPacket) {

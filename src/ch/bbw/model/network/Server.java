@@ -41,6 +41,7 @@ public class Server implements Runnable {
     @Override
     public void run() {
         try {
+            //Starts the Server
             ServerSocketChannel channel;
             channel = ServerSocketChannel.open();
             channel.configureBlocking(false);
@@ -61,6 +62,7 @@ public class Server implements Runnable {
                     for (SelectionKey key : keys) {
                         if (key.isAcceptable()) {
                             try {
+                                //new user found connecting and is accepted
 
                                 SocketChannel sChannel = channel.accept();
                                 sChannel.configureBlocking(false);
@@ -72,7 +74,7 @@ public class Server implements Runnable {
                                 System.out.println("Server: Client connected: " + sender);
                                 clients.put(((InetSocketAddress) sChannel.getRemoteAddress()), sChannel);
 
-
+                                //seed is sent so that both playing field are the same
                                 Packet packet = new SeedPacket(seed);
                                 packet.addTarget((InetSocketAddress) sChannel.getRemoteAddress());
                                 queuePacket(packet);
@@ -83,15 +85,16 @@ public class Server implements Runnable {
                         } else if (key.isReadable()) {
 
                             SocketChannel sChannel = (SocketChannel) key.channel();
-
+                            //buffer is read
                             readBuffer.position(0).limit(readBuffer.capacity());
                             sChannel.read(readBuffer);
                             readBuffer.flip();
-
+                            //packet decompiled
                             Packet packet = Packet.decompilePacket(readBuffer);
                             packet.clearTargets();
                             packet.setSender((InetSocketAddress) sChannel.getRemoteAddress());
 
+                            //all other users are added
                             for (InetSocketAddress a : clients.keySet()) {
                                 if (!a.equals(packet.getSender())) {
                                     System.out.println("Server: added target: " + sChannel.getRemoteAddress());
@@ -104,6 +107,7 @@ public class Server implements Runnable {
                     keys.clear();
                 }
                 if (!queue.isEmpty()) {
+                    //all queued packets are sent to there targets
                     Iterator<Packet> packetIterator = queue.iterator();
                     while (packetIterator.hasNext()) {
                         Packet packet = packetIterator.next();

@@ -27,10 +27,14 @@ public class ActionHandler {
         }
     }
 
+    /**
+     * this class interprets a
+     * @param clickedCell the cell that has been pressed
+     */
     public void handleAction(Cell clickedCell) {
-
+        //only one action can be taken
         if (clickedCell.isAlive() && lastAction != Action.CREATE_NEW_CELL && !cellKilled) {
-
+            //when the user presses on a cell the first time he kills a cell
             clickedCell.setAlive(false);
             lastAction = Action.KILL_CELL;
             lastAction.setCell(clickedCell);
@@ -40,7 +44,7 @@ public class ActionHandler {
             System.out.println("Cell killed");
 
         } else if (!clickedCell.isAlive() && cellKilled && lastAction.getCell().equals(clickedCell)) {
-
+            //when a killed cell is pressed on again it gets revived
             clickedCell.setAlive(true);
             clickedCell.setColor(lastAction.getOldColor());
             lastAction.setCell(null);
@@ -50,7 +54,7 @@ public class ActionHandler {
             System.out.println("Cell revived");
 
         } else if (!clickedCell.isAlive() && !cellKilled && lastAction != Action.CREATE_NEW_CELL) {
-
+            //user clicked on a dead cell, this cell will be born, still needs 2 parents
             clickedCell.setAlive(true);
             lastAction = Action.CREATE_NEW_CELL;
             lastAction.setCell(clickedCell);
@@ -62,6 +66,7 @@ public class ActionHandler {
 
         } else if (clickedCell.isAlive() && !cellKilled && lastAction == Action.CREATE_NEW_CELL && clickedCell.getColor().equals(color)) {
             if (lastAction.getCell().equals(clickedCell)) {
+                //to stop the birthing of a cell and restart the action process
                 clickedCell.setColor(lastAction.getOldColor());
                 clickedCell.setAlive(false);
                 clickedCell.setBornNextTurn(false);
@@ -75,6 +80,7 @@ public class ActionHandler {
                 clickedCell.clearParents();
             } else {
                 if (lastAction.getCell().getParents().size() < 2) {
+                    //cell gets sacrificed that the new cell can be born
                     clickedCell.setAlive(false);
                     lastAction.getCell().addParent(clickedCell);
                     System.out.println("Cell sacrificed");
@@ -95,7 +101,10 @@ public class ActionHandler {
         return canEndTurn;
     }
 
-
+    /**
+     * Creates a packet for the last action taken
+     * @return the ActionPacket
+     */
     public ActionPacket getAction() {
         if (lastAction == Action.CREATE_NEW_CELL) {
             ArrayList<CellCoordinates> parents = new ArrayList<>();
@@ -108,6 +117,9 @@ public class ActionHandler {
         }
     }
 
+    /**
+     * resets everything so new actions can be taken
+     */
     public void newTurn() {
         if (lastAction == Action.CREATE_NEW_CELL) {
             lastAction.getCell().clearParents();
@@ -118,12 +130,18 @@ public class ActionHandler {
         canEndTurn = false;
     }
 
+    /**
+     * undoes las action
+     */
     public void undoAction() {
         if (lastAction != null) {
             handleAction(lastAction.getCell());
         }
     }
 
+    /**
+     * is used for saving what has been changed in the last action and what kind of action it was
+     */
     enum Action {
 
         CREATE_NEW_CELL, KILL_CELL;

@@ -34,6 +34,12 @@ public class InviteSender {
         writeBuffer = ByteBuffer.allocate(1024);
     }
 
+    /**
+     * sends a packet to all it's targets
+     * @param packet the packet that needs to be sent
+     * @throws IOException
+     */
+
     public void sendPacket(Packet packet) throws IOException {
         //prepares the buffer for writing
         writeBuffer.position(0).limit(writeBuffer.capacity());
@@ -48,7 +54,11 @@ public class InviteSender {
         }
     }
 
-
+    /**
+     * goes through all received packets and puts them into an ArrayList
+     * @return all Packets in an ArrayList
+     * @throws IOException
+     */
      public ArrayList<Packet> readReceivedPacket() throws IOException {
         ArrayList<Packet> packets = new ArrayList<>();
         if (selector.selectNow() > 0) {

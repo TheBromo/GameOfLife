@@ -1,5 +1,8 @@
 package ch.bbw.model.utils;
 
+/**
+ * manages who's turn it is
+ */
 public class TurnHandler {
     private boolean isHost, hostsTurn;
 

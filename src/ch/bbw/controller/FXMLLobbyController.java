@@ -60,6 +60,10 @@ public class FXMLLobbyController implements Initializable, Observer {
     private InviteSender inviteSender;
     private NetToolsSearch search;
 
+    /**
+     * checks if the TextField for the field count has been set
+     * @return if it has been set
+     */
     private boolean isFieldCountSet() {
         //checks if text was entered
         if (fieldCount.getText().equals("")) {
@@ -77,6 +81,10 @@ public class FXMLLobbyController implements Initializable, Observer {
         return true;
     }
 
+    /**
+     * if the dimension hasn't been set 10 will be returned
+     * @return the field width/height
+     */
     private int getDimension() {
         //Dimension = Field height/width
         if (isFieldCountSet()) {
@@ -87,6 +95,10 @@ public class FXMLLobbyController implements Initializable, Observer {
         }
     }
 
+    /**
+     * adds a button to the found users invite vBox
+     * @param address is the users address
+     */
     private void addUser(InetAddress address) {
         //adds a button with the users address
         Button button = new Button(address.getHostAddress());
@@ -99,6 +111,10 @@ public class FXMLLobbyController implements Initializable, Observer {
         userManager.addUser(new User(address, button));
     }
 
+    /**
+     * handles when a user button is clicked
+     * @param event is used for getting the button text
+     */
     @FXML
     private void handleUser(ActionEvent event) {
         //sends an invite to the according user
@@ -107,6 +123,10 @@ public class FXMLLobbyController implements Initializable, Observer {
         sendInvite(userManager.getUserByButton(button).getAddress());
     }
 
+    /**
+     * is called when an invite gets accepted per button press
+     * @param event is used for getting the button
+     */
     @FXML
     private void handleAccept(ActionEvent event) {
         //send an acceptPacket to the according user
@@ -115,6 +135,10 @@ public class FXMLLobbyController implements Initializable, Observer {
         sendAccept(invite);
     }
 
+    /**
+     * This method sends an UDP invite with the Invite Sender
+     * @param address is the target the Packet will be sent to
+     */
     private void sendInvite(InetAddress address) {
         //sends an UDP invite to the address
         Random random = new Random();
@@ -131,6 +155,7 @@ public class FXMLLobbyController implements Initializable, Observer {
             } catch (UnknownHostException e) {
                 e.printStackTrace();
             }
+            assert packet != null;
             packet.addTarget(new InetSocketAddress(address, InviteSender.port));
 
             try {
@@ -143,6 +168,10 @@ public class FXMLLobbyController implements Initializable, Observer {
 
     }
 
+    /**
+     * Is called when an invite Packet is received adds a Button with name
+     * @param packet is the received Packet and used for extracting variables
+     */
     private void receivedInvite(InvitePacket packet) {
         //creates a HBox with a button to accept the invite and the name of the sender
         HBox box = new HBox();
@@ -170,6 +199,11 @@ public class FXMLLobbyController implements Initializable, Observer {
         }
     }
 
+    /**
+     * Sends an accept Packet for the given received invite
+     * and starts the game
+     * @param invite is used for extracting the target and id
+     */
     private void sendAccept(Invite invite) {
         //creates a Packet to answer an invite
         Packet packet = new AcceptPacket(invite.getId(), true, username.getText());
@@ -187,6 +221,10 @@ public class FXMLLobbyController implements Initializable, Observer {
         }
     }
 
+    /**
+     * handles the receiving of a packet and starts the game
+     * @param packet
+     */
     private void receiveAccept(AcceptPacket packet) {
         //Starts game if invite has been accepted
         if (packet.hasAccepted()) {
@@ -201,7 +239,12 @@ public class FXMLLobbyController implements Initializable, Observer {
         }
     }
 
-
+    /**
+     * Opens game window and initializes/sets all needed objects and variables. Starts the server and Client
+     * @param secondUserName the name of the second Player
+     * @param invite the according invite
+     * @throws IOException
+     */
     private void gameServerCountDown(String secondUserName, Invite invite) throws IOException {
         //gets own username
         String username = this.username.getText();
@@ -254,6 +297,14 @@ public class FXMLLobbyController implements Initializable, Observer {
         search.setRunning(false);
     }
 
+
+     /**
+     * Opens game window and initializes/sets all needed objects and variables. Starts the Client
+     * @param secondUserName the name of the second Player
+     * @param invite the according invite
+     * @param secondPlayer
+     * @throws IOException
+     */
     private void gameUserCountDown(InetAddress secondPlayer, String secondUserName, Invite invite) throws IOException {
         //waits so that the host start first
         try {
@@ -359,9 +410,14 @@ public class FXMLLobbyController implements Initializable, Observer {
         fiveSeconds.play();
     }
 
+    /**
+     * adds a new found user in the network
+     * @param o
+     * @param arg is the InetAddress
+     */
     @Override
     public void update(Observable o, Object arg) {
-        //adds a new found user in the network
+
         Platform.runLater(() -> addUser((InetAddress) arg));
     }
 }

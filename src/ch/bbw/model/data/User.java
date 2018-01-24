@@ -4,6 +4,9 @@ import javafx.scene.control.Button;
 
 import java.net.InetAddress;
 
+/**
+ * this class saves a found user and he's associated button
+ */
 public class User {
     private InetAddress address;
     private String name;

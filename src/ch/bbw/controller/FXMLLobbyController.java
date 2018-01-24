@@ -44,6 +44,7 @@ import java.util.*;
 /**
  * @author TheBromo
  */
+@SuppressWarnings("deprecation")
 public class FXMLLobbyController implements Initializable, Observer {
 
     private long inviteTime = 30000;
@@ -254,37 +255,48 @@ public class FXMLLobbyController implements Initializable, Observer {
     }
 
     private void gameUserCountDown(InetAddress secondPlayer, String secondUserName, Invite invite) throws IOException {
+        //waits so that the host start first
         try {
             Thread.sleep(50);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        //gets username
         String username = this.username.getText();
         System.out.println("Username: " + username);
+        //closes old window
         Stage stage1 = (Stage) this.username.getScene().getWindow();
         stage1.close();
 
+        //creates new window
         Stage stage = new Stage();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/ch/bbw/view/FXMLGame.fxml"));
         Parent root1 = fxmlLoader.load();
 
+        //gets the controller
         FXMLGameController controller = fxmlLoader.getController();
-
+        //starts the client
         Client client = new Client(new InetSocketAddress(secondPlayer, Client.port));
-
+        //intits the client
         controller.initClient(client);
+        //sets the serverAddress
         controller.initServerAddress(secondPlayer);
+        //Sets host to false, used for turn management
         controller.initHost(false);
+        //inits username for score display
         controller.initName(username);
+        //inits the name of the second player
         controller.initNames(secondUserName, username);
+        //inits the cellmanager with it's width and height
         controller.initCellManager(invite.getFieldSize(), invite.getFieldSize());
-
+        //ads controller as observer, for getting and interpreting received Packets
         client.addObserver(controller);
-
+        //starts client
         new Thread(client).start();
 
         Scene scene = new Scene(root1);
         stage.setOnCloseRequest((e) -> {
+            //closes all threads if the window gets closed
             System.out.println("Shutting down");
             client.setRunning(false);
         });
@@ -293,6 +305,7 @@ public class FXMLLobbyController implements Initializable, Observer {
         stage.setResizable(false);
         stage.setScene(scene);
         stage.show();
+        //stops nettools search
         search.setRunning(false);
     }
 
@@ -306,11 +319,12 @@ public class FXMLLobbyController implements Initializable, Observer {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
+        //inits invite and usermanger wich are used for managing sent an received invites and the according buttons in the window
         inviteManager = new InviteManager();
         userManager = new UserManager();
 
         try {
+            //inits the udp invite sender an receiver
             inviteSender = new InviteSender();
         } catch (IOException e) {
             System.err.print("Failed to initialize InviteSender");
@@ -322,6 +336,7 @@ public class FXMLLobbyController implements Initializable, Observer {
                 ArrayList<Packet> packets = inviteSender.readReceivedPacket();
                 if (packets.size() != 0) {
                     for (Packet packet : packets) {
+                        //interprets packets
                         if (packet instanceof InvitePacket) {
 
                             InvitePacket invitePacket = (InvitePacket) packet;
@@ -346,6 +361,7 @@ public class FXMLLobbyController implements Initializable, Observer {
 
     @Override
     public void update(Observable o, Object arg) {
+        //adds a new found user in the network
         Platform.runLater(() -> addUser((InetAddress) arg));
     }
 }

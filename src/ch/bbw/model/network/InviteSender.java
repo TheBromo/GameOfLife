@@ -35,14 +35,14 @@ public class InviteSender {
     }
 
     public void sendPacket(Packet packet) throws IOException {
-
+        //prepares the buffer for writing
         writeBuffer.position(0).limit(writeBuffer.capacity());
+        //compiles the packet
         Packet.compilePacket(packet,writeBuffer);
+        //finishes writing process
         writeBuffer.flip();
 
         for (InetSocketAddress address : packet.getTargets()) {
-
-
             //sends the data
             socket.send(writeBuffer, address);
         }
@@ -65,6 +65,7 @@ public class InviteSender {
                     socket.receive(readBuffer);
                     readBuffer.flip();
 
+                    //decompiles packet
                     Packet packet = Packet.decompilePacket(readBuffer);
                     packets.add(packet);
                 }

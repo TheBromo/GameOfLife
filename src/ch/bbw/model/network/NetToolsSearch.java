@@ -8,7 +8,7 @@ import java.io.File;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Observable;
-
+@SuppressWarnings("deprecation")
 public class NetToolsSearch extends Observable implements Runnable,Discovery.Callback {
 
     private boolean running = true;

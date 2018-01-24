@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Observable;
 import java.util.Set;
-
+@SuppressWarnings("deprecation")
 public class Client extends Observable implements Runnable {
 
 

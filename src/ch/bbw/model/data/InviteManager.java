@@ -18,6 +18,7 @@ public class InviteManager {
 
 
     public boolean inviteExists(Invite invite) {
+        //checks if an invite exists
         for (Invite secInvite : sentInvites) {
             if (invite.getTimeSent() == secInvite.getTimeSent()) {
                 return true;
@@ -33,6 +34,7 @@ public class InviteManager {
 
 
     public Invite getInviteByButton(Button button){
+        //gives back an invite with the according button
         for (Invite invite:receivedInvites){
             if (invite.getAcceptButton().equals(button)){
                 return invite;
@@ -42,6 +44,7 @@ public class InviteManager {
     }
 
     public Invite getInviteById(int id){
+        //gives back an invite with the according id
         for (Invite invite:sentInvites){
             if (invite.getId()==id){
                 return invite;

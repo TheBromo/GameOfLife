@@ -16,6 +16,7 @@ public class UserManager {
     }
 
     public User getUserByButton(Button button){
+        //gives back an User with the according button
         for (User user : users) {
             if (user.getButton().equals(button)) {
                 return user;

@@ -28,7 +28,7 @@ import java.util.Observer;
 import java.util.ResourceBundle;
 
 import static javafx.scene.paint.Color.rgb;
-
+@SuppressWarnings("deprecation")
 public class FXMLGameController implements Initializable, Observer {
     @FXML
     private Label blueName, redName, blueBlocks, redBlocks, index;
@@ -213,7 +213,7 @@ public class FXMLGameController implements Initializable, Observer {
         if (cellManager.getRedCount() == 0 && cellManager.getBlueCount() == 0) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Tie");
-            alert.setHeaderText("You both lost!");
+            alert.setHeaderText("Congratulations! \n You both lost!");
             alert.setContentText("All cells of " + redName.getText() + " & " + blueName.getText() + "  have been eliminated");
             alert.showAndWait();
             finished = true;
